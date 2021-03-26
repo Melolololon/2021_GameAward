@@ -13,49 +13,29 @@ float LibMath::angleConversion(int paterrn, float angle)
 
 }
 
-bool LibMath::difference(float num1, float num2, float difference, int type)
+bool LibMath::difference(const float& num1, const float& num2, const float& difference)
 {
 	float sum = num1 - num2;
 	float diff = abs(sum);//差を求める
 
-	if (type == 0)
-	{
 		//差が指定した値以内だったらtrue
-		if (difference >= diff)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	if (type == 1)
-	{
-		//差が指定した値以上だったらtrue
-		if (difference <= diff)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+	if (difference >= diff)
+		return true;
 
 	return false;
+
 }
 
 
 float LibMath::getFloatPI()
 {
-	return (float)M_PI;
+	return static_cast<float>(M_PI);
 	//return 0;
 }
 
 double LibMath::getDoublePI()
 {
-	return (double)M_PI;
+	return M_PI;
 	//return 0;
 }
 
@@ -71,55 +51,58 @@ float LibMath::calcDistance3D(Vector3 pos1, Vector3 pos2)
 	);
 }
 
-Vector3 LibMath::otherVector(Vector3 myPos, Vector3 otherPos)
+Vector3 LibMath::otherVector(const Vector3& vec1, const Vector3& vec2)
 {
 	Vector3 vec;
-	vec.x = (otherPos.x - myPos.x);
-	vec.y = (otherPos.y - myPos.y);
-	vec.z = (otherPos.z - myPos.z);
-	float size = sqrt(vec.x *vec.x + vec.y *vec.y + vec.z *vec.z);
-	return{ vec.x / size ,vec.y / size  ,vec.z / size };
+	vec = vec2 - vec1;
+	return vector3Normalize(vec);
 }
 
+#pragma region vector2
 
-float LibMath::twoVector2Angle(Vector2 v1, Vector2 v2)
+
+float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
-	float f = Vector2::dot(v1, v2);
+	float f = vector2Dot(v1, v2);
 	f = std::acos(f);
 	f = angleConversion(1, f);
 
-	Vector3 v = Vector3::cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
+	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
 	if (v.z < 0)f = 360 - f;
 
 	return f;
 }
 
-float LibMath::vecto2rToAngle(Vector2 v)
+float LibMath::vecto2ToAngle(const Vector2& v)
 {
-
 	float f = twoVector2Angle({ 1,0 }, v);
 	return f;
 }
 
 
-Vector2 LibMath::angleToVector2(float angle)
+Vector2 LibMath::angleToVector2(const float& angle)
 {
-	DirectX::XMMATRIX vMat = DirectX::XMMatrixIdentity();
-	vMat.r[3].m128_f32[0] = 1.0f;
-
-	DirectX::XMMATRIX aMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle));
-	vMat *= aMat;
-	return { vMat.r[3].m128_f32[0] , vMat.r[3].m128_f32[1] };
-
+	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
+	return { q.x,q.y };
 }
 
 
-Vector2 LibMath::rotateVector2(Vector2 v, float angle)
+Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
 {
-	float vAngle = vecto2rToAngle(v);
-	return angleToVector2(vAngle + angle);
+	Quaternion q = getRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
+	return { q.x,q.y };
 }
+#pragma endregion
+
+#pragma region Vector3
+Vector3 LibMath::rotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
+{
+	Quaternion q = getRotateQuaternion(rotateV, vec, angle);
+	return { q.x, q.y, q.z };
+}
+#pragma endregion
+
 
 #pragma endregion
 
@@ -176,7 +159,7 @@ bool LibMath::sphereAndPlaneCollision(Vector3 spherePos, float r, Vector3 normal
 
 
 	//原点から球の距離
-	float sphereDist = Vector3::dot(spherePos, normal);
+	float sphereDist = vector3Dot(spherePos, normal);
 
 	float dict = sphereDist - planeDist;
 	if (fabsf(dict) > r)return false;
@@ -208,10 +191,10 @@ bool LibMath::sphereAndTryangleCorrision
 	if (area == 0)
 	{
 		//tryPos1、tryPos2のベクトルと、tryPos1、spherePosのベクトルの内積を求める
-		dot1 = Vector3::dot(triPos2 - triPos1, spherePos - triPos1);
+		dot1 = vector3Dot(triPos2 - triPos1, spherePos - triPos1);
 
 		//tryPos1、tryPos3のベクトルと、tryPos1、spherePosのベクトルの内積を求める
-		dot2 = Vector3::dot(triPos3 - triPos1, spherePos - triPos1);
+		dot2 = vector3Dot(triPos3 - triPos1, spherePos - triPos1);
 
 		//dot1とdot2の両方がマイナスなら、領域1にある
 		if (dot1 <= 0 && dot2 <= 0)
@@ -226,9 +209,9 @@ bool LibMath::sphereAndTryangleCorrision
 
 	if (area == 0)
 	{
-		dot1 = Vector3::dot(triPos1 - triPos2, spherePos - triPos2);
+		dot1 = vector3Dot(triPos1 - triPos2, spherePos - triPos2);
 
-		dot2 = Vector3::dot(triPos3 - triPos2, spherePos - triPos2);
+		dot2 = vector3Dot(triPos3 - triPos2, spherePos - triPos2);
 
 		//dot1とdot2の両方がマイナスなら、領域1にある
 		if (dot1 <= 0 && dot2 <= 0)
@@ -243,9 +226,9 @@ bool LibMath::sphereAndTryangleCorrision
 
 	if (area == 0)
 	{
-		dot1 = Vector3::dot(triPos2 - triPos3, spherePos - triPos3);
+		dot1 = vector3Dot(triPos2 - triPos3, spherePos - triPos3);
 
-		dot2 = Vector3::dot(triPos1 - triPos3, spherePos - triPos3);
+		dot2 = vector3Dot(triPos1 - triPos3, spherePos - triPos3);
 
 		//dot1とdot2の両方がマイナスなら、領域1にある
 		if (dot1 <= 0 && dot2 <= 0)
@@ -261,18 +244,18 @@ bool LibMath::sphereAndTryangleCorrision
 
 	if (area == 0)
 	{
-		dot1 = Vector3::dot(triPos2 - triPos1, spherePos - triPos1);
-		dot2 = Vector3::dot(triPos2 - triPos1, spherePos - triPos2);
+		dot1 = vector3Dot(triPos2 - triPos1, spherePos - triPos1);
+		dot2 = vector3Dot(triPos2 - triPos1, spherePos - triPos2);
 
 		if (dot1 > 0 && dot2 <= 0)
 		{
-			if (Vector3::dot(triPos2 - triPos1, spherePos - triPos1) * Vector3::dot(triPos3 - triPos1, spherePos - triPos2) -
-				Vector3::dot(triPos2 - triPos1, spherePos - triPos2) * Vector3::dot(triPos3 - triPos1, spherePos - triPos1) <= 0)
+			if (vector3Dot(triPos2 - triPos1, spherePos - triPos1) * vector3Dot(triPos3 - triPos1, spherePos - triPos2) -
+				vector3Dot(triPos2 - triPos1, spherePos - triPos2) * vector3Dot(triPos3 - triPos1, spherePos - triPos1) <= 0)
 			{
 				area = 3;
 				float num =
-					Vector3::dot(triPos2 - triPos1, spherePos - triPos1) /
-					(Vector3::dot(triPos2 - triPos1, spherePos - triPos1) - Vector3::dot(triPos2 - triPos1, spherePos - triPos2));
+					vector3Dot(triPos2 - triPos1, spherePos - triPos1) /
+					(vector3Dot(triPos2 - triPos1, spherePos - triPos1) - vector3Dot(triPos2 - triPos1, spherePos - triPos2));
 				closest.x = triPos1.x + num * (triPos2.x - triPos1.x);
 				closest.y = triPos1.y + num * (triPos2.y - triPos1.y);
 				closest.z = triPos1.z + num * (triPos2.z - triPos1.z);
@@ -286,20 +269,20 @@ bool LibMath::sphereAndTryangleCorrision
 #pragma region 領域チェック5
 	if (area == 0)
 	{
-		dot1 = Vector3::dot(triPos3 - triPos2, spherePos - triPos2);
-		dot2 = Vector3::dot(triPos3 - triPos2, spherePos - triPos3);
+		dot1 = vector3Dot(triPos3 - triPos2, spherePos - triPos2);
+		dot2 = vector3Dot(triPos3 - triPos2, spherePos - triPos3);
 
 		if (dot1 > 0 && dot2 <= 0)
 		{
-			if (Vector3::dot(triPos3 - triPos2, spherePos - triPos2) * Vector3::dot(triPos1 - triPos2, spherePos - triPos3) -
-				Vector3::dot(triPos3 - triPos2, spherePos - triPos3) * Vector3::dot(triPos1 - triPos2, spherePos - triPos2) <= 0)
+			if (vector3Dot(triPos3 - triPos2, spherePos - triPos2) * vector3Dot(triPos1 - triPos2, spherePos - triPos3) -
+				vector3Dot(triPos3 - triPos2, spherePos - triPos3) * vector3Dot(triPos1 - triPos2, spherePos - triPos2) <= 0)
 			{
 
 				area = 5;
 
 				float num =
-					Vector3::dot(triPos3 - triPos2, spherePos - triPos2) /
-					(Vector3::dot(triPos3 - triPos2, spherePos - triPos2) - Vector3::dot(triPos3 - triPos2, spherePos - triPos3));
+					vector3Dot(triPos3 - triPos2, spherePos - triPos2) /
+					(vector3Dot(triPos3 - triPos2, spherePos - triPos2) - vector3Dot(triPos3 - triPos2, spherePos - triPos3));
 				closest.x = triPos2.x + num * (triPos3.x - triPos2.x);
 				closest.y = triPos2.y + num * (triPos3.y - triPos2.y);
 				closest.z = triPos2.z + num * (triPos3.z - triPos2.z);
@@ -312,19 +295,19 @@ bool LibMath::sphereAndTryangleCorrision
 #pragma region 領域チェック6
 	if (area == 0)
 	{
-		dot1 = Vector3::dot(triPos1 - triPos3, spherePos - triPos3);
-		dot2 = Vector3::dot(triPos1 - triPos3, spherePos - triPos1);
+		dot1 = vector3Dot(triPos1 - triPos3, spherePos - triPos3);
+		dot2 = vector3Dot(triPos1 - triPos3, spherePos - triPos1);
 
 		if (dot1 > 0 && dot2 <= 0)
 		{
-			if (Vector3::dot(triPos1 - triPos3, spherePos - triPos3) * Vector3::dot(triPos2 - triPos3, spherePos - triPos1) -
-				Vector3::dot(triPos1 - triPos3, spherePos - triPos1) * Vector3::dot(triPos2 - triPos3, spherePos - triPos3) <= 0)
+			if (vector3Dot(triPos1 - triPos3, spherePos - triPos3) * vector3Dot(triPos2 - triPos3, spherePos - triPos1) -
+				vector3Dot(triPos1 - triPos3, spherePos - triPos1) * vector3Dot(triPos2 - triPos3, spherePos - triPos3) <= 0)
 			{
 				area = 6;
 
 				float num =
-					Vector3::dot(triPos1 - triPos3, spherePos - triPos3) /
-					(Vector3::dot(triPos1 - triPos3, spherePos - triPos3) - Vector3::dot(triPos1 - triPos3, spherePos - triPos1));
+					vector3Dot(triPos1 - triPos3, spherePos - triPos3) /
+					(vector3Dot(triPos1 - triPos3, spherePos - triPos3) - vector3Dot(triPos1 - triPos3, spherePos - triPos1));
 				closest.x = triPos3.x + num * (triPos1.x - triPos3.x);
 				closest.y = triPos3.y + num * (triPos1.y - triPos3.y);
 				closest.z = triPos3.z + num * (triPos1.z - triPos3.z);
@@ -341,16 +324,16 @@ bool LibMath::sphereAndTryangleCorrision
 	if (area == 0)
 	{
 		float va =
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos2) * Vector3::dot(triPos3 - triPos1, spherePos - triPos3) -
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos3) * Vector3::dot(triPos3 - triPos1, spherePos - triPos2);
+			vector3Dot(triPos2 - triPos1, spherePos - triPos2) * vector3Dot(triPos3 - triPos1, spherePos - triPos3) -
+			vector3Dot(triPos2 - triPos1, spherePos - triPos3) * vector3Dot(triPos3 - triPos1, spherePos - triPos2);
 
 		float vb =
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos3) * Vector3::dot(triPos3 - triPos1, spherePos - triPos1) -
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos1) * Vector3::dot(triPos3 - triPos1, spherePos - triPos3);
+			vector3Dot(triPos2 - triPos1, spherePos - triPos3) * vector3Dot(triPos3 - triPos1, spherePos - triPos1) -
+			vector3Dot(triPos2 - triPos1, spherePos - triPos1) * vector3Dot(triPos3 - triPos1, spherePos - triPos3);
 
 		float vc =
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos1) * Vector3::dot(triPos3 - triPos1, spherePos - triPos2) -
-			Vector3::dot(triPos2 - triPos1, spherePos - triPos2) * Vector3::dot(triPos3 - triPos1, spherePos - triPos1);
+			vector3Dot(triPos2 - triPos1, spherePos - triPos1) * vector3Dot(triPos3 - triPos1, spherePos - triPos2) -
+			vector3Dot(triPos2 - triPos1, spherePos - triPos2) * vector3Dot(triPos3 - triPos1, spherePos - triPos1);
 
 		float denom = 1.0f / (va + vb + vc);
 		float v = vb * denom;
@@ -366,7 +349,7 @@ bool LibMath::sphereAndTryangleCorrision
 
 	//最接近点 - 球の中心
 	Vector3 v = closest - spherePos;
-	float f = Vector3::dot(v, v);
+	float f = vector3Dot(v, v);
 	if (f > r * r) return false;
 
 	if (hitPos)*hitPos = closest;
@@ -392,7 +375,7 @@ bool LibMath::lineSegmentAndBoardCollision
 	v2 = linePos2 - pointPos;
 
 	//線が板ポリと並行ではないかを調べる(平行だったらreturn)
-	if (Vector3::dot(v1, normal) * Vector3::dot(v2, normal) > 0)
+	if (vector3Dot(v1, normal) * vector3Dot(v2, normal) > 0)
 		return false;
 
 
@@ -401,14 +384,14 @@ bool LibMath::lineSegmentAndBoardCollision
 	//線の端 - ポリゴンの角
 	v1 = linePos1 - vertexPoint[0];
 	v2 = linePos2 - vertexPoint[0];
-	/*v1 = Vector3::normalize(v1);
-	v2 = Vector3::normalize(v2);*/
+	/*v1 = normalize(v1);
+	v2 = normalize(v2);*/
 
 
 	//ここがおかしい?
 
 	////線の端から板ポリまでの距離を求める
-	//float d = Vector3::dot(normal,pointPos);
+	//float d = dot(normal,pointPos);
 	//float kyori1;//平面から、linePos1までの距離
 	//kyori1 = 
 	//	abs(normal.x * linePos1.x + normal.y * linePos1.y +normal.z * linePos1.z + d) / 
@@ -423,16 +406,16 @@ bool LibMath::lineSegmentAndBoardCollision
 	Vector3 vec2 = linePos2 - pointPos;
 
 	float kyori1 = 0;
-	if (normal.x != 0)kyori1 += abs(Vector3::dot(normal, vec1)) / abs(normal.x);
-	if (normal.y != 0)kyori1 += abs(Vector3::dot(normal, vec1)) / abs(normal.y);
-	if (normal.z != 0)kyori1 += abs(Vector3::dot(normal, vec1)) / abs(normal.z);
+	if (normal.x != 0)kyori1 += abs(vector3Dot(normal, vec1)) / abs(normal.x);
+	if (normal.y != 0)kyori1 += abs(vector3Dot(normal, vec1)) / abs(normal.y);
+	if (normal.z != 0)kyori1 += abs(vector3Dot(normal, vec1)) / abs(normal.z);
 	float kyori2 = 0;
-	if (normal.x != 0)kyori2 += abs(Vector3::dot(normal, vec2)) / abs(normal.x);
-	if (normal.y != 0)	kyori2 += abs(Vector3::dot(normal, vec2)) / abs(normal.y);
-	if (normal.z != 0)	kyori2 += abs(Vector3::dot(normal, vec2)) / abs(normal.z);
+	if (normal.x != 0)kyori2 += abs(vector3Dot(normal, vec2)) / abs(normal.x);
+	if (normal.y != 0)	kyori2 += abs(vector3Dot(normal, vec2)) / abs(normal.y);
+	if (normal.z != 0)	kyori2 += abs(vector3Dot(normal, vec2)) / abs(normal.z);
 
-	/*float kyori1 = abs(Vector3::dot(normal, linePos1)) / abs(normal.x);
-	float kyori2 = abs(Vector3::dot(normal, linePos2)) / abs(normal.x);*/
+	/*float kyori1 = abs(dot(normal, linePos1)) / abs(normal.x);
+	float kyori2 = abs(dot(normal, linePos2)) / abs(normal.x);*/
 
 	//内分比
 	float a;
@@ -463,15 +446,15 @@ bool LibMath::lineSegmentAndBoardCollision
 	bool equal1 = false;//板ポリと法線が同じかどうか
 
 	//同じだったらtrue
-	if (difference(normal.x, normal1.x, 0.0001, 0) &&
-		difference(normal.y, normal1.y, 0.0001, 0) &&
-		difference(normal.z, normal1.z, 0.0001, 0) &&
-		difference(normal.x, normal2.x, 0.0001, 0) &&
-		difference(normal.y, normal2.y, 0.0001, 0) &&
-		difference(normal.z, normal2.z, 0.0001, 0) &&
-		difference(normal.x, normal3.x, 0.0001, 0) &&
-		difference(normal.y, normal3.y, 0.0001, 0) &&
-		difference(normal.z, normal3.z, 0.0001, 0))
+	if (difference(normal.x, normal1.x, 0.0001f) &&
+		difference(normal.y, normal1.y, 0.0001f) &&
+		difference(normal.z, normal1.z, 0.0001f) &&
+		difference(normal.x, normal2.x, 0.0001f) &&
+		difference(normal.y, normal2.y, 0.0001f) &&
+		difference(normal.z, normal2.z, 0.0001f) &&
+		difference(normal.x, normal3.x, 0.0001f) &&
+		difference(normal.y, normal3.y, 0.0001f) &&
+		difference(normal.z, normal3.z, 0.0001f))
 	{
 		equal1 = true;
 	}
@@ -486,15 +469,15 @@ bool LibMath::lineSegmentAndBoardCollision
 	bool equal2 = false;//板ポリと法線が同じかどうか
 
 	//同じ(誤差0.0001以内)だったらtrue
-	if (difference(normal.x, normal1.x, 0.0001, 0) &&
-		difference(normal.y, normal1.y, 0.0001, 0) &&
-		difference(normal.z, normal1.z, 0.0001, 0) &&
-		difference(normal.x, normal2.x, 0.0001, 0) &&
-		difference(normal.y, normal2.y, 0.0001, 0) &&
-		difference(normal.z, normal2.z, 0.0001, 0) &&
-		difference(normal.x, normal3.x, 0.0001, 0) &&
-		difference(normal.y, normal3.y, 0.0001, 0) &&
-		difference(normal.z, normal3.z, 0.0001, 0))
+	if (difference(normal.x, normal1.x, 0.0001f) &&
+		difference(normal.y, normal1.y, 0.0001f) &&
+		difference(normal.z, normal1.z, 0.0001f) &&
+		difference(normal.x, normal2.x, 0.0001f) &&
+		difference(normal.y, normal2.y, 0.0001f) &&
+		difference(normal.z, normal2.z, 0.0001f) &&
+		difference(normal.x, normal3.x, 0.0001f) &&
+		difference(normal.y, normal3.y, 0.0001f) &&
+		difference(normal.z, normal3.z, 0.0001f))
 	{
 		equal2 = true;
 	}
@@ -502,35 +485,28 @@ bool LibMath::lineSegmentAndBoardCollision
 	//どちらかが同じ(板ポリの中)だったらifの中に
 	if (equal1 || equal2)
 	{
-		//衝突位置を返す
-		if (crossPosition) *crossPosition = crossPos;
+		
 
 		return true;
 	}
 
 	//衝突位置と中心が同じだったらヒット
-	if (difference(crossPos.x, pointPos.x, 0.01, 0) &&
-		difference(crossPos.y, pointPos.y, 0.01, 0) && 
-		difference(crossPos.z, pointPos.z, 0.01, 0) )
+	if (difference(crossPos.x, pointPos.x, 0.01f) &&
+		difference(crossPos.y, pointPos.y, 0.01f) && 
+		difference(crossPos.z, pointPos.z, 0.01f) )
 	{
-		//衝突位置を返す
-		if (crossPosition) *crossPosition = crossPos;
-
 		return true;
 	}
 
-#ifdef _DEBUG
 	//衝突位置を返す
-	if (crossPosition) *crossPosition = crossPos;
-#endif // _DEBUG
-
+	if (crossPosition) *crossPosition = { 0,0,0 };
 
 	return false;
 
 }
 
 
-bool LibMath::layAndPlaneCollision
+bool LibMath::rayAndPlaneCollision
 (
 	Vector3 layStartPos,
 	Vector3 layDirection,
@@ -542,11 +518,11 @@ bool LibMath::layAndPlaneCollision
 {
 	const float epsilon = 1.0e-5f;
 
-	float d1 = Vector3::dot(normal, layDirection);
+	float d1 = vector3Dot(normal, layDirection);
 
 	if (d1 > -epsilon) return false;
 
-	float d2 = Vector3::dot(normal, layStartPos);
+	float d2 = vector3Dot(normal, layStartPos);
 
 	float dist = d2 - planeDistance;
 
@@ -560,7 +536,7 @@ bool LibMath::layAndPlaneCollision
 	return true;
 }
 
-bool LibMath::layAndTryangleCollision
+bool LibMath::rayAndTryangleCollision
 (
 	Vector3 layStartPos,
 	Vector3 layDirection,
@@ -577,9 +553,9 @@ bool LibMath::layAndTryangleCollision
 	Vector3 interPlane;
 
 	planeNormal = normal;
-	planeDistance = Vector3::dot(normal, triPos1);
+	planeDistance = vector3Dot(normal, triPos1);
 
-	if (!layAndPlaneCollision(layStartPos, layDirection, planeNormal, planeDistance, distance, &interPlane))return false;
+	if (!rayAndPlaneCollision(layStartPos, layDirection, planeNormal, planeDistance, distance, &interPlane))return false;
 
 
 
@@ -589,27 +565,27 @@ bool LibMath::layAndTryangleCollision
 
 	Vector3 pt_p0 = triPos1 - interPlane;
 	Vector3 p0_p1 = triPos2 - triPos1;
-	m = Vector3::cross(pt_p0, p0_p1);
-	if (Vector3::dot(m, normal) < -epsilon)return false;
+	m = vector3Cross(pt_p0, p0_p1);
+	if (vector3Dot(m, normal) < -epsilon)return false;
 
 
 	Vector3 pt_p1 = triPos2 - interPlane;
 	Vector3 p1_p2 = triPos3 - triPos2;
-	m = Vector3::cross(pt_p1, p1_p2);
-	if (Vector3::dot(m, normal) < -epsilon)return false;
+	m = vector3Cross(pt_p1, p1_p2);
+	if (vector3Dot(m, normal) < -epsilon)return false;
 
 
 	Vector3 pt_p2 = triPos3 - interPlane;
 	Vector3 p2_p0 = triPos1 - triPos3;
-	m = Vector3::cross(pt_p2, p2_p0);
-	if (Vector3::dot(m, normal) < -epsilon)return false;
+	m = vector3Cross(pt_p2, p2_p0);
+	if (vector3Dot(m, normal) < -epsilon)return false;
 
 	if (crossPos)*crossPos = interPlane;
 	return true;
 
 }
 
-bool LibMath::layAndSphereCollision
+bool LibMath::rayAndSphereCollision
 (
 	Vector3 layStartPos,
 	Vector3 layDirection,
@@ -620,8 +596,8 @@ bool LibMath::layAndSphereCollision
 )
 {
 	Vector3 m = layStartPos - spherePos;
-	float b = Vector3::dot(m, layDirection);
-	float c = Vector3::dot(m, m) - r * r;
+	float b = vector3Dot(m, layDirection);
+	float c = vector3Dot(m, m) - r * r;
 	if (c > 0.0f && b > 0.0f)return false;
 
 	float discr = b * b - c;

@@ -20,8 +20,8 @@ protected:
 	//移動速度
 	Vector3 speed;
 
-	//生死フラグ 
-	bool isDead;
+	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
+	bool eraseManager;
 
 
 #pragma region 判定データ
@@ -39,6 +39,9 @@ public:
 	Object();
 	//デストラクタ
 	virtual ~Object();
+
+	//初期化
+	virtual void initialize();
 	//処理
 	virtual void update();
 	//描画処理
@@ -50,23 +53,32 @@ public:
 	/// <param name="object">相手オブジェトのポインタ</param>
 	/// <param name="collisionType">自分のどの判定に当たったか</param>
 	/// <param name="arrayNum">何個目の判定に当たったか</param>
-	virtual void hit(Object* object,const CollisionType& collisionType,const int& arrayNum);
+	virtual void hit
+	(
+		const Object *const  object,
+		const CollisionType& collisionType,
+		const int& arrayNum
+	);
 
-	bool getIsDead();
-	void initializeObject();
+	virtual void* getPtr();
+
+	//オブジェクトマネージャーから削除するか同課のフラグを返す
+	bool getEraseManager();
+
+	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
+	void objectInitialize();
 	
 	Vector3 getPosition() { return position; };
 
+	//判定用関数
 	CollisionFlag getCollisionFlag();
 	std::vector<SphereData> getSphereData();
-	std::vector<LineSegmentData>& getLineSegmentData();
+	std::vector<LineSegmentData> getLineSegmentData();
 	std::vector<PlaneData> getPlaneData();
-	std::vector<BoardData>& getBoardData();
+	std::vector<BoardData> getBoardData();
+	Vector3& getLineSegmentHitPosition(const int & num);
+	Vector3& getBoardHitPosition(const int & num);
 
-	/*void setLineSegmentDataHitPos(const Vector3& pos, const int& arrayNum);
-	void setBoardDataHitPos(const Vector3& pos, const int& arrayNum);*/
-
-	virtual void* getPtr();
 
 	
 };

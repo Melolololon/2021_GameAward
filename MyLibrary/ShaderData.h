@@ -27,10 +27,10 @@ enum DepthMode
 	DEPTH_TRUE,
 };
 
-enum DepthWhite 
+enum AlphaWrite 
 {
-	ALPHA_WIGHT_NONE,
-	ALPHA_WIGHT_TRUE,
+	ALPHA_WRITE_NONE,
+	ALPHA_WRITE_TRUE,
 };
 
 struct PipelineData
@@ -39,7 +39,7 @@ struct PipelineData
 	CullMode cullMode;
 	BlendMode blendMode;
 	DepthMode depthMode;
-	DepthWhite alphaWrite;
+	AlphaWrite alphaWrite;
 };
 
 

@@ -8,8 +8,8 @@ private:
 	PolygonManager();
 	~PolygonManager();
 
-	std::unordered_map<std::string, vertex> verts;
-	std::unordered_map<std::string, heap> heaps;
+	//std::unordered_map<std::string, vertex> verts;
+	/*std::unordered_map<std::string, heap> heaps;*/
 	std::unordered_map<std::string, sprite> sprites;
 	std::unordered_map<std::string, texture> textures;
 	std::unordered_map<std::string, point>points;
@@ -21,16 +21,16 @@ public:
 	static PolygonManager* getInstance();
 
 
-	void addPolygonVertex(std::string keyName, int* vert);
-	void deletePolygonVertex(std::string keyName);
-	int* getPolygonVertex(std::string keyName);
-	void clearPolygonVertex();//clearだと指定できなくてバッファ削除できない
+	//void addPolygonVertex(std::string keyName, int* vert);
+	//void deletePolygonVertex(std::string keyName);
+	//int* getPolygonVertex(std::string keyName);
+	//void clearPolygonVertex();//clearだと指定できなくてバッファ削除できない
 
 
-	void addPolygonHeap(std::string keyName, int* heap);
+	/*void addPolygonHeap(std::string keyName, int* heap);
 	void deletePolygonHeap(std::string keyName);
 	int* getPolygonHeap(std::string keyName);
-	void clearPolygonHeap();
+	void clearPolygonHeap();*/
 
 	void addSprite(std::string keyName, sprite sprite);
 	void deleteSprite(std::string keyName);

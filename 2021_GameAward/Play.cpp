@@ -1,11 +1,18 @@
 #include "Play.h"
 #include"ObjectManager.h"
 
+#pragma region オブジェクト
+#include"Player.h"
+
+#pragma endregion
+
+
 Play::Play(){}
 Play::~Play(){}
 
 void Play::initialize()
 {
+	ObjectManager::getInstance()->addObject(new Player());
 }
 
 void Play::update()
@@ -16,6 +23,7 @@ void Play::update()
 
 void Play::draw()
 {
+	ObjectManager::getInstance()->draw();
 }
 
 void Play::end()

@@ -2,17 +2,20 @@
 #include"DirectInput.h"
 
 
-float fNum = 40;
 MouseCursor::MouseCursor()
 {
-	nearPos = 0;
-	farPos = 0;
-	position2D = 0;
+	
 
 }
 
 MouseCursor::~MouseCursor(){}
 
+void MouseCursor::initialize()
+{
+	nearPos = 0;
+	farPos = 0;
+	position2D = 0;
+}
 
 void MouseCursor::update()
 {

@@ -5,16 +5,31 @@
 #include<wrl.h>
 using namespace Microsoft::WRL;
 
+
+
+
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報
 //頂点バッファで送る情報
+#pragma region 頂点構造体
+
+
+
 struct Vertex
 {
 	DirectX::XMFLOAT3 pos;
-
 	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
 	DirectX::XMFLOAT3 normal;
 };
+
+struct OBJAnimationVertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 normal;
+	UINT boneNumber;
+};
+
 
 struct SpriteVertex
 {
@@ -22,7 +37,7 @@ struct SpriteVertex
 	DirectX::XMFLOAT2 uv;
 };
 
-
+ 
 struct PointVertex
 {
 	DirectX::XMFLOAT3 pos;
@@ -31,55 +46,7 @@ struct PointVertex
 
 };
 
-//定数バッファで送る情報
-//色を今より明るくしたい場合、元々白い状態の画像を用意
-//それで面倒だったらaddとsubを実装する
-//だが、加算差算乗算の順により結果が変わるから注意
-struct ConstBufferData
-{
-	DirectX::XMFLOAT4 color;
-	DirectX::XMMATRIX mat;
-	DirectX::XMMATRIX normalMat;
-	DirectX::XMFLOAT4 mulColor;
-	DirectX::XMFLOAT4 addColor;
-	DirectX::XMFLOAT4 subColor;
-	float ex;
-	DirectX::XMMATRIX worldMat;
-};
 
-struct CommonConstData
-{
-	//float4にするかパック詰めないと送れないからfloat4にしてる
-	DirectX::XMFLOAT4 lightColor;
-	DirectX::XMFLOAT4 light;
-	DirectX::XMFLOAT4 cameraPos;
-	DirectX::XMMATRIX lightMat;//ライト用行列
-};
-
-struct SpriteConstBufferData
-{
-	DirectX::XMFLOAT4 color;
-	DirectX::XMFLOAT4 addColor;
-	DirectX::XMMATRIX mat;
-};
-
-struct PointConstBufferData
-{
-	DirectX::XMMATRIX mat;
-	DirectX::XMMATRIX billboardMat;
-};
-
-//テクスチャバッファで送る情報
-struct RGBA
-{
-	unsigned char r, g, b, a;
-};
-
-
-#pragma endregion
-
-
-#pragma region モデル類
 
 #pragma region PMD
 
@@ -106,6 +73,51 @@ struct PMDHeader
 };
 #pragma endregion
 
+#pragma endregion
+
+
+//定数バッファで送る情報
+//色を今より明るくしたい場合、元々白い状態の画像を用意
+//それで面倒だったらaddとsubを実装する
+//だが、加算差算乗算の順により結果が変わるから注意
+#pragma region 定数構造体
+
+struct ConstBufferData
+{
+	DirectX::XMFLOAT4 color;
+	DirectX::XMMATRIX mat;
+	DirectX::XMMATRIX normalMat;
+	DirectX::XMFLOAT4 mulColor;
+	DirectX::XMFLOAT4 addColor;
+	DirectX::XMFLOAT4 subColor;
+	float ex;
+	DirectX::XMMATRIX worldMat;
+	DirectX::XMMATRIX boneMat[20];
+};
+
+struct CommonConstData
+{
+	//float4にするかパック詰めないと送れない(float4以外の変数と次の変数の間に入り込む)からfloat4にしてる
+	DirectX::XMFLOAT4 lightColor;
+	DirectX::XMFLOAT4 light;
+	DirectX::XMFLOAT4 cameraPos;
+	DirectX::XMMATRIX lightMat;//ライト用行列
+};
+
+struct SpriteConstBufferData
+{
+	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT4 addColor;
+	DirectX::XMMATRIX mat;
+};
+
+struct PointConstBufferData
+{
+	DirectX::XMMATRIX mat;
+	DirectX::XMMATRIX billboardMat;
+};
+
+
 #pragma region OBJ
 
 
@@ -121,7 +133,7 @@ struct Material
 	Material()
 	{
 		ambient = { 0.3f,0.3f,0.3f };
-		diffuse = { 0.0f,0.0f,0.0f };
+		diffuse = { 1.0f,1.0f,1.0f};
 		specular = { 0.0f,0.0f,0.0f };
 		alpha = 1.0f;
 	}
@@ -137,6 +149,18 @@ struct MaterialConstBuffData
 	float alpha;
 };
 #pragma endregion
+
+
+
+#pragma endregion
+
+#pragma region テクスチャ
+
+//テクスチャバッファで送る情報
+struct RGBA
+{
+	unsigned char r, g, b, a;
+};
 
 #pragma endregion
 
@@ -341,11 +365,4 @@ struct CameraData
 //	ComPtr<ID3DBlob> errorBlob;
 //};
 #pragma endregion
-
-
-struct CreateNumberSet
-{
-	int polyNum;
-	int despNum;
-};
 

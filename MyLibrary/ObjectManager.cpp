@@ -28,7 +28,8 @@ void ObjectManager::initialize()
 
 	checkMouseCollision = false;
 	cameraPosition = 0.0f;
-	cursor = std::unique_ptr<MouseCursor>(new MouseCursor());
+	cursor = std::make_unique<MouseCursor>();
+	cursor.get()->initialize();
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
@@ -38,18 +39,21 @@ void ObjectManager::update()
 {
 #pragma region update
 	//カーソルアップデート
-	cursor.get()->update();
-	
+	if (cursor) 
+	{
+		cursor.get()->update();
+		nearPos = cursor.get()->getNearPos();
+		farPos = cursor.get()->getFarPos();
+	}
 	//拡張for文は、途中でサイズ変えるとダメ
 	//変数用意してsize入れるか、一時的に別の配列に入れて、update終了後に追加
 	std::vector<Object*>o = objects;
-	for (auto& obj : o) 
+	for (auto& obj : o)
 	{
 		obj->update();
 	}
 
-	nearPos = cursor.get()->getNearPos();
-	farPos = cursor.get()->getFarPos();
+	
 #pragma endregion
 
 #pragma region collision
@@ -83,9 +87,9 @@ void ObjectManager::update()
 				sphere1 = o1->getSphereData();
 				sphere2 = o2->getSphereData();
 
-				for (auto& c1 : sphere1)
+				for (const auto& c1 : sphere1)
 				{
-					for (auto& c2 : sphere2)
+					for (const auto& c2 : sphere2)
 					{
 						if (LibMath::sphereCollision
 						(
@@ -123,9 +127,9 @@ void ObjectManager::update()
 
 				segmentData1 = o1->getLineSegmentData();
 				boardData1 = o2->getBoardData();
-				for (auto& c1 : segmentData1)
+				for (const auto& c1 : segmentData1)
 				{
-					for (auto& c2 : boardData1)
+					for (const auto& c2 : boardData1)
 					{
 						std::vector<Vector3>p(4);
 						p[0] = c2.leftDownPos;
@@ -146,8 +150,8 @@ void ObjectManager::update()
 						))
 						{
 
-							c1.hitPos = hitPos;
-							c2.hitPos = hitPos;
+							o1->getLineSegmentHitPosition(collisionCount[0]) = hitPos;
+							o2->getBoardHitPosition(collisionCount[1]) = hitPos;
 
 							o1->hit(o2, CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
 							o2->hit(o1, CollisionType::COLLISION_BOARD, collisionCount[1]);
@@ -174,7 +178,7 @@ void ObjectManager::update()
 			if(o1->getCollisionFlag().board)
 			{
 				boardData1 = o1->getBoardData();
-				for (auto& c1 : boardData1)
+				for (const auto& c1 : boardData1)
 				{
 					std::vector<Vector3>p(4);
 					p[0] = c1.leftDownPos;
@@ -192,7 +196,7 @@ void ObjectManager::update()
 						&hitPos
 						))
 					{
-						c1.hitPos = hitPos;
+						o1->getBoardHitPosition(collisionCount[0]) = hitPos;
 					
 						o1->hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
 					}
@@ -218,10 +222,10 @@ void ObjectManager::draw()
 
 void ObjectManager::isDeadCheck()
 {
-	int size = objects.size();
-	for (int i = 0; i < size; i++)
+	size_t size = objects.size();
+	for (size_t i = 0; i < size; i++)
 	{
-		if (objects[i]->getIsDead())
+		if (objects[i]->getEraseManager())
 		{
 			delete objects[i];
 			objects.erase(objects.begin() + i);
@@ -246,14 +250,16 @@ void ObjectManager::reserveObjectArray(const int& reserveNum)
 
 void ObjectManager::addObject(Object* object)
 {
+
 	if (object)
 	{
-		object->initializeObject();
+		object->objectInitialize();
+		object->initialize();
 		objects.push_back(object);
 	}
 
 	if (addObjectSort != OBJECT_SORT_NONE)
-		setObjectSort(addObjectSort, addObjectSortOrderType);
+		objectSort(addObjectSort, addObjectSortOrderType);
 }
 
 void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort, const bool& orderType)
@@ -262,7 +268,7 @@ void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort,
 	addObjectSortOrderType = orderType;
 }
 
-void ObjectManager::setObjectSort(const ObjectManager::ObjectSort& sort, const bool& orderType)
+void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool& orderType)
 {
 	switch (sort)
 	{

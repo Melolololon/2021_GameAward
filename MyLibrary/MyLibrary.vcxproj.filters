@@ -78,9 +78,6 @@
     <ClCompile Include="Color.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="LibMath.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
     <ClCompile Include="ObjectManager.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
-    <ClCompile Include="PolygonManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="PipelineManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -113,6 +107,21 @@
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelBone.cpp">
+      <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +144,7 @@
     <FxCompile Include="PostEffectPixelShader.hlsl" />
     <FxCompile Include="ToonPixelShader.hlsl" />
     <FxCompile Include="ToonVertexShader.hlsl" />
+    <FxCompile Include="ObjAnimationVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectInput.h">
@@ -161,9 +171,6 @@
     <ClInclude Include="CreatePolygon.h">
       <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="DrawGraphicStruct.h">
-      <Filter>ヘッダー ファイル\Struct</Filter>
-    </ClInclude>
     <ClInclude Include="Library.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -182,14 +189,8 @@
     <ClInclude Include="Color.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="LibMath.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
@@ -206,9 +207,6 @@
     <ClInclude Include="Audio.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="PolygonManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="PipelineManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -216,6 +214,24 @@
       <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="MouseCursor.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelBone.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
       <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>

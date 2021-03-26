@@ -4,7 +4,6 @@ class Play :
 	public Scene
 {
 private:
-
 public:
 	Play();
 	~Play();

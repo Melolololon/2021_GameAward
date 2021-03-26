@@ -5,6 +5,10 @@
 
 #include"Play.h"
 
+#pragma region Object
+#include"Player.h"
+#pragma endregion
+
 
 Game::Game() {}
 
@@ -35,18 +39,21 @@ void Game::initialize()
 {
 #pragma region ライブラリ初期化_設定
 	Library::initialize(1280, 720, { 0,0,0,255 }, L"Game");
-	Library::setCameraNearAndFar(0.1, 100);
+	Library::setCameraNearAndFar(0.1f, 100.0f);
+	Library::setCamera({ 0,10,-20 }, { 0,0,0 }, { 0,1,0 });
 	Library::setFramesPerSecond60(true);
+#pragma endregion
+
+
+#pragma region モデル読み込み
+	Player::loadModel();
+
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
 	ObjectManager::getInstance()->initialize();
-	ObjectManager::getInstance()->reserveObjectArray(100);
+	ObjectManager::getInstance()->reserveObjectArray(200);
 	CollisionFlag f;
-	f.board = false;
-	f.lineSegment = false;
-	f.plane = false;
-	f.ray = false;
 	f.sphere = true;
 	ObjectManager::getInstance()->setCollisionFlag3D(f);
 
@@ -54,10 +61,6 @@ void Game::initialize()
 	SceneManager::getInstace()->addScene("Play", new Play());
 #pragma endregion
 
-#pragma region バッファ関係
-
-	
-#pragma endregion
 
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 #include"Vector.h"
+#include"Matrix.h"
+#include"Quaternion.h"
 #define _USE_MATH_DEFINES
 #include<math.h>
 #include"Library.h"
@@ -15,14 +17,13 @@ private:
 public:
 
 	/// <summary>
-	/// num1とnum2の値の差を求め、trueかfalseを返します
+	/// num1とnum2の値の差を求め、差 <= 基準の値だったらtrueを返します
 	/// </summary>
 	/// <param name="num1">値1</param>
 	/// <param name="num2">値2</param>
 	/// <param name="difference">基準の値</param>
-	/// <param name="type">0 基準の値以内でtrue  1 基準の値以上でtrue</param>
 	/// <returns></returns>
-	static bool difference(float num1, float num2, float difference, int type);
+	static bool difference(const float& num1, const float& num2, const float& difference);
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
@@ -55,13 +56,14 @@ public:
 	static float calcDistance3D(Vector3 pos1, Vector3 pos2);
 
 	/// <summary>
-	/// 別のオブジェクトへのベクトルを取得します(正規化は行う)
+	/// vex1からvec2のベクトルを取得します(正規化は行う)
 	/// </summary>
 	/// <param name="myPos"></param>
 	/// <param name="otherPos"></param>
 	/// <returns></returns>
-	static Vector3 otherVector(Vector3 myPos, Vector3 otherPos);
+	static Vector3 otherVector(const Vector3& vec1, const Vector3& vec2);
 
+#pragma region vector2
 
 	/// <summary>
 	/// 2つのベクトルがなす角度を求めます
@@ -69,21 +71,21 @@ public:
 	/// <param name="v1"></param>
 	/// <param name="v2"></param>
 	/// <returns></returns>
-	static float twoVector2Angle(Vector2 v1, Vector2 v2);
+	static float twoVector2Angle(const Vector2& v1, const Vector2& v2);
 
 	/// <summary>
 	/// ベクトルを角度に変換します
 	/// </summary>
 	/// <param name="v"></param>
 	/// <returns></returns>
-	static float vecto2rToAngle(Vector2 v);
+	static float vecto2ToAngle(const Vector2& v);
 
 	/// <summary>
 	/// 角度をVector2に変換します
 	/// </summary>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	static Vector2 angleToVector2(float angle);
+	static Vector2 angleToVector2(const float& angle);
 
 	/// <summary>
 	/// Vector2のベクトルを指定した角度に応じて回転させます
@@ -91,7 +93,21 @@ public:
 	/// <param name="v"></param>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	static Vector2 rotateVector2(Vector2 v, float angle);
+	static Vector2 rotateVector2(const Vector2& v, const float& angle);
+#pragma endregion
+
+#pragma region Vector3
+	/// <summary>
+	/// ベクトルを回転させます
+	/// </summary>
+	/// <param name="rotateV"></param>
+	/// <param name="vec">軸のベクトル</param>
+	/// <param name="angle"></param>
+	/// <returns></returns>
+	Vector3 rotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 当たり判定
@@ -201,7 +217,7 @@ public:
 	/// <param name="distance"></param>
 	/// <param name="crossPos"></param>
 	/// <returns></returns>
-	static bool layAndPlaneCollision
+	static bool rayAndPlaneCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -211,7 +227,7 @@ public:
 		Vector3* crossPos
 	);
 
-	static bool layAndTryangleCollision
+	static bool rayAndTryangleCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -226,7 +242,7 @@ public:
 	/// <summary>
 	/// 半直線と球の当たり判定
 	/// </summary>
-	static bool layAndSphereCollision
+	static bool rayAndSphereCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
