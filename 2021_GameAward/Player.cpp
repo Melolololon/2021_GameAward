@@ -43,7 +43,7 @@ void Player::initialize()
 
 	boneMovePos.resize(initialBonePos.size(), 0);
 	twistAngles.resize(initialBonePos.size(), 0);
-	tienTimer.resize(initialBonePos.size() - 1, 0);
+	tienTimer = 0;
 
 	//twistAngles = 0.0f;
 
@@ -52,9 +52,9 @@ void Player::initialize()
 
 
 	//遅延フレーム
-	tienFream = 5;
+	tienFream = 4;
     //スピード
-	rotateSpeed = 5;
+	rotateSpeed = 2;
 }
 
 void Player::update()
@@ -65,43 +65,47 @@ void Player::update()
 
 
 	//回転
-	if (DirectInput::keyState(DIK_SPACE))
-		twistAngles[0] += rotateSpeed;
+	if (DirectInput::keyState(DIK_SPACE) &&
+		!rotateFlag)
+		rotateFlag = true;
 	
-
-	//前と違ったら動かす
-	for (int i = 0; i < boneNum - 1; i++) 
+	//回転してたら入る
+	if (rotateFlag) 
 	{
-		if (twistAngles[i] != twistAngles[i + 1])
-			tienTimer[i]++;
+		//時間計測
+		tienTimer++;
+
+		//1回転したらストップ
+		if (twistAngles[0] < 360)
+			twistAngles[0] += rotateSpeed;
 	}
-	
-	
 
-	for (int i = 1; i < boneNum; i++) 
+	for(int i = 1; i < boneNum; i++)
 	{
-		//規定時間を超えたら入る
-		if (tienTimer[i - 1] >= tienFream)
+		//遅延終了時間になったら入る
+		if (tienTimer >= tienFream * i) 
 		{
 			//前と違ったら回転
-			if (twistAngles[i] != twistAngles[i - 1])
+			if (twistAngles[i - 1] != twistAngles[i])
 				twistAngles[i] += rotateSpeed;
-			else //同じだったら回転終了
-			{
-				twistAngles[i] = twistAngles[i - 1];
-				tienTimer[i - 1] = 0;
-			}
+			else//同じだったら代入して誤差をなくし、回転終了
+				twistAngles[i] = twistAngles[i] >= twistAngles[i - 1] ? twistAngles[i - 1] : twistAngles[i];
 		}
 	}
 
-	/*if (twistAngles[0] == twistAngles[twistAngles.size() - 1]) 
+	//全部回転し終わったら入る
+	if(twistAngles[0] == twistAngles[twistAngles.size() - 1] &&
+		rotateFlag)
 	{
-		tienTimer = 0;
-		rotateFlag = false;
-	}*/
-		
 
-		
+		rotateFlag = false;
+		tienTimer = 0;
+
+		for (auto& a : twistAngles)
+			a = 0;
+	}
+
+
 		
 		for (int i = 0; i < boneNum; i++)
 		Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]), 0,0 }, i, modelData, 0);

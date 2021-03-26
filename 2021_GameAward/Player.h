@@ -30,7 +30,7 @@ private:
 
 	//‚Ð‚Ë‚èŠp“x
 	std::vector<int>twistAngles;
-	std::vector<UINT>tienTimer;
+	UINT tienTimer;
 
 	//float twistAngles;
 #pragma endregion
