@@ -1,5 +1,7 @@
 #include "Player.h"
 
+//ファイルから読みとってstaticに入れられるか確かめる
+
 ModelData Player::modelData;
 int Player::createCount;
 const int Player::CREATE_NUM = 1;
@@ -16,7 +18,7 @@ Player::~Player()
 void Player::loadModel()
 {
 	std::string mtl;
-	
+
 	modelData.key = "player";
 	Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
 	Library::loadOBJMaterial("Resources/Model/", mtl, 1, modelData);
@@ -33,11 +35,11 @@ void Player::setHeapNum()
 void Player::initialize()
 {
 	setHeapNum();
-	
+
 	position = 0.0f;
 	velocity = 1.0f;
 	speed = 0.5f;
-	
+
 	collisionFlag.sphere = true;
 	//sphereData.resize(initialBonePos.size());
 
@@ -47,14 +49,16 @@ void Player::initialize()
 
 	//twistAngles = 0.0f;
 
-	//遅延中かどうか
+	//回転中かどうか
 	rotateFlag = false;
 
 
 	//遅延フレーム
 	tienFream = 4;
-    //スピード
+	//スピード
 	rotateSpeed = 2;
+
+	pushRotateAngle = 360;
 }
 
 void Player::update()
@@ -63,27 +67,28 @@ void Player::update()
 
 #pragma region 回転処理
 
-
 	//回転
-	if (DirectInput::keyState(DIK_SPACE) &&
-		!rotateFlag)
+	if (DirectInput::keyTrigger(DIK_SPACE))
 		rotateFlag = true;
-	
+
 	//回転してたら入る
-	if (rotateFlag) 
+	if (rotateFlag)
 	{
 		//時間計測
 		tienTimer++;
 
-		//1回転したらストップ
-		if (twistAngles[0] < 360)
+		//1回転するまで回す
+		if (twistAngles[0] < pushRotateAngle &&
+			pushRotateAngle >= 0 ||
+			twistAngles[0] > pushRotateAngle &&
+			pushRotateAngle <= -1)
 			twistAngles[0] += rotateSpeed;
 	}
 
-	for(int i = 1; i < boneNum; i++)
+	for (int i = 1; i < boneNum; i++)
 	{
 		//遅延終了時間になったら入る
-		if (tienTimer >= tienFream * i) 
+		if (tienTimer >= tienFream * i)
 		{
 			//前と違ったら回転
 			if (twistAngles[i - 1] != twistAngles[i])
@@ -94,20 +99,17 @@ void Player::update()
 	}
 
 	//全部回転し終わったら入る
-	if(twistAngles[0] == twistAngles[twistAngles.size() - 1] &&
+	if (twistAngles[0] == twistAngles[twistAngles.size() - 1] &&
 		rotateFlag)
 	{
-
+		//リセット
 		rotateFlag = false;
 		tienTimer = 0;
-
 		for (auto& a : twistAngles)
 			a = 0;
 	}
 
-
-		
-		for (int i = 0; i < boneNum; i++)
+	for (int i = 0; i < boneNum; i++)
 		Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]), 0,0 }, i, modelData, 0);
 #pragma endregion
 

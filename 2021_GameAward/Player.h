@@ -1,6 +1,6 @@
 #pragma once
 #include"Object.h"
-class Player:public Object
+class Player :public Object
 {
 private:
 
@@ -10,13 +10,13 @@ private:
 	void setHeapNum();
 	int heapNum;
 
-	
+
 
 
 
 	//ボーン座標(objに記述されてる位置。あたり判定用。これ+bonePosが判定に使用する位置)
 	static std::vector<Vector3> initialBonePos;
-	
+
 	//ボーン座標(initialからどのくらい動いてるか)
 	std::vector<Vector3> boneMovePos;
 
@@ -24,14 +24,16 @@ private:
 #pragma region 回転
 	//遅延中かどうか
 	bool rotateFlag;
-
-	UINT tienFream;
+	//回転速度
 	int rotateSpeed;
-
 	//ひねり角度
 	std::vector<int>twistAngles;
+	//遅延させるためのタイマー
 	UINT tienTimer;
-
+	//遅延させる時間
+	UINT tienFream;
+	//1回押した時の回転する角度
+	int pushRotateAngle;
 	//float twistAngles;
 #pragma endregion
 
