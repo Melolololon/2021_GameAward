@@ -1,10 +1,12 @@
 #include "Player.h"
 
+#include<fstream>
+
 //ファイルから読みとってstaticに入れられるか確かめる
 
 ModelData Player::modelData;
 int Player::createCount;
-const int Player::CREATE_NUM = 1;
+const int Player::CREATE_NUMBER = 1;
 std::vector<Vector3> Player::initialBonePos;
 
 Player::Player()
@@ -25,11 +27,23 @@ void Player::loadModel()
 	initialBonePos = Library::getBonePosition(modelData);
 }
 
+
+void Player::loadParam()
+{
+	std::ifstream playerParam;
+	//playerParam.open("");
+
+
+
+	//playerParam.close();
+}
+
+
 void Player::setHeapNum()
 {
 	heapNum = createCount;
 	createCount++;
-	createCount = createCount >= CREATE_NUM ? 0 : createCount;
+	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
 void Player::initialize()
@@ -44,73 +58,70 @@ void Player::initialize()
 	//sphereData.resize(initialBonePos.size());
 
 	boneMovePos.resize(initialBonePos.size(), 0);
+	
+	//回転のregionの数値を子の関数でセットする予定
+	loadParam();
+
+#pragma region 回転
+	rotateFlag = false;
 	twistAngles.resize(initialBonePos.size(), 0);
 	tienTimer = 0;
-
-	//twistAngles = 0.0f;
-
-	//回転中かどうか
-	rotateFlag = false;
-
-
-	//遅延フレーム
-	tienFream = 4;
-	//スピード
-	rotateSpeed = 2;
-
+	tienTime = 4;
+	rotateSpeed = 7;//1フレームに回転する角度
 	pushRotateAngle = 360;
+#pragma endregion
 }
 
 void Player::update()
 {
-	UINT boneNum = static_cast<UINT>(initialBonePos.size());
+	//ボーン数
+	const UINT boneNum = static_cast<UINT>(initialBonePos.size());
+
+#pragma region 移動処理
+
+#pragma endregion
 
 #pragma region 回転処理
 
-	//回転
 	if (DirectInput::keyTrigger(DIK_SPACE))
 		rotateFlag = true;
 
-	//回転してたら入る
-	if (rotateFlag)
+	if (rotateFlag) 
 	{
-		//時間計測
-		tienTimer++;
-
-		//1回転するまで回す
-		if (twistAngles[0] < pushRotateAngle &&
-			pushRotateAngle >= 0 ||
-			twistAngles[0] > pushRotateAngle &&
-			pushRotateAngle <= -1)
-			twistAngles[0] += rotateSpeed;
-	}
-
-	for (int i = 1; i < boneNum; i++)
-	{
-		//遅延終了時間になったら入る
-		if (tienTimer >= tienFream * i)
+		for (int i = 0; i < boneNum; i++)
 		{
-			//前と違ったら回転
-			if (twistAngles[i - 1] != twistAngles[i])
-				twistAngles[i] += rotateSpeed;
-			else//同じだったら代入して誤差をなくし、回転終了
-				twistAngles[i] = twistAngles[i] >= twistAngles[i - 1] ? twistAngles[i - 1] : twistAngles[i];
+			//設定回転量を超えてなかったら入る
+			if (twistAngles[i] < pushRotateAngle &&
+				pushRotateAngle >= 0 ||
+				twistAngles[i] > pushRotateAngle &&
+				pushRotateAngle <= -1)
+			{
+				//遅延終了時間になったら回転
+				if (tienTimer >= tienTime * i)
+					twistAngles[i] += rotateSpeed;
+			}
+			//超えたら設定量を代入し、回転を止める
+			else
+				twistAngles[i] = pushRotateAngle;
+
+			//角度セット
+			Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]), 0,0 }, i, modelData, 0);
 		}
+
+		//全部回転し終わったら入る
+		if (twistAngles[boneNum - 1] == pushRotateAngle)
+		{
+			//リセット
+			rotateFlag = false;
+			tienTimer = 0;
+			for (auto& a : twistAngles)
+				a = 0;
+		}
+
+		//回転してたらカウント
+		tienTimer++;
 	}
 
-	//全部回転し終わったら入る
-	if (twistAngles[0] == twistAngles[twistAngles.size() - 1] &&
-		rotateFlag)
-	{
-		//リセット
-		rotateFlag = false;
-		tienTimer = 0;
-		for (auto& a : twistAngles)
-			a = 0;
-	}
-
-	for (int i = 0; i < boneNum; i++)
-		Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]), 0,0 }, i, modelData, 0);
 #pragma endregion
 
 }
@@ -134,4 +145,3 @@ void* Player::getPtr()
 {
 	return this;
 }
-

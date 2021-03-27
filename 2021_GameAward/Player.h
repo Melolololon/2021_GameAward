@@ -4,13 +4,18 @@ class Player :public Object
 {
 private:
 
+#pragma region モデル関係
+
 	static ModelData modelData;
 	static int createCount;
-	static const int CREATE_NUM;
-	void setHeapNum();
+	static const int CREATE_NUMBER;
 	int heapNum;
 
-
+	/// <summary>
+	/// 変数heapNum関係。initialize時に必ず呼び出す。
+	/// </summary>
+	void setHeapNum();
+#pragma endregion
 
 
 
@@ -24,17 +29,16 @@ private:
 #pragma region 回転
 	//遅延中かどうか
 	bool rotateFlag;
-	//回転速度
+	//回転速度(1フレームに回転する角度)
 	int rotateSpeed;
 	//ひねり角度
 	std::vector<int>twistAngles;
-	//遅延させるためのタイマー
+	//回転を遅延させるためのタイマー
 	UINT tienTimer;
-	//遅延させる時間
-	UINT tienFream;
-	//1回押した時の回転する角度
+	//遅延させる時間(次のボーンを回転させるフレーム)
+	UINT tienTime;
+	//回転する角度(回転した角度がこれに達したら回転終了)
 	int pushRotateAngle;
-	//float twistAngles;
 #pragma endregion
 
 
@@ -52,6 +56,15 @@ public:
 	)override;
 	void* getPtr()override;
 
+	/// <summary>
+	/// モデル読み込み
+	/// </summary>
 	static void loadModel();
+	
+	/// <summary>
+	/// 数値読み込み
+	/// </summary>
+	void loadParam();
+
 };
 
