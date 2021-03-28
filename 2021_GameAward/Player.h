@@ -44,9 +44,9 @@ private:
 	//遅延中かどうか
 	bool rotateFlag;
 	//回転速度(1フレームに回転する角度)
-	int rotateSpeed;
+	float rotateSpeed;
 	//ひねり角度
-	std::vector<int>twistAngles;
+	std::vector<float>twistAngles;
 	//回転を遅延させるためのタイマー
 	UINT tienTimer;
 	//遅延させる時間(次のボーンを回転させるフレーム)

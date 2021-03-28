@@ -76,7 +76,7 @@ void Player::initialize()
 	twistAngles.resize(boneNum);
 	tienTimer = 0;
 	tienTime = 4;
-	rotateSpeed = 2;//1フレームに回転する角度
+	rotateSpeed = 1.23f;//1フレームに回転する角度
 	pushRotateAngle = 360;
 #pragma endregion
 
@@ -85,7 +85,6 @@ void Player::initialize()
 #pragma endregion
 
 }
-float ang = 0.0f;
 void Player::update()
 {
 	//ボーン数
@@ -190,7 +189,7 @@ void Player::update()
 
 	//角度セット
 	for(UINT i = 0; i < boneNum;i++)
-		Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]) ,-moveRotateAngle[i],0 }, i, modelData, 0);
+		Library::setOBJBoneAngle({twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 	
 	Library::setPosition(position, modelData, heapNum);
 }
