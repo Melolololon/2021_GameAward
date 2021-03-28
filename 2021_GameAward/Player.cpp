@@ -128,22 +128,22 @@ void Player::update()
 					forwardVector.y * forwardVector.y +
 					forwardVector.z * forwardVector.z
 				);
-				boneMovePos[i] += forwardVector / length * speed;
-
+				
 				moveRotateAngle[i] = LibMath::angleConversion(1, atan2( forwardVector.z, forwardVector.x));
 				moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
 
 
 				float size = initialBonePos[i - 1].x - initialBonePos[i].x;
 				//ãﬂÇ√Ç≠ÉoÉOëŒçÙÇÃif?
-				//if (length >= size)
+				if (length >= size) 
+				{
+					boneMovePos[i] += forwardVector / length * speed;
 					Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+				}
 			}
 
 			//ç¿ïWÇë„ì¸
 			bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
-
-
 		}
 	}
 #pragma endregion
