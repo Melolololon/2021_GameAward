@@ -24,7 +24,21 @@ private:
 
 	//ƒ{[ƒ“À•W(initial‚©‚ç‚Ç‚Ì‚­‚ç‚¢“®‚¢‚Ä‚é‚©)
 	std::vector<Vector3> boneMovePos;
+	std::vector<float> moveRotateAngle;
 
+	//initial&movePos
+	std::vector<Vector3> bonePos;
+
+
+
+#pragma region ˆÚ“®
+	
+	
+	//Œü‚«‚Ì‰ñ“]—Ê?
+	float velRot;
+
+
+#pragma endregion
 
 #pragma region ‰ñ“]
 	//’x‰„’†‚©‚Ç‚¤‚©

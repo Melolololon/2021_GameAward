@@ -1,4 +1,5 @@
 #include "Player.h"
+#include"LibMath.h"
 
 #include<fstream>
 
@@ -48,37 +49,103 @@ void Player::setHeapNum()
 
 void Player::initialize()
 {
+	//ボーン数
+	const UINT boneNum = static_cast<UINT>(initialBonePos.size());
+
 	setHeapNum();
 
-	position = 0.0f;
+	position = {-15.0f,0,0};
 	velocity = 1.0f;
-	speed = 0.5f;
+	speed = 0.2f;
 
 	collisionFlag.sphere = true;
 	//sphereData.resize(initialBonePos.size());
 
-	boneMovePos.resize(initialBonePos.size(), 0);
+	boneMovePos.resize(boneNum,0.0f);
+	moveRotateAngle.resize(boneNum,0.0f);
+
+	bonePos.resize(boneNum);
+	for (int i = 0; i < boneNum; i++)
+		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
 	
 	//回転のregionの数値を子の関数でセットする予定
 	loadParam();
 
 #pragma region 回転
 	rotateFlag = false;
-	twistAngles.resize(initialBonePos.size(), 0);
+	twistAngles.resize(boneNum);
 	tienTimer = 0;
 	tienTime = 4;
-	rotateSpeed = 7;//1フレームに回転する角度
+	rotateSpeed = 2;//1フレームに回転する角度
 	pushRotateAngle = 360;
 #pragma endregion
-}
 
+#pragma region 移動
+	velRot = 0.0f;
+#pragma endregion
+
+}
+float ang = 0.0f;
 void Player::update()
 {
 	//ボーン数
 	const UINT boneNum = static_cast<UINT>(initialBonePos.size());
 
 #pragma region 移動処理
+	if (DirectInput::keyState(DIK_Z)) 
+	{
 
+		if (DirectInput::keyState(DIK_LEFT))
+			velRot += 5.0f;
+		if (DirectInput::keyState(DIK_RIGHT))
+			velRot -= 5.0f;
+
+		float radVelRot = LibMath::angleConversion(0, velRot);
+		velocity = { cos(radVelRot) ,0,sin(radVelRot) };
+		float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
+		velocity /= length;
+
+		for (UINT i = 0; i < boneNum; i++)
+		{
+
+			if (i == 0)
+			{
+				//回転角度
+				moveRotateAngle[i] = velRot;
+				boneMovePos[i] += velocity * speed;
+
+				//初期位置からどのくらい動いているかをセット
+				Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			}
+			else
+			{
+				//前のボーンへのベクトル
+				Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
+
+				float length = sqrt
+				(
+					forwardVector.x * forwardVector.x +
+					forwardVector.y * forwardVector.y +
+					forwardVector.z * forwardVector.z
+				);
+				boneMovePos[i] += forwardVector / length * speed;
+
+				moveRotateAngle[i] = LibMath::angleConversion(1, atan2( forwardVector.z, forwardVector.x));
+				moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
+
+
+				float size = initialBonePos[i - 1].x - initialBonePos[i].x;
+				//近づくバグ対策のif?
+				//if (length >= size)
+					Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			}
+
+			//座標を代入
+			bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
+
+
+		}
+	}
 #pragma endregion
 
 #pragma region 回転処理
@@ -88,7 +155,7 @@ void Player::update()
 
 	if (rotateFlag) 
 	{
-		for (int i = 0; i < boneNum; i++)
+		for (UINT i = 0; i < boneNum; i++)
 		{
 			//設定回転量を超えてなかったら入る
 			if (twistAngles[i] < pushRotateAngle &&
@@ -103,9 +170,6 @@ void Player::update()
 			//超えたら設定量を代入し、回転を止める
 			else
 				twistAngles[i] = pushRotateAngle;
-
-			//角度セット
-			Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]), 0,0 }, i, modelData, 0);
 		}
 
 		//全部回転し終わったら入る
@@ -124,6 +188,11 @@ void Player::update()
 
 #pragma endregion
 
+	//角度セット
+	for(UINT i = 0; i < boneNum;i++)
+		Library::setOBJBoneAngle({ static_cast<float>(twistAngles[i]) ,-moveRotateAngle[i],0 }, i, modelData, 0);
+	
+	Library::setPosition(position, modelData, heapNum);
 }
 
 void Player::draw()

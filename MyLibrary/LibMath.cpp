@@ -5,10 +5,7 @@
 float LibMath::angleConversion(int paterrn, float angle)
 {
 	if (paterrn == 0)
-	{
 		return (float)(angle * (M_PI / 180));
-	}
-
 	return (float)(angle * (180 / M_PI));
 
 }
