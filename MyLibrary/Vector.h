@@ -53,6 +53,8 @@ struct Vector2
 
 #pragma region ä÷êî
 
+Vector2 vector2Normalize(const Vector2& vector);
+
  float vector2Dot(const Vector2& vector1, const Vector2& vector2);
 #pragma endregion
 

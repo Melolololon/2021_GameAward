@@ -1955,7 +1955,6 @@ VertexType DirectX12::loadOBJVertex
 	float upy = 0;
 	float downx = 0;
 	float downy = 0;
-
 	for (int i = 0; i < vertices[key].size(); i++)
 	{
 		for (int j = 0; j < vertices[key][i].size(); j++)

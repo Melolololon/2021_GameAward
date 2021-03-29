@@ -33,7 +33,7 @@ int Library::refReat;
 DWORD Library::startProsessTime;
 DWORD Library::nowTime;
 
-std::vector<std::tuple<ModelData, int>> Library::drawStacModelData;
+std::vector<std::tuple<ModelData, int>> Library::modelDatas;
 
 LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -1264,6 +1264,7 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 
 #pragma region アニメーション
 
+
 std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
 {
 	std::vector<DirectX::XMFLOAT3>getVector = dx12->getBonePosition(modelData.key);
@@ -1277,7 +1278,6 @@ std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
 	}
 	return returnVector;
 }
-
 #pragma endregion
 
 

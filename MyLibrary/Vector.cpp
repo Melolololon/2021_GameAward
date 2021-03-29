@@ -119,6 +119,13 @@ bool Vector2::operator!=(const Vector2& vector)
 
 #pragma region ŠÖ”
 
+Vector2 vector2Normalize(const Vector2& vector)
+{
+	if (vector.x == 0 && vector.y == 0 )return { 0,0 };
+	float size = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y ));
+	return{ vector.x / size ,vector.y / size };
+}
+
 
 /// <summary>
 /// “àÏ‚ğ‹‚ß‚Ü‚·

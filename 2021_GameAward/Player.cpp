@@ -2,6 +2,7 @@
 #include"LibMath.h"
 
 #include"ValueLoader.h"
+#include"XInputManager.h"
 
 #include<fstream>
 
@@ -57,7 +58,7 @@ void Player::initialize()
 
 
 	position = v3Map["position"];
-	velocity = 0.0f;
+	velocity = {1.0f,0.0f,0.0f};
 	speed = fMap["speed"];
 
 	collisionFlag.sphere = true;
@@ -92,15 +93,44 @@ void Player::update()
 
 #pragma region 移動_移動時の回転処理
 
-	if (DirectInput::keyState(DIK_LEFT))
-		velRot += 5.0f;
-	if (DirectInput::keyState(DIK_RIGHT))
-		velRot -= 5.0f;
+#pragma region オオイシ移動
 
-	float radVelRot = LibMath::angleConversion(0, velRot);
+	//if (DirectInput::keyState(DIK_LEFT))
+	//	velRot += 5.0f;
+	//if (DirectInput::keyState(DIK_RIGHT))
+	//	velRot -= 5.0f;
+
+
+
+	/*float radVelRot = LibMath::angleConversion(0, velRot);
 	velocity = { cos(radVelRot) ,0,sin(radVelRot) };
 	float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
 	velocity /= length;
+*/
+
+#pragma endregion
+
+#pragma region Unity移動
+	previousRot = velRot;
+	velRot = XInputManager::leftStickAngle(1);
+
+
+
+	if (velRot != -1)
+	{
+
+		float radVelRot = LibMath::angleConversion(0, velRot);
+		velocity = { cos(radVelRot) ,0,sin(radVelRot) };
+		float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
+		velocity /= length;
+	}
+	else
+		velRot = previousRot;
+
+#pragma endregion
+
+
+
 
 	for (UINT i = 0; i < boneNum; i++)
 	{

@@ -34,7 +34,7 @@ private:
 	//Œü‚«‚Ì‰ñ“]—Ê?
 	float velRot;
 
-
+	float previousRot;
 #pragma endregion
 
 #pragma region ‰ñ“]

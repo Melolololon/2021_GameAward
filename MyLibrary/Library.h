@@ -73,7 +73,7 @@ private:
 
 	//描画用(これにモデルデータ入れて、カメラから遠い順に並び替えて、これを拡張forで回して描画コマンドをセットすることで、
     //関数の呼び出し順にかかわらず、αブレンドが適切に行うことができる)
-	static std::vector<std::tuple<ModelData,int>>drawStacModelData;
+	static std::vector<std::tuple<ModelData,int>>modelDatas;
 
 #pragma region プライベート関数
 	static bool checkSetKeyName(const std::string& key);
@@ -764,6 +764,7 @@ public:
 #pragma region アニメーション
 	
 
+
 	/// <summary>
 	/// ボーンを回転させるときの基準座標をセットします。ボーンを操作してモデルを動かすとき、この座標を基準に回転します。
 	/// </summary>
@@ -970,19 +971,13 @@ public:
 #pragma endregion
 
 #pragma region アニメーション
-
-	/*/// <summary>
-	/// ボーンの座標を、posで上書きします
+	/// <summary>
+	/// ボーンの座標を取得します
 	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="boneNum"></param>
 	/// <param name="modelData"></param>
-	static void setBonePosition(const Vector3& pos, const UINT& boneNum, const ModelData& modelData);*/
-
-
-	//行列で回転させたボーンも取得できたほうがいい?
-	//これvectorじゃなくて1つずつ取得できるようにする?
+	/// <returns></returns>
 	static std::vector<Vector3> getBonePosition(const ModelData& modelData);
+	
 
 #pragma endregion
 
