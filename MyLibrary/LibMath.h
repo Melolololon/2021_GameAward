@@ -47,6 +47,52 @@ public:
 
 #pragma region ベクトル
 
+
+#pragma region vector2
+
+	/// <summary>
+	/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
+	/// </summary>
+	/// <param name="vector"></param>
+	/// <param name="point"></param>
+	/// <returns></returns>
+	static char pointLeftRightCheck(const Vector2& vector, const Vector2& point);
+
+	/// <summary>
+	/// 2つのベクトルがなす角度を求めます
+	/// </summary>
+	/// <param name="v1"></param>
+	/// <param name="v2"></param>
+	/// <returns></returns>
+	static float twoVector2Angle(const Vector2& v1, const Vector2& v2);
+
+	/// <summary>
+	/// ベクトルを角度に変換します
+	/// </summary>
+	/// <param name="v"></param>
+	/// <param name="v3">3次元座標系かどうか</param>
+	/// <returns></returns>
+	static float vecto2ToAngle(const Vector2& v,const bool& v3 );
+
+	/// <summary>
+	/// 角度をVector2に変換します
+	/// </summary>
+	/// <param name="angle"></param>
+	/// <param name="v3">3次元座標系かどうか</param>
+	/// <returns></returns>
+	static Vector2 angleToVector2(const float& angle, const bool& v3);
+
+	/// <summary>
+	/// Vector2のベクトルを指定した角度に応じて回転させます
+	/// </summary>
+	/// <param name="v"></param>
+	/// <param name="angle"></param>
+	/// <returns></returns>
+	static Vector2 rotateVector2(const Vector2& v, const float& angle);
+#pragma endregion
+
+#pragma region Vector3
+
 	/// <summary>
 	/// 2つの座標の距離を取得します
 	/// </summary>
@@ -63,40 +109,6 @@ public:
 	/// <returns></returns>
 	static Vector3 otherVector(const Vector3& vec1, const Vector3& vec2);
 
-#pragma region vector2
-
-	/// <summary>
-	/// 2つのベクトルがなす角度を求めます
-	/// </summary>
-	/// <param name="v1"></param>
-	/// <param name="v2"></param>
-	/// <returns></returns>
-	static float twoVector2Angle(const Vector2& v1, const Vector2& v2);
-
-	/// <summary>
-	/// ベクトルを角度に変換します
-	/// </summary>
-	/// <param name="v"></param>
-	/// <returns></returns>
-	static float vecto2ToAngle(const Vector2& v);
-
-	/// <summary>
-	/// 角度をVector2に変換します
-	/// </summary>
-	/// <param name="angle"></param>
-	/// <returns></returns>
-	static Vector2 angleToVector2(const float& angle);
-
-	/// <summary>
-	/// Vector2のベクトルを指定した角度に応じて回転させます
-	/// </summary>
-	/// <param name="v"></param>
-	/// <param name="angle"></param>
-	/// <returns></returns>
-	static Vector2 rotateVector2(const Vector2& v, const float& angle);
-#pragma endregion
-
-#pragma region Vector3
 	/// <summary>
 	/// ベクトルを回転させます
 	/// </summary>

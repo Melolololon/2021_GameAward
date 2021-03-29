@@ -57,7 +57,7 @@ void Player::initialize()
 #pragma endregion
 
 
-	position = v3Map["position"];
+	position = {0.0f,0.0f,0.0f};
 	velocity = {1.0f,0.0f,0.0f};
 	speed = fMap["speed"];
 
@@ -111,7 +111,7 @@ void Player::update()
 
 #pragma endregion
 
-#pragma region UnityˆÚ“®
+#pragma region ƒCƒ`ƒJƒˆÚ“®
 	previousRot = velRot;
 
 	
@@ -134,6 +134,14 @@ void Player::update()
 
 #pragma endregion
 
+#pragma region UnityˆÚ“®
+	//velRot = DirectInput::getMouseAngle();
+
+	//float radVelRot = LibMath::angleConversion(0, velRot);
+	//velocity = { cos(radVelRot) ,0,sin(radVelRot) };
+	//float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
+	//velocity /= length;
+#pragma endregion
 
 
 

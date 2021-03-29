@@ -41,6 +41,60 @@ double LibMath::getDoublePI()
 
 #pragma region ƒxƒNƒgƒ‹
 
+
+#pragma region vector2
+char LibMath::pointLeftRightCheck(const Vector2& vector, const Vector2& point)
+{
+	float num = vector2Cross(vector, point);
+
+	if (num > 0)return 1;
+	if (num < 0)return -1;
+	return 0;
+}
+
+float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
+{
+
+	float f = vector2Dot(v1, { v2.x,v2.y });
+	f = std::acos(f);
+	f = angleConversion(1, f);
+
+	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
+	if (v.z < 0)f = 360 - f;
+
+	return f;
+}
+
+float LibMath::vecto2ToAngle(const Vector2& v, const bool& v3)
+{
+	float f = 0.0f;
+	if(v3)
+	f = twoVector2Angle({ 1,0 }, v);
+	else
+		f = twoVector2Angle({ 1,0 }, { v.x,-v.y });
+	return f;
+}
+
+
+Vector2 LibMath::angleToVector2(const float& angle, const bool& v3)
+{
+	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
+
+	if(v3)
+		return { q.x,q.y };
+	return { q.x,-q.y };
+}
+
+
+Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
+{
+	Quaternion q = getRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
+	return { q.x,q.y };
+}
+#pragma endregion
+
+#pragma region Vector3
+
 float LibMath::calcDistance3D(Vector3 pos1, Vector3 pos2)
 {
 	return sqrt
@@ -58,44 +112,6 @@ Vector3 LibMath::otherVector(const Vector3& vec1, const Vector3& vec2)
 	return vector3Normalize(vec);
 }
 
-#pragma region vector2
-
-
-float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
-{
-
-	float f = vector2Dot(v1, v2);
-	f = std::acos(f);
-	f = angleConversion(1, f);
-
-	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
-	if (v.z < 0)f = 360 - f;
-
-	return f;
-}
-
-float LibMath::vecto2ToAngle(const Vector2& v)
-{
-	float f = twoVector2Angle({ 1,0 }, v);
-	return f;
-}
-
-
-Vector2 LibMath::angleToVector2(const float& angle)
-{
-	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
-	return { q.x,q.y };
-}
-
-
-Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
-{
-	Quaternion q = getRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
-	return { q.x,q.y };
-}
-#pragma endregion
-
-#pragma region Vector3
 Vector3 LibMath::rotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
 {
 	Quaternion q = getRotateQuaternion(rotateV, vec, angle);

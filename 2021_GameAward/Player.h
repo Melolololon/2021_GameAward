@@ -76,6 +76,10 @@ public:
 	/// </summary>
 	static void loadModel();
 	
+#pragma region ÉQÉbÉ^Å[
+	Vector3 getHeadPosition() {return initialBonePos[0] + boneMovePos[0] + position; }
+#pragma endregion
+
 
 };
 
