@@ -45,11 +45,11 @@ private:
 	//ひねり角度
 	std::vector<float>twistAngles;
 	//回転を遅延させるためのタイマー
-	UINT tienTimer;
+	int tienTimer;
 	//遅延させる時間(次のボーンを回転させるフレーム)
-	UINT tienTime;
+	int tienTime;
 	//回転する角度(回転した角度がこれに達したら回転終了)
-	int pushRotateAngle;
+	float pushRotateAngle;
 #pragma endregion
 
 #pragma region パラメーター

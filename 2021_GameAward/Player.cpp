@@ -56,14 +56,14 @@ void Player::initialize()
 #pragma endregion
 
 
-	position = {-15.0f,0,0};
-	velocity = 1.0f;
-	speed = 0.2f;
+	position = v3Map["position"];
+	velocity = 0.0f;
+	speed = fMap["speed"];
 
 	collisionFlag.sphere = true;
 	//sphereData.resize(initialBonePos.size());
 
-	hp = 5;
+	hp = iMap["hp"];
 
 	boneMovePos.resize(boneNum, 0.0f);
 	bonePos.resize(boneNum);
@@ -74,9 +74,9 @@ void Player::initialize()
 	rotateFlag = false;
 	twistAngles.resize(boneNum);
 	tienTimer = 0;
-	tienTime = 4;
-	rotateSpeed = 1.23f;//1フレームに回転する角度
-	pushRotateAngle = 360;
+	tienTime = iMap["tienTime"];
+	rotateSpeed = fMap["rotateSpeed"];//1フレームに回転する角度
+	pushRotateAngle = fMap["pushRotateAngle"];
 #pragma endregion
 
 #pragma region 移動
