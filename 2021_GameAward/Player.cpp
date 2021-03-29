@@ -82,6 +82,7 @@ void Player::initialize()
 
 #pragma region ˆÚ“®
 	velRot = 0.0f;
+	previousRot = 0.0f;
 	moveRotateAngle.resize(boneNum, 0.0f);
 #pragma endregion
 
@@ -112,8 +113,12 @@ void Player::update()
 
 #pragma region UnityˆÚ“®
 	previousRot = velRot;
-	velRot = XInputManager::leftStickAngle(1);
 
+	
+	if(XInputManager::getPadConnectedFlag(1))
+		velRot = XInputManager::leftStickAngle(1);
+	else
+		velRot = DirectInput::arrowKeyAngle();
 
 
 	if (velRot != -1)
