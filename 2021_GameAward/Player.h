@@ -22,18 +22,15 @@ private:
 	//ボーン座標(objに記述されてる位置。あたり判定用。これ+bonePosが判定に使用する位置)
 	static std::vector<Vector3> initialBonePos;
 
-	//ボーン座標(initialからどのくらい動いてるか)
-	std::vector<Vector3> boneMovePos;
-	std::vector<float> moveRotateAngle;
-
 	//initial&movePos
 	std::vector<Vector3> bonePos;
 
-
-
 #pragma region 移動
-	
-	
+	//ボーン座標(initialからどのくらい動いてるか)
+	std::vector<Vector3> boneMovePos;
+	//移動による回転量
+	std::vector<float> moveRotateAngle;
+
 	//向きの回転量?
 	float velRot;
 
@@ -53,6 +50,10 @@ private:
 	UINT tienTime;
 	//回転する角度(回転した角度がこれに達したら回転終了)
 	int pushRotateAngle;
+#pragma endregion
+
+#pragma region パラメーター
+	int hp;
 #pragma endregion
 
 
@@ -75,10 +76,6 @@ public:
 	/// </summary>
 	static void loadModel();
 	
-	/// <summary>
-	/// 数値読み込み
-	/// </summary>
-	void loadParam();
 
 };
 
