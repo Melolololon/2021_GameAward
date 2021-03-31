@@ -43,7 +43,7 @@ void Player::setHeapNum()
 void Player::initialize()
 {
 	//ボーン数
-	const UINT boneNum = static_cast<UINT>(initialBonePos.size());
+	const int boneNum = static_cast<int>(initialBonePos.size());
 
 	setHeapNum();
 
@@ -90,7 +90,7 @@ void Player::initialize()
 void Player::update()
 {
 	//ボーン数
-	const UINT boneNum = static_cast<UINT>(initialBonePos.size());
+	const int boneNum = static_cast<int>(initialBonePos.size());
 
 #pragma region 移動_移動時の回転処理
 
@@ -115,15 +115,22 @@ void Player::update()
 	previousRot = velRot;
 
 	
-	if(XInputManager::getPadConnectedFlag(1))
-		velRot = XInputManager::leftStickAngle(1);
+	if (XInputManager::getPadConnectedFlag(1)) 
+	{
+		if (XInputManager::leftStickDown(40, 1) ||
+			XInputManager::leftStickUp(40, 1)||
+			XInputManager::leftStickLeft(40, 1) ||
+			XInputManager::leftStickRight(40, 1))
+		{
+			velRot = XInputManager::leftStickAngle(1);
+		}
+	}
 	else
 		velRot = DirectInput::arrowKeyAngle();
 
 
 	if (velRot != -1)
 	{
-
 		float radVelRot = LibMath::angleConversion(0, velRot);
 		velocity = { cos(radVelRot) ,0,sin(radVelRot) };
 		float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
@@ -145,7 +152,7 @@ void Player::update()
 
 
 
-	for (UINT i = 0; i < boneNum; i++)
+	for (int i = 0; i < boneNum; i++)
 	{
 		if (i == 0)
 		{
@@ -189,12 +196,20 @@ void Player::update()
 
 #pragma region ひねり処理
 
-	if (DirectInput::keyTrigger(DIK_SPACE))
-		rotateFlag = true;
+	if (!XInputManager::getPadConnectedFlag(1)) 
+	{
+		if (DirectInput::keyTrigger(DIK_SPACE))
+			rotateFlag = true;
+	}
+	else
+	if (XInputManager::buttonTrigger(XInputManager::XINPUT_RB_BUTTON,1))
+			rotateFlag = true;
+	
+
 
 	if (rotateFlag) 
 	{
-		for (UINT i = 0; i < boneNum; i++)
+		for (int i = 0; i < boneNum; i++)
 		{
 			//設定回転量を超えてなかったら入る
 			if (twistAngles[i] < pushRotateAngle &&
@@ -229,7 +244,7 @@ void Player::update()
 
 
 	//角度セット
-	for(UINT i = 0; i < boneNum;i++)
+	for(int i = 0; i < boneNum;i++)
 		Library::setOBJBoneAngle({twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 	
 	Library::setPosition(position, modelData, heapNum);

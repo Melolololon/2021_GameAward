@@ -1,5 +1,6 @@
 #include "Play.h"
 #include"ObjectManager.h"
+#include"XInputManager.h"
 
 #pragma region オブジェクト
 
@@ -7,7 +8,12 @@
 #pragma endregion
 
 
-Play::Play(){}
+font font1;
+
+Play::Play()
+{
+	font1 = Library::loadSpriteFont(L"Resources/Texture/Font/font.png", { 14,7 });
+}
 Play::~Play(){}
 
 ModelData m;
@@ -41,6 +47,7 @@ void Play::update()
 	Library::setCamera(cameraPosition, cameraTarget, { 0,1,0 });
 
 #pragma endregion
+
 }
 
 void Play::draw()
@@ -48,6 +55,14 @@ void Play::draw()
 	ObjectManager::getInstance()->draw();
 
 	//Library::drawGraphic(m, 0);
+	if(XInputManager::getPadConnectedFlag(1))
+	Library::drawsSpriteFontString
+	(
+		{ 0,0 }, 
+		{ 30,30 },
+		"StickAngle " + std::to_string(static_cast<int>(XInputManager::leftStickAngle(1))),
+		&font1
+	);
 }
 
 void Play::end()
