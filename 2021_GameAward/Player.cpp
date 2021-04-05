@@ -114,7 +114,6 @@ void Player::update()
 #pragma region イチカワ移動
 	previousRot = velRot;
 
-	
 	if (XInputManager::getPadConnectedFlag(1)) 
 	{
 		if (XInputManager::leftStickDown(40, 1) ||
@@ -191,6 +190,25 @@ void Player::update()
 		//座標を代入
 		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
 	}
+
+
+	//場外防止
+	//if (bonePos[0].x >= 10000.0f ||
+	//	bonePos[0].x <= -10000.0f ||
+	//	bonePos[0].z >= 10000.0f ||
+	//	bonePos[0].z <= -10000.0f)
+	//{
+	//	for (int i = 0; i < boneNum; i++) 
+	//	{
+	//		boneMovePos[i] = 0.0f;
+	//		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
+	//		moveRotateAngle[i] = 0.0f;
+
+	//	}
+	//	velRot = 0.0f;
+	//	previousRot = 0.0f;
+	//}
+
 
 #pragma endregion
 

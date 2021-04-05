@@ -9,10 +9,15 @@
 
 
 font font1;
+pipeline mosaicPL;
+pipeline superMosaicPL;
 
 Play::Play()
 {
 	font1 = Library::loadSpriteFont(L"Resources/Texture/Font/font.png", { 14,7 });
+
+	mosaicPL = Library::createUserPostEffectPipelineState({L"LittleMosaicPixelShader.hlsl","PSmain","ps_5_0"});
+	superMosaicPL = Library::createUserPostEffectPipelineState({L"LostMosaicPixelShader.hlsl","PSmain","ps_5_0"});
 }
 Play::~Play(){}
 
@@ -63,6 +68,47 @@ void Play::draw()
 		"StickAngle " + std::to_string(static_cast<int>(XInputManager::leftStickAngle(1))),
 		&font1
 	);
+
+	Library::drawsSpriteFontString
+	(
+		{ 0,40 },
+		{ 30,30 },
+		"Z_Key Mosaic",
+		&font1
+	);
+
+	Library::drawsSpriteFontString
+	(
+		{ 0,80 },
+		{ 30,30 },
+		"X_Key SuperMosaic" ,
+		&font1
+	);
+
+	Library::drawsSpriteFontString
+	(
+		{ 800,0 },
+		{ 30,30 },
+		"LeftStick Move",
+		&font1
+	);
+
+	Library::drawsSpriteFontString
+	(
+		{ 800,40 },
+		{ 30,30 },
+		"RB Rotation",
+		&font1
+	);
+
+	if(DirectInput::keyState(DIK_Z))
+		Library::setPostEffectPipeline(mosaicPL);
+	else
+	if(DirectInput::keyState(DIK_X))
+		Library::setPostEffectPipeline(superMosaicPL);
+	else
+		Library::setPostEffectPipeline(0);
+
 }
 
 void Play::end()
