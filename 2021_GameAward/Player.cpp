@@ -15,6 +15,7 @@ std::vector<Vector3> Player::initialBonePos;
 
 Player::Player()
 {
+	initialize();
 }
 
 Player::~Player()

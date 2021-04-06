@@ -321,7 +321,6 @@ void ObjectManager::addObject(Object* object)
 	if (object)
 	{
 		object->objectInitialize();
-		object->initialize();
 		addObjects.push_back(object);
 	}
 
