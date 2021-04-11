@@ -7,6 +7,9 @@
 
 #pragma region Object
 #include"Player.h"
+#include"PlayerBullet.h"
+#include"TargetObject.h"
+#include"Block.h"
 #pragma endregion
 
 
@@ -47,7 +50,9 @@ void Game::initialize()
 
 #pragma region モデル読み込み
 	Player::loadModel();
-
+	TargetObject::loadModel();
+	Block::loadModel();
+	PlayerBullet::loadModel();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定

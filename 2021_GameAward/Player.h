@@ -52,6 +52,13 @@ private:
 	float pushRotateAngle;
 #pragma endregion
 
+#pragma region 弾
+
+	int shotTimer;
+	int shotTime;
+
+#pragma endregion
+
 #pragma region パラメーター
 	int hp;
 #pragma endregion

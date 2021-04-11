@@ -788,7 +788,7 @@ void Library::drawGraphic
 	modelDatas.push_back(mData);*/
 
 	dx12->map(modelData, number);
-	dx12->setCmdList(modelData.key, number);
+	dx12->setCmdList(modelData, number);
 }
 
 void Library::drawSprite
