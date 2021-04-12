@@ -47,6 +47,7 @@ void Game::initialize()
 
 #pragma region ƒ‚ƒfƒ‹“Ç‚İ‚İ
 	Player::loadModel();
+	Enemy::loadModel();
 
 #pragma endregion
 

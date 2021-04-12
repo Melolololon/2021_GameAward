@@ -1,4 +1,5 @@
 #include "Play.h"
+#include "MoveEnemy.h"
 #include"ObjectManager.h"
 #include"XInputManager.h"
 
@@ -25,7 +26,10 @@ ModelData m;
 void Play::initialize()
 {
 	player = new Player();
+	enemy = new MoveEnemy();
+	enemy->setPPlayer(player);
 	ObjectManager::getInstance()->addObject(player);
+	ObjectManager::getInstance()->addObject(enemy);
 
 	m.key = "fierd";
 	Library::createBoard({ 1000,1000 }, m);

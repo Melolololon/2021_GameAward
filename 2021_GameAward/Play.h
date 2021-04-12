@@ -1,11 +1,13 @@
 #pragma once
 #include <Scene.h>
 #include"Player.h"
+#include"Enemy.h"
 class Play :
 	public Scene
 {
 private:
 	Player* player;
+	Enemy* enemy;
 
 #pragma region ƒJƒƒ‰
 	Vector3 cameraPosition;
