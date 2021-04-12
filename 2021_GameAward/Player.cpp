@@ -3,8 +3,12 @@
 
 #include"ValueLoader.h"
 #include"XInputManager.h"
+#include"ObjectManager.h"
+
+#include"PlayerBullet.h"
 
 #include<fstream>
+
 
 //ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚Ý‚Æ‚Á‚Ästatic‚É“ü‚ê‚ç‚ê‚é‚©Šm‚©‚ß‚é
 
@@ -12,6 +16,7 @@ ModelData Player::modelData;
 int Player::createCount;
 const int Player::CREATE_NUMBER = 1;
 std::vector<Vector3> Player::initialBonePos;
+
 
 Player::Player()
 {
@@ -85,6 +90,11 @@ void Player::initialize()
 	velRot = 0.0f;
 	previousRot = 0.0f;
 	moveRotateAngle.resize(boneNum, 0.0f);
+#pragma endregion
+
+#pragma region ’e‚Ì”­ŽË
+	shotTime = 60 * 1;
+	shotTimer = 0;
 #pragma endregion
 
 }
@@ -267,6 +277,41 @@ void Player::update()
 		Library::setOBJBoneAngle({twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 	
 	Library::setPosition(position, modelData, heapNum);
+
+
+#pragma region ’e‚ð”­ŽË
+
+	auto shotBullet = [&](const UINT& arrayNum)
+	{
+		Vector3 normalizeForwordVector = vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
+		Quaternion q = getRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
+		ObjectManager::getInstance()->addObject(new PlayerBullet(bonePos[arrayNum], { q.x,0,q.z }));
+	};
+
+	if (shotTimer >= shotTime)
+		shotTimer = 0;
+	if (twistAngles[boneNum - 1] == 0)
+		shotTimer++;
+
+	if (shotTimer >= shotTime)
+	{
+		for (int i = 1; i < boneNum - 1; i++)
+		{
+			shotBullet(i);
+		}
+	}
+
+	for (int i = 1; i < boneNum - 1; i++)
+	{
+		if (twistAngles[i] >= 180 &&
+			twistAngles[i] <= 180 + rotateSpeed)
+			shotBullet(i);
+	}
+
+
+#pragma endregion
+
+
 }
 
 void Player::draw()

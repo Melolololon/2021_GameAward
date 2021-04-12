@@ -3429,13 +3429,21 @@ void DirectX12::deleteSprite(int sprite)
 #pragma region 描画関数
 
 //バッファをセット
-void DirectX12::setCmdList(const std::string& key,  int number)
+void DirectX12::setCmdList(const ModelData& modelData, int number)
 {
 	//if ( despNum >= 0 && number >= 0)
 	{
+		//パイプライン誤セット防止
+		int pNum = pipelineNum;
+		if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION &&
+			pipelineNum == PIPELINE_OBJ_ANIMATION)
+		{
+			pNum = PIPELINE_NORMAL;
+		}
+
 		cmdList->SetGraphicsRootSignature(rootSignature.Get());
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		cmdList->SetPipelineState(pipelineStates[pipelineNum].Get());
+		cmdList->SetPipelineState(pipelineStates[pNum].Get());
 
 		std::vector<ID3D12DescriptorHeap*> ppHeaps;
 
@@ -3476,12 +3484,12 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 		//if (polyDatas[key].dimention == Dimension::dimention3D)//3D
 		{
 
-			ppHeaps.push_back(basicHeaps[key].Get());
+			ppHeaps.push_back(basicHeaps[modelData.key].Get());
 			cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+				basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 				0,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -3490,34 +3498,34 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 
 
 			//共通
-			handleNum = static_cast<int>(textureBufferSet[key].textureBuff.size());
+			handleNum = static_cast<int>(textureBufferSet[modelData.key].textureBuff.size());
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+				basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 				handleNum,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
 			cmdList->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
 
 			//頂点バッファ分ループ
-			for (int i = 0; i < vertexBufferSet[key].size(); i++)
+			for (int i = 0; i < vertexBufferSet[modelData.key].size(); i++)
 			{
 				handleNum = 0;
 
 				//マテリアル名がobjに書かれてるのにmtl読まなかった場合、最初のテクスチャが選ばれる
-				for (int j = 0; j < materials[key].size(); j++)
+				for (int j = 0; j < materials[modelData.key].size(); j++)
 				{
 					//マテリアル紐づけ
-					if (vertexBufferSet[key][i].materialName == materials[key][j].materialName)handleNum = j;
+					if (vertexBufferSet[modelData.key][i].materialName == materials[modelData.key][j].materialName)handleNum = j;
 				}
 
-				cmdList->IASetIndexBuffer(&indexBufferSet[key][i].indexBufferView);
-				cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet[key][i].vertexBufferView);
+				cmdList->IASetIndexBuffer(&indexBufferSet[modelData.key][i].indexBufferView);
+				cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet[modelData.key][i].vertexBufferView);
 
 				//テクスチャ
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+					basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 					handleNum,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -3525,12 +3533,12 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 
 				//定数バッファセット
 				handleNum = 0;
-				handleNum += static_cast<int>(textureBufferSet[key].textureBuff.size()) + 1;//テクスチャと共通分ずらす
-				handleNum += static_cast<int>(constBufferSet[key][number].constBuffer.size()) * number;//オブジェクトの場所までずらす
+				handleNum += static_cast<int>(textureBufferSet[modelData.key].textureBuff.size()) + 1;//テクスチャと共通分ずらす
+				handleNum += static_cast<int>(constBufferSet[modelData.key][number].constBuffer.size()) * number;//オブジェクトの場所までずらす
 
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+					basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 					handleNum,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -3539,15 +3547,15 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 				//ユーザー定数セット
 
 				//要素数を超えてアクセスしないようにするためのif
-				if (heapTags[key].size() > handleNum + 1)
+				if (heapTags[modelData.key].size() > handleNum + 1)
 				{
 					//ユーザー定数があったら、セットする
-					if (heapTags[key][handleNum + 1] == USER_CONST_BUFFER)
+					if (heapTags[modelData.key][handleNum + 1] == USER_CONST_BUFFER)
 					{
 						handleNum++;
 						gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 						(
-							basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+							basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 							handleNum,
 							dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 						);
@@ -3556,15 +3564,15 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 				}
 
 				//マテリアルセット
-				if (heapTags[key].size() > handleNum + 1)
+				if (heapTags[modelData.key].size() > handleNum + 1)
 				{
 					//マテリアルがあったら、テクスチャ分ずらして、マテリアル定数をセット
-					if (heapTags[key][handleNum + 1] == MATERIAL_CONST_BUFFER)
+					if (heapTags[modelData.key][handleNum + 1] == MATERIAL_CONST_BUFFER)
 					{
 						handleNum += i + 1;
 						gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 						(
-							basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
+							basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
 							handleNum,
 							dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 						);
@@ -3573,7 +3581,7 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 				}
 
 				//描画
-				cmdList->DrawIndexedInstanced(static_cast<UINT>(indices[key][i].size()), 1, 0, 0, 0);
+				cmdList->DrawIndexedInstanced(static_cast<UINT>(indices[modelData.key][i].size()), 1, 0, 0, 0);
 
 			}
 
@@ -3583,14 +3591,9 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 }
 
 //Map処理
-void DirectX12::map(const ModelData& modelData,int number )
+void DirectX12::map(const ModelData& modelData, int number)
 {
-	//パイプライン誤セット防止
-	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION &&
-		pipelineNum == PIPELINE_OBJ_ANIMATION)
-	{
-		pipelineNum = PIPELINE_NORMAL;
-	}
+
 
 	//constBufferSet[despNumber][number].constBuffer.Get()->Unmap(0, nullptr);
 	result = constBufferSet[modelData.key][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
@@ -3852,7 +3855,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 			DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
 			DirectX::XMFLOAT3 bonePos;
 
-			auto mulRotateOrTrans = [](const float& num , const float& mag)
+			auto mulRotateOrTrans = [](const float& num, const float& mag)
 			{
 				return num * mag - num;
 			};
@@ -3927,12 +3930,12 @@ void DirectX12::map(const ModelData& modelData,int number )
 				}
 				if (parentNums.size() != 0)
 				{
-			
+
 
 					DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
 					const int maxParentSize = static_cast<int>(parentNums.size());
 
-					DirectX::XMFLOAT3 pAngle = {0,0,0};
+					DirectX::XMFLOAT3 pAngle = { 0,0,0 };
 					DirectX::XMFLOAT3 pScale = { 1,1,1 };
 					DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
 					DirectX::XMFLOAT3 pPos = { 0,0,0 };
@@ -3940,7 +3943,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 					DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
 					DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
 					DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
-					
+
 					mulMat = DirectX::XMMatrixIdentity();
 
 					//最後にある親のボーンを基準に回すので、入れる
@@ -3948,7 +3951,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 					pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
 					pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
 
-					for(auto& num : parentNums)
+					for (auto& num : parentNums)
 					{
 						pAngle.x += boneConstData[modelData.key].angle[number][num].x;
 						pAngle.y += boneConstData[modelData.key].angle[number][num].y;
@@ -3962,31 +3965,31 @@ void DirectX12::map(const ModelData& modelData,int number )
 						pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
 						pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
 
-					
+
 
 						pAngleImpact.x *= parentBoneData[modelData.key][num + 1].angleImpact.x;
 						pAngleImpact.y *= parentBoneData[modelData.key][num + 1].angleImpact.y;
 						pAngleImpact.z *= parentBoneData[modelData.key][num + 1].angleImpact.z;
-						pScaleImpact.x *= parentBoneData[modelData.key][num+1].scaleImpact.x;
-						pScaleImpact.y *= parentBoneData[modelData.key][num+1].scaleImpact.y;
-						pScaleImpact.z *= parentBoneData[modelData.key][num+1].scaleImpact.z;
-						pMoveVectorImpact.x *= parentBoneData[modelData.key][num+1].moveVectorImpact.x;
-						pMoveVectorImpact.y *= parentBoneData[modelData.key][num+1].moveVectorImpact.y;
-						pMoveVectorImpact.z *= parentBoneData[modelData.key][num+1].moveVectorImpact.z;
+						pScaleImpact.x *= parentBoneData[modelData.key][num + 1].scaleImpact.x;
+						pScaleImpact.y *= parentBoneData[modelData.key][num + 1].scaleImpact.y;
+						pScaleImpact.z *= parentBoneData[modelData.key][num + 1].scaleImpact.z;
+						pMoveVectorImpact.x *= parentBoneData[modelData.key][num + 1].moveVectorImpact.x;
+						pMoveVectorImpact.y *= parentBoneData[modelData.key][num + 1].moveVectorImpact.y;
+						pMoveVectorImpact.z *= parentBoneData[modelData.key][num + 1].moveVectorImpact.z;
 					}
-					
-						pAngle.x *= pAngleImpact.x;
-						pAngle.y *= pAngleImpact.y;
-						pAngle.z *= pAngleImpact.z;
 
-						pScale.x *= pScaleImpact.x;
-						pScale.y *= pScaleImpact.y;
-						pScale.z *= pScaleImpact.z;
+					pAngle.x *= pAngleImpact.x;
+					pAngle.y *= pAngleImpact.y;
+					pAngle.z *= pAngleImpact.z;
 
-						pMoveVector.x *= pMoveVectorImpact.x;
-						pMoveVector.y *= pMoveVectorImpact.y;
-						pMoveVector.z *= pMoveVectorImpact.z;
-					
+					pScale.x *= pScaleImpact.x;
+					pScale.y *= pScaleImpact.y;
+					pScale.z *= pScaleImpact.z;
+
+					pMoveVector.x *= pMoveVectorImpact.x;
+					pMoveVector.y *= pMoveVectorImpact.y;
+					pMoveVector.z *= pMoveVectorImpact.z;
+
 
 					//ボーンから頂点の距離分移動
 					mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
@@ -4003,7 +4006,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 					mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
 
 
-                     boneMat *= mulMat;
+					boneMat *= mulMat;
 				}
 				constData3D->boneMat[i + 1] = boneMat;
 
@@ -4018,6 +4021,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 	constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
 }
+
 
 
 void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber)

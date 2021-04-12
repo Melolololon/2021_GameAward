@@ -7,6 +7,9 @@
 
 #pragma region Object
 #include"Player.h"
+#include"PlayerBullet.h"
+#include"TargetObject.h"
+#include"Block.h"
 #pragma endregion
 
 
@@ -47,6 +50,9 @@ void Game::initialize()
 
 #pragma region ÉÇÉfÉãì«Ç›çûÇ›
 	Player::loadModel();
+	TargetObject::loadModel();
+	Block::loadModel();
+	PlayerBullet::loadModel();
 	Enemy::loadModel();
 
 #pragma endregion

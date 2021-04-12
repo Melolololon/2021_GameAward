@@ -156,21 +156,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveEnemy.cpp" />
     <ClCompile Include="Play.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShotEnemy.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
+    <ClCompile Include="TargetObject.cpp" />
     <ClCompile Include="ValueLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="MoveEnemy.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShotEnemy.h" />
+    <ClInclude Include="PlayerBullet.h" />
+    <ClInclude Include="TargetObject.h" />
     <ClInclude Include="ValueLoader.h" />
   </ItemGroup>
   <ItemGroup>
