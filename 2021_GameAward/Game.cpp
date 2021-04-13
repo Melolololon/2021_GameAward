@@ -57,6 +57,8 @@ void Game::initialize()
 	TargetObject::loadModel();
 	Block::loadModel();
 	PlayerBullet::loadModel();
+	Enemy::loadModel();
+
 #pragma endregion
 
 #pragma region マネージャー初期化_設定

@@ -1,4 +1,5 @@
 #include "Play.h"
+#include "MoveEnemy.h"
 #include"ObjectManager.h"
 #include"XInputManager.h"
 
@@ -20,7 +21,10 @@ Play::~Play(){}
 void Play::initialize()
 {
 	player = new Player();
+	enemy = new MoveEnemy();
+	enemy->setPPlayer(player);
 	ObjectManager::getInstance()->addObject(player);
+	ObjectManager::getInstance()->addObject(enemy);
 
 #pragma region ƒJƒƒ‰
 	cameraPosition = { 0,30,-2 };
