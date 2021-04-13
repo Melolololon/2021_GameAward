@@ -1,6 +1,7 @@
 #include "PlayerBullet.h"
 #include"TargetObject.h"
 #include"Block.h"
+#include"Player.h"
 
 ModelData PlayerBullet::modelData;
 int PlayerBullet::createCount;
@@ -72,6 +73,7 @@ void PlayerBullet::hit
 )
 {
 	if (typeid(*object) == typeid(TargetObject) ||
-		typeid(*object) == typeid(Block))
+		typeid(*object) == typeid(Block) ||
+		typeid(*object) == typeid(Player))
 		eraseManager = true;
 }

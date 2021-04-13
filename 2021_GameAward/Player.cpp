@@ -93,6 +93,7 @@ void Player::initialize()
 #pragma endregion
 
 #pragma region ’e‚Ì”­ŽË
+	//shotTime = iMap["shotTimer"];
 	shotTime = 60 * 1;
 	shotTimer = 0;
 #pragma endregion

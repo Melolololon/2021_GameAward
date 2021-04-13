@@ -12,6 +12,7 @@ private:
 	Vector3 cameraTarget;
 #pragma endregion
 
+	static int stageNum;
 public:
 	Play();
 	~Play();

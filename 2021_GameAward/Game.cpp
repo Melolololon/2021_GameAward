@@ -3,7 +3,11 @@
 #include"SceneManager.h"
 #include"ObjectManager.h"
 
+#pragma region ƒV[ƒ“
+
+#include"StageSelect.h"
 #include"Play.h"
+#pragma endregion
 
 #pragma region Object
 #include"Player.h"
@@ -64,6 +68,7 @@ void Game::initialize()
 
 	SceneManager::getInstace()->initialize();
 	SceneManager::getInstace()->addScene("Play", new Play());
+	//SceneManager::getInstace()->addScene("StageSelect", new StageSelect());
 #pragma endregion
 
 
