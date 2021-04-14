@@ -229,6 +229,26 @@ public:
 	);
 
 	/// <summary>
+/// —§•û‘Ì(AABB)“¯m‚Ì”»’è
+/// </summary>
+/// <param name="centerPos1"></param>
+/// <param name="size1"></param>
+/// <param name="centerPos2"></param>
+/// <param name="size2"></param>
+/// <param name="direction1">©•ª‚Ì‚Ç‚±‚ª‚Ô‚Â‚©‚Á‚½‚©‚ğ•Ô‚·</param>
+/// <param name="direction2">©•ª‚Ì‚Ç‚±‚ª‚Ô‚Â‚©‚Á‚½‚©‚ğ•Ô‚·</param>
+/// <returns></returns>
+	static bool boxAndBoxCollision
+	(
+		const Vector3& centerPos1,
+		const Vector3& size1,
+		const Vector3& centerPos2,
+		const Vector3& size2,
+		BoxHitDirection* direction1,
+		BoxHitDirection* direction2
+	);
+
+	/// <summary>
 	/// ü•ª‚Æ”Â‚Ì“–‚½‚è”»’è
 	/// </summary>
 	/// <param name="linePos1">ü1</param>

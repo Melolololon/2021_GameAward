@@ -35,6 +35,9 @@ private:
 	float velRot;
 
 	float previousRot;
+
+
+	std::vector<Vector3>boneVelocity;
 #pragma endregion
 
 #pragma region ‰ñ“]

@@ -27,11 +27,12 @@ void Play::initialize()
 	ObjectManager::getInstance()->addObject(enemy);
 
 #pragma region ƒJƒƒ‰
-	cameraPosition = { 0,30,-2 };
+	cameraPosition = { 0,50,-2 };
 	cameraTarget = { 0,0,0 };
 #pragma endregion
 
-
+	//‰¼
+	Block::setGameStart(true);
 }
 
 void Play::update()
@@ -42,7 +43,7 @@ void Play::update()
 #pragma region ƒJƒƒ‰ˆÚ“®
 	Vector3 pHeapPos = player->getHeadPosition();
 	cameraPosition = pHeapPos;
-	cameraPosition += {0, 30, -2};
+	cameraPosition += {0, 50, -2};
 	cameraTarget = pHeapPos;
 	Library::setCamera(cameraPosition, cameraTarget, { 0,1,0 });
 

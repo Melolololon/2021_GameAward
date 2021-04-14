@@ -6,6 +6,8 @@
 #include"ObjectManager.h"
 
 #include"PlayerBullet.h"
+#include"TargetObject.h"
+#include"Block.h"
 
 #include<fstream>
 
@@ -67,8 +69,6 @@ void Player::initialize()
 	velocity = {1.0f,0.0f,0.0f};
 	speed = fMap["speed"];
 
-	collisionFlag.sphere = true;
-	//sphereData.resize(initialBonePos.size());
 
 	hp = iMap["hp"];
 
@@ -90,6 +90,7 @@ void Player::initialize()
 	velRot = 0.0f;
 	previousRot = 0.0f;
 	moveRotateAngle.resize(boneNum, 0.0f);
+	boneVelocity.resize(boneNum, 0.0f);
 #pragma endregion
 
 #pragma region 弾の発射
@@ -98,11 +99,27 @@ void Player::initialize()
 	shotTimer = 0;
 #pragma endregion
 
+
+#pragma region 判定
+	collisionFlag.sphere = true;
+
+	sphereData.resize(boneNum);
+	for (int i = 0; i < boneNum; i++)
+	{
+		sphereData[i].position = bonePos[i];
+		sphereData[i].r = 0.25f;
+	}
+
+#pragma endregion
+
+
 }
 void Player::update()
 {
 	//ボーン数
 	const int boneNum = static_cast<int>(initialBonePos.size());
+
+
 
 #pragma region 移動_移動時の回転処理
 
@@ -126,10 +143,10 @@ void Player::update()
 #pragma region イチカワ移動
 	previousRot = velRot;
 
-	if (XInputManager::getPadConnectedFlag(1)) 
+	if (XInputManager::getPadConnectedFlag(1))
 	{
 		if (XInputManager::leftStickDown(40, 1) ||
-			XInputManager::leftStickUp(40, 1)||
+			XInputManager::leftStickUp(40, 1) ||
 			XInputManager::leftStickLeft(40, 1) ||
 			XInputManager::leftStickRight(40, 1))
 		{
@@ -162,7 +179,6 @@ void Player::update()
 #pragma endregion
 
 
-
 	for (int i = 0; i < boneNum; i++)
 	{
 		if (i == 0)
@@ -173,6 +189,7 @@ void Player::update()
 
 			//初期位置からどのくらい動いているかをセット
 			Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			boneVelocity[i] = velocity;
 		}
 		else
 		{
@@ -187,7 +204,8 @@ void Player::update()
 			);
 
 			moveRotateAngle[i] = LibMath::angleConversion(1, atan2(forwardVector.z, forwardVector.x));
-			moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
+
+			//moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
 
 
 			float size = initialBonePos[i - 1].x - initialBonePos[i].x;
@@ -196,6 +214,7 @@ void Player::update()
 			{
 				boneMovePos[i] += forwardVector / length * speed;
 				Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+				boneVelocity[i] = forwardVector / length;
 			}
 		}
 
@@ -205,39 +224,26 @@ void Player::update()
 
 
 	//場外防止
-	//if (bonePos[0].x >= 10000.0f ||
-	//	bonePos[0].x <= -10000.0f ||
-	//	bonePos[0].z >= 10000.0f ||
-	//	bonePos[0].z <= -10000.0f)
-	//{
-	//	for (int i = 0; i < boneNum; i++) 
-	//	{
-	//		boneMovePos[i] = 0.0f;
-	//		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
-	//		moveRotateAngle[i] = 0.0f;
+	//テストプレイ終了のリセットに使用
 
-	//	}
-	//	velRot = 0.0f;
-	//	previousRot = 0.0f;
-	//}
 
 
 #pragma endregion
 
 #pragma region ひねり処理
 
-	if (!XInputManager::getPadConnectedFlag(1)) 
+	if (!XInputManager::getPadConnectedFlag(1))
 	{
 		if (DirectInput::keyTrigger(DIK_SPACE))
 			rotateFlag = true;
 	}
 	else
-	if (XInputManager::buttonTrigger(XInputManager::XINPUT_RB_BUTTON,1))
+		if (XInputManager::buttonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
 			rotateFlag = true;
-	
 
 
-	if (rotateFlag) 
+
+	if (rotateFlag)
 	{
 		for (int i = 0; i < boneNum; i++)
 		{
@@ -274,11 +280,8 @@ void Player::update()
 
 
 	//角度セット
-	for(int i = 0; i < boneNum;i++)
-		Library::setOBJBoneAngle({twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
-	
-	Library::setPosition(position, modelData, heapNum);
-
+	for (int i = 0; i < boneNum; i++)
+		Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 
 #pragma region 弾を発射
 
@@ -313,6 +316,12 @@ void Player::update()
 #pragma endregion
 
 
+
+#pragma region 判定
+	for (int i = 0; i < boneNum; i++)
+		sphereData[i].position = bonePos[i];
+
+#pragma endregion
 }
 
 void Player::draw()
@@ -323,11 +332,97 @@ void Player::draw()
 
 void Player::hit
 (
-	const Object *const  object,
+	const Object* const  object,
 	const CollisionType& collisionType,
 	const int& arrayNum
 )
 {
+	//結構狭い隙間でも通れちゃうから修正するか、隙間ができないようにする
+	if (typeid(*object) == typeid(Block) ||
+		typeid(*object) == typeid(TargetObject))
+	{
+		switch (sphereData[arrayNum].boxHitDistance)
+		{
+		case BOX_HIT_DIRECTION_RIGHT:
+			//内側に入り込むの防止するif
+			//velocityを固定のfloatにすればめり込まないが、カメラが動きまくるのでこうしてる
+			if (boneVelocity[arrayNum].x >= 0)
+				boneMovePos[arrayNum].x += 1.0f * speed.x;
+			else
+				boneMovePos[arrayNum].x += -boneVelocity[arrayNum].x * speed.x;
+
+
+			//右にぶつかってるかつ引っかかりをとるには、
+			//xの進行をなくし、z方向に動かすしかない
+			//先頭のvelocityを基準にすると、途中で逆行ったときに
+			//引っかかりがひどくなってしまうから前のボーンのを参照
+			//velocityじゃなくて相手へのベクトルを使用(velocityだと逆に進んでしまうときがあった)
+			//何か不具合あってどうしても対策ができなさそうだったら、
+			//上のif分を、if(typeid(*object) == typeid(Block) && arrayNum == 0)に変更してください
+			if (arrayNum != 0)
+			{
+
+				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+				previousBoneVector.x = 0;
+				previousBoneVector = vector3Normalize(previousBoneVector);
+				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
+			}
+
+			break;
+		case BOX_HIT_DIRECTION_LEFT:
+			if (boneVelocity[arrayNum].x <= 0)
+				boneMovePos[arrayNum].x += -1.0f * speed.x;
+			else
+				boneMovePos[arrayNum].x += -boneVelocity[arrayNum].x * speed.x;
+
+
+			if (arrayNum != 0)
+			{
+
+				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+				previousBoneVector.x = 0;
+				previousBoneVector = vector3Normalize(previousBoneVector);
+				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
+			}
+
+			break;
+		case BOX_HIT_DIRECTION_FRONT:
+			if (boneVelocity[arrayNum].z <= 0)
+				boneMovePos[arrayNum].z += -1.0f * speed.z;
+			else
+				boneMovePos[arrayNum].z += -boneVelocity[arrayNum].z * speed.z;
+
+
+			if (arrayNum != 0)
+			{
+
+				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+				previousBoneVector.z = 0;
+				previousBoneVector = vector3Normalize(previousBoneVector);
+				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
+			}
+
+			break;
+		case BOX_HIT_DIRECTION_BACK:
+			if (boneVelocity[arrayNum].z >= 0)
+				boneMovePos[arrayNum].z += 1.0f * speed.z;
+			else
+				boneMovePos[arrayNum].z += -boneVelocity[arrayNum].z * speed.z;
+
+
+			if (arrayNum != 0)
+			{
+				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+				previousBoneVector.z = 0;
+				previousBoneVector = vector3Normalize(previousBoneVector);
+				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
+			}
+			break;
+		}
+
+		bonePos[arrayNum] = initialBonePos[arrayNum] + boneMovePos[arrayNum] + position;
+		
+	}
 }
 
 void* Player::getPtr()

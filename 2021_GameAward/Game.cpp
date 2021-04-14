@@ -70,7 +70,7 @@ void Game::initialize()
 
 	SceneManager::getInstace()->initialize();
 	SceneManager::getInstace()->addScene("Play", new Play());
-	//SceneManager::getInstace()->addScene("StageSelect", new StageSelect());
+	SceneManager::getInstace()->addScene("StageSelect", new StageSelect());
 #pragma endregion
 
 

@@ -11,10 +11,11 @@ StageSelect::StageSelect()
 	int blockSize;
 	std::vector<Block*>blockVector;
 
-	for (int i = 0; ; i++)
+	for (int i = 1; ; i++)
 	{
+		const std::wstring path = L"Resources/Map/ms_map" + std::to_wstring(i) + L".msmap";
 		std::ifstream openFile;
-		openFile.open(L"ms_map" + std::to_wstring(i) + L".msmap", std::ios_base::binary);
+		openFile.open(path, std::ios_base::binary);
 		
 		//全部読み込み終わったら(開くの失敗したら)抜ける
 		//ここ最初にパス全部取得してその分だけループしたほうがいい?
@@ -99,5 +100,6 @@ void StageSelect::end()
 
 std::string StageSelect::getNextScene()
 {
+	return "";
 }
 
