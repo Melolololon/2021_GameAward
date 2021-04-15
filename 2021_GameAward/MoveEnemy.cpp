@@ -14,5 +14,15 @@ void MoveEnemy::update()
 
 	//ç¿ïWçXêV
 	position = position + velocity * moveSpeed;
-	Library::setPosition(position, modelData, heapNum);
+	setPosition(position);
 }
+
+void MoveEnemy::loadModel()
+{
+	std::string mtl;
+
+	modelData.key = "moveenemy";
+	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
+	Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
+}
+

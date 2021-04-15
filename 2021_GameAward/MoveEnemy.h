@@ -9,6 +9,7 @@ private:
 #pragma endregion
 
 public:
+	static void loadModel();
 	void initialize()override;
 	void update()override;
 };

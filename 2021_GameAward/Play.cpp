@@ -1,5 +1,6 @@
 #include "Play.h"
 #include "MoveEnemy.h"
+#include "ShotEnemy.h"
 #include"ObjectManager.h"
 #include"XInputManager.h"
 
@@ -21,8 +22,9 @@ Play::~Play(){}
 void Play::initialize()
 {
 	player = new Player();
-	enemy = new MoveEnemy();
+	enemy = new ShotEnemy();
 	enemy->setPPlayer(player);
+	enemy->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
 	ObjectManager::getInstance()->addObject(player);
 	ObjectManager::getInstance()->addObject(enemy);
 

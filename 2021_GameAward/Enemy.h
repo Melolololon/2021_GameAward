@@ -23,7 +23,7 @@ protected:
 #pragma region ‹¤’Êƒpƒ‰ƒ[ƒ^
 	Vector3 position;
 	Vector3 velocity;
-	float moveSpeed = 1.0f;
+	float moveSpeed = 0.15f;
 	int hp = 3;
 #pragma endregion
 
@@ -39,5 +39,6 @@ public:
 	static void loadModel();
 
 	void setPPlayer(Player* p) { pPlayer = p; };
+	void setPosition(Vector3 pos);
 };
 

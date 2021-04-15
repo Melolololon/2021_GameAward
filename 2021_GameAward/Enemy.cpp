@@ -31,6 +31,12 @@ void Enemy::loadModel()
 	std::string mtl;
 
 	modelData.key = "enemy";
-	Library::create3DBox(Vector3{5,5,5}, modelData);
+	Library::create3DBox(Vector3{1,1,1}, modelData);
 	Library::createHeapData2({ 0,0,255,255 }, CREATE_NUMBER, modelData);
+}
+
+void Enemy::setPosition(Vector3 pos)
+{
+	position = pos;
+	Library::setPosition(position, modelData, heapNum);
 }
