@@ -29,7 +29,7 @@ void PlayerBullet::setHeapNum()
 void PlayerBullet::loadModel()
 {
 	modelData.key = "pBullet";
-	Library::create3DBox({ 0.2,0.2,0.2 }, modelData);
+	Library::create3DBox({ 0.5,0.5,0.5 }, modelData);
 	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);
 }
 
@@ -46,7 +46,7 @@ void PlayerBullet::initialize()
 	collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].position = position;
-	sphereData[0].r = 0.1f;
+	sphereData[0].r = 0.25f;
 }
 
 void PlayerBullet::update()
@@ -73,7 +73,11 @@ void PlayerBullet::hit
 )
 {
 	if (typeid(*object) == typeid(TargetObject) ||
-		typeid(*object) == typeid(Block) ||
-		typeid(*object) == typeid(Player))
+		typeid(*object) == typeid(Block))
 		eraseManager = true;
+
+	
+		if(typeid(*object) == typeid(Player) &&
+			deadTimer >= 60 * 0.1f)
+			eraseManager = true;
 }

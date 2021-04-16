@@ -69,8 +69,14 @@ void Player::initialize()
 	velocity = {1.0f,0.0f,0.0f};
 	speed = fMap["speed"];
 
+#pragma region パラメーター
+
 
 	hp = iMap["hp"];
+	isMuteki = false;
+	mutekiTimer = 0;
+	mutekiTime = 60 * 1;
+#pragma endregion
 
 	boneMovePos.resize(boneNum, 0.0f);
 	bonePos.resize(boneNum);
@@ -315,13 +321,38 @@ void Player::update()
 
 #pragma endregion
 
-
-
 #pragma region 判定
 	for (int i = 0; i < boneNum; i++)
 		sphereData[i].position = bonePos[i];
 
 #pragma endregion
+
+#pragma region パラメーター処理
+
+#pragma region ライフ
+
+#pragma endregion
+
+#pragma region 無敵処理
+	if(isMuteki)
+	{
+		mutekiTimer++;
+		if(mutekiTimer >= mutekiTime)
+		{
+			mutekiTimer = 0;
+			isMuteki = false;
+		}
+	}
+#pragma endregion
+
+
+#pragma endregion
+
+#pragma region 祠の向き
+	//一番近い祠を求める
+#pragma endregion
+
+
 }
 
 void Player::draw()
@@ -422,6 +453,13 @@ void Player::hit
 
 		bonePos[arrayNum] = initialBonePos[arrayNum] + boneMovePos[arrayNum] + position;
 		
+	}
+
+	if (isMuteki)return;
+	//if (typeid(*object) == typeid(Enemy))
+	{
+		isMuteki = true;
+
 	}
 }
 

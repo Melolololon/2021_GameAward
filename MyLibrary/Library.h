@@ -1108,6 +1108,10 @@ public:
 	/// <param name="number">—”•(0ŠÜ‚ß‚é)</param>
 	/// <returns></returns>
 	static float getRandomNumberFloat(int number);
+
+	static int getRandomNumberRangeSelect(const int& start, const int& end);
+
+	static float getRandomNumberRangeSelectFloat(const int& start, const int& end);
 #pragma endregion
 
 

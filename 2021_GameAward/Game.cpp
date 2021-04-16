@@ -72,10 +72,9 @@ void Game::initialize()
 	ObjectManager::getInstance()->setCollisionFlag3D(f);
 
 	SceneManager::getInstace()->initialize();
-	SceneManager::getInstace()->addScene("Play", new Play());
 	SceneManager::getInstace()->addScene("StageSelect", new StageSelect());
+	SceneManager::getInstace()->addScene("Play", new Play());
 #pragma endregion
-
 
 }
 

@@ -51,6 +51,5 @@ public:
 
 	static void setGameStart(const bool& flag) { gameStart = flag; }
 
-
 };
 

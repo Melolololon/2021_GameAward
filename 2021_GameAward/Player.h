@@ -2,6 +2,9 @@
 #include"Object.h"
 class Player :public Object
 {
+public:
+
+
 private:
 
 #pragma region モデル関係
@@ -24,6 +27,9 @@ private:
 
 	//initial&movePos
 	std::vector<Vector3> bonePos;
+
+
+
 
 #pragma region 移動
 	//ボーン座標(initialからどのくらい動いてるか)
@@ -64,7 +70,12 @@ private:
 
 #pragma region パラメーター
 	int hp;
+
+	bool isMuteki;
+	int mutekiTimer;
+	int mutekiTime;
 #pragma endregion
+
 
 
 public:
