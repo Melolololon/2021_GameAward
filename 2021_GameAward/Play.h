@@ -19,8 +19,8 @@ public:
 	};
 
 private:
-	Player* player;
-	Enemy* enemy;
+	std::shared_ptr<Player> player;
+	std::shared_ptr<Enemy> enemy;
 
 
 	//ゲーム状態
@@ -33,7 +33,7 @@ private:
 #pragma endregion
 
 #pragma region ステージデータ
-	std::vector<TargetObject*> targetObjects;
+	std::vector<std::shared_ptr<TargetObject> > targetObjects;
 	static float targetDistance;
 	static float playerDistance;
 	static int targetNumber;

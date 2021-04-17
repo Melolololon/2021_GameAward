@@ -3,6 +3,8 @@
 #include"CollisionType.h"
 #include<vector>
 #include"MouseCursor.h"
+#include<memory>
+
 class ObjectManager
 {
 public:
@@ -26,9 +28,9 @@ private:
 	ObjectManager();
 	~ObjectManager();
 
-	std::vector<Object*>objects;
+	std::vector<std::shared_ptr<Object>>objects;
 	//追加されたものを一時的に入れておく配列
-	std::vector<Object*>addObjects;
+	std::vector<std::shared_ptr<Object>>addObjects;
 
 	CollisionFlag checkCollision;
 
@@ -80,7 +82,7 @@ public:
 	/// </summary>
 	/// <param name="type"></param>
 	void setCollisionFlag3D(const CollisionFlag& type);
-	
+
 	/// <summary>
 	/// マウスカーソルとの判定をとるか設定します
 	/// </summary>
@@ -100,23 +102,25 @@ public:
 	/// オブジェクトを追加します。
 	/// </summary>
 	/// <param name="object"></param>
-	void addObject(Object* object);
+	void addObject(const std::shared_ptr<Object>& object);
 
 	/// <summary>
 	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます
 	/// </summary>
 	/// <param name="sort">ソートの仕方</param>
 	/// <param name="orderType">true 昇順  false 降順</param>
-	void setAddObjectSortState(const ObjectSort& sort,const bool& orderType);
+	void setAddObjectSortState(const ObjectSort& sort, const bool& orderType);
 
-	
-/// <summary>
-/// オブジェクトの配列をソートします。
-/// </summary>
-/// <param name="sort">ソートの仕方</param>
-/// <param name="orderType">true 昇順  false 降順</param>
-	void objectSort(const ObjectSort& sort,const bool& orderType);
+
+	/// <summary>
+	/// オブジェクトの配列をソートします。
+	/// </summary>
+	/// <param name="sort">ソートの仕方</param>
+	/// <param name="orderType">true 昇順  false 降順</param>
+	void objectSort(const ObjectSort& sort, const bool& orderType);
 #pragma endregion
+
+
 
 	/// <summary>
 	/// 全てのオブジェクトを解放します

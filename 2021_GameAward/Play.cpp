@@ -29,8 +29,8 @@ Play::~Play(){}
 
 void Play::initialize()
 {
-	player = new Player();
-	enemy = new ShotEnemy();
+	player = std::make_shared<Player>();
+	enemy = std::make_shared<ShotEnemy>();
 	enemy->setPPlayer(player);
 	enemy->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
 	ObjectManager::getInstance()->addObject(player);
@@ -48,7 +48,7 @@ void Play::initialize()
 	int blockNum = static_cast<int>(blockPositions.size());
 
 	for (int i = 0; i < blockNum; i++)
-		ObjectManager::getInstance()->addObject(new Block(blockPositions[i], blockScales[i]));
+		ObjectManager::getInstance()->addObject(std::make_shared<Block>(blockPositions[i], blockScales[i]));
 #pragma endregion
 
 
@@ -66,7 +66,7 @@ void Play::initialize()
 			Library::getRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
 		};
 
-		t = new TargetObject(targetPos);
+		t = std::make_shared<TargetObject>(targetPos);
 		ObjectManager::getInstance()->addObject(t);
 	}
 #pragma endregion
@@ -79,7 +79,7 @@ void Play::initialize()
 void Play::update()
 {
 	ObjectManager::getInstance()->update();
-
+	ObjectManager::getInstance()->isDeadCheck();
 #pragma region 祠処理
 
 //	//祠セット
@@ -181,18 +181,15 @@ void Play::update()
 		int deadCount = 0;
 		for (auto& t : targetObjects)
 		{
-			if (!t)
-			{
-				deadCount++;
-				continue;
-			}
-			//やられたら消す
+			//やられてオブジェクトマネージャーから削除されてたらカウント
 			if (t->getEraseManager())
-				t = nullptr;
+				deadCount++;
 		}
 
-		//if(deadCount == targetObjects.size())
-			
+		//終了処理
+		/*if(deadCount == targetObjects.size())
+		{ 
+		}*/
 	}
 
 #pragma endregion
@@ -206,7 +203,6 @@ void Play::update()
 
 #pragma endregion
 
-	ObjectManager::getInstance()->isDeadCheck();
 }
 
 void Play::draw()

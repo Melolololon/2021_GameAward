@@ -12,6 +12,7 @@
 #include<fstream>
 
 
+
 //ファイルから読みとってstaticに入れられるか確かめる
 
 ModelData Player::modelData;
@@ -295,7 +296,8 @@ void Player::update()
 	{
 		Vector3 normalizeForwordVector = vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
 		Quaternion q = getRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
-		ObjectManager::getInstance()->addObject(new PlayerBullet(bonePos[arrayNum], { q.x,0,q.z }));
+	
+		ObjectManager::getInstance()->addObject(std::make_shared<PlayerBullet>(bonePos[arrayNum], Vector3(q.x, 0, q.z)));
 	};
 
 	if (shotTimer >= shotTime)
