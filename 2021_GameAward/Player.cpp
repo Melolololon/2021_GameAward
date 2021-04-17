@@ -350,9 +350,6 @@ void Player::update()
 
 #pragma endregion
 
-#pragma region âK‚ÌŒü‚«
-	//ˆê”Ô‹ß‚¢âK‚ğ‹‚ß‚é
-#pragma endregion
 
 
 }

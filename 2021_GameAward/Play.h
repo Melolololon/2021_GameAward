@@ -32,6 +32,19 @@ private:
 	Vector3 cameraTarget;
 #pragma endregion
 
+#pragma region 祠の方向を示す矢印
+	sprite arrowSprite;
+	texture arrowTexture;
+
+	//座標
+	Vector2 arrowPosition;
+	//回転角度
+	float arrowAngle;
+	//描画するかどうか
+	bool drawArrow;
+#pragma endregion
+
+
 #pragma region ステージデータ
 	std::vector<std::shared_ptr<TargetObject> > targetObjects;
 	static float targetDistance;

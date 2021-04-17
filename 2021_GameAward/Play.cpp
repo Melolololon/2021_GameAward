@@ -23,6 +23,8 @@ std::vector<Vector3> Play::blockScales;
 
 Play::Play()
 {
+	Library::createSprite(&arrowSprite);
+	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");
 }
 
 Play::~Play(){}
@@ -72,6 +74,11 @@ void Play::initialize()
 #pragma endregion
 
 
+#pragma region ñÓàÛ
+	arrowPosition = 0.0f;
+	arrowAngle = 0.0f;
+	drawArrow = false;
+#pragma endregion
 
 
 }
@@ -203,14 +210,72 @@ void Play::update()
 
 #pragma endregion
 
+
+#pragma region ‚KÇé¶Ç∑ñÓàÛ
+	//àÍî‘ãﬂÇ¢‚KÇãÅÇﬂÇÈ
+	float minDistance = 9999999.0f;
+	Vector3 playerHeadPos = player->getHeadPosition();
+	Vector3 nearTargetPos = 0;
+	for(auto& t : targetObjects)
+	{
+		if(!t->getEraseManager())
+		{
+			float dis = LibMath::calcDistance3D
+			(
+				playerHeadPos,
+				t->getPosition()
+			);
+			if (dis < minDistance) 
+			{
+				minDistance = dis;
+				nearTargetPos = t->getPosition();
+			}
+		}
+	}
+	//‚KÇ†Ç¡ÇΩÇÁåvéZ
+	if (minDistance < 9999999.0f) 
+	{
+		Vector2 arrowTexSize = Library::getTextureSize(arrowTexture);
+
+		//ÉvÉåÉCÉÑÅ[Ç©ÇÁàÍî‘ãﬂÇ¢É^Å[ÉQÉbÉgÇÃÉxÉNÉgÉãÇê≥ãKâªÇµÇΩÇ‡ÇÃ
+		Vector3 playerToTargetVector = nearTargetPos - playerHeadPos;
+		Vector3 playerToTargetNVector = vector3Normalize(playerToTargetVector);
+		//ç¿ïW
+		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x /2, 720.0f / 2.0f - arrowTexSize.y / 2};
+		//‚KÇÃï˚Ç…à⁄ìÆÇ≥ÇπÇÈ
+		arrowPosition.x += playerToTargetNVector.x * (1280 / 2);
+		arrowPosition.y -= playerToTargetNVector.z * (720 / 2);
+
+		//âÊñ ì‡Ç…é˚Ç‹ÇÈÇÊÇ§Ç…Ç∑ÇÈ
+		if (arrowPosition.x >= 1280 - arrowTexSize.x)
+			arrowPosition.x = 1280 - arrowTexSize.x;
+		if (arrowPosition.x <= 0)
+			arrowPosition.x = 0;
+		if (arrowPosition.y >= 720 - arrowTexSize.y)
+			arrowPosition.y = 720 - arrowTexSize.y;
+		if (arrowPosition.y <= 0)
+			arrowPosition.y = 0;
+
+		//äpìx
+		arrowAngle = LibMath::vecto2ToAngle({ playerToTargetNVector.x,playerToTargetNVector.z }, false);
+
+		//ï`âÊÇ∑ÇÈÇ©Ç«Ç§Ç©
+		drawArrow = false;
+		if (abs(playerToTargetVector.x) >= 50.0f ||
+			abs(playerToTargetVector.z) >= 30.0f)
+			drawArrow = true;
+	}
+#pragma endregion
 }
 
 void Play::draw()
 {
 	ObjectManager::getInstance()->draw();
+	
 
-
-
+	Library::setSpriteAngle(arrowAngle, arrowSprite);
+	if(drawArrow)
+	Library::drawSprite(arrowPosition, arrowSprite, arrowTexture);
 }
 
 void Play::end()
