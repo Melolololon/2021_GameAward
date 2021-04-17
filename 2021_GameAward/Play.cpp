@@ -33,7 +33,7 @@ void Play::initialize()
 {
 	player = std::make_shared<Player>();
 	enemy = std::make_shared<ShotEnemy>();
-	enemy->setPPlayer(player);
+	enemy->setPPlayer(player.get());
 	enemy->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
 	ObjectManager::getInstance()->addObject(player);
 	ObjectManager::getInstance()->addObject(enemy);

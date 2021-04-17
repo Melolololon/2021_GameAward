@@ -12,7 +12,7 @@ protected:
 	static const int CREATE_NUMBER;
 	int heapNum;
 	//プレイヤーのポインタ
-	std::shared_ptr<Player> pPlayer;
+	Player* pPlayer;
 
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
@@ -38,7 +38,7 @@ public:
 	/// </summary>
 	static void loadModel();
 
-	void setPPlayer(std::shared_ptr<Player> p) { pPlayer = p; };
+	void setPPlayer(Player* p) { pPlayer = p; };
 	void setPosition(Vector3 pos);
 };
 
