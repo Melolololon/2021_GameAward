@@ -10,7 +10,7 @@ private:
 	Vector3 nearPos;
 	Vector3 farPos;
 	
-	
+
 public:
 	MouseCursor();
 	~MouseCursor();

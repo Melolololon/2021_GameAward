@@ -2,7 +2,6 @@
 #include"LibMath.h"
 
 
-
 DirectX12::DirectX12()
 {
 }
@@ -817,8 +816,6 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma endregion
 
-
-
 #pragma region トゥーンレンダリング用レンダーターゲット(仮)
 	//アプリケーション側でレンダーターゲットの上に描画して、
 	//その上に線を入れようとして作ったやつ
@@ -915,7 +912,6 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 //	createPipeline->deleteInputLayout();
 
 #pragma endregion
-
 }
 
 void DirectX12::preparationToDraw()
@@ -2951,7 +2947,7 @@ void DirectX12::createHeapData
 
 	}
 	constBufferSet.emplace(key,constSetV);
-	int z = 0;
+
 #pragma endregion
 
 
@@ -3354,42 +3350,47 @@ void DirectX12::createUserPolygon
 
 #pragma region 削除関数
 
-void DirectX12::deletePolygonData(const std::string key)
+void DirectX12::deletePolygonData(const ModelData& m)
 {
+	std::string key = m.key;
+	vertices.erase(key);
+	indices.erase(key);
+	smoothNormal.erase(key);
 
-		vertices.erase(key);
-		indices.erase(key);
-		smoothNormal.erase(key);
+	vertexBufferSet.erase(key);
+	indexBufferSet.erase(key);
 
-		vertexBufferSet.erase(key);
-		indexBufferSet.erase(key);
+	if(m.type == VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+	{
+		boneConstData.erase(key);
+		objBoneNums.erase(key);
+		objBonePositions.erase(key);
+		parentBoneData.erase(key);
+	}
 
 }
 
-void DirectX12::deleteHeapData(const std::string& key)
+void DirectX12::deleteHeapData(const ModelData& m)
 {
 
-	//if (despNum != -1)
-	{
-		textureBufferSet.erase(key);
-		constBufferSet.erase(key);
-		basicHeaps.erase(key);
-		textureData.erase(key);
+	std::string key = m.key;
+	textureBufferSet.erase(key);
+	constBufferSet.erase(key);
+	basicHeaps.erase(key);
+	textureData.erase(key);
 
-		modelConstData.erase(key);
+	modelConstData.erase(key);
 
-		materials.erase(key);
+	materials.erase(key);
 
-		parentHeaps.erase(key);
-		parentNums.erase(key);
+	parentHeaps.erase(key);
+	parentNums.erase(key);
 
-		commonBuffers.erase(key);
+	commonBuffers.erase(key);
 
-		heapTags.erase(key);
-		
-		
-		
-	}
+	heapTags.erase(key);
+
+
 }
 
 
@@ -3429,7 +3430,7 @@ void DirectX12::deleteSprite(int sprite)
 #pragma region 描画関数
 
 //バッファをセット
-void DirectX12::setCmdList(const ModelData& modelData, int number)
+void DirectX12::setCmdList(const ModelData& modelData,  int number)
 {
 	//if ( despNum >= 0 && number >= 0)
 	{
@@ -3591,7 +3592,7 @@ void DirectX12::setCmdList(const ModelData& modelData, int number)
 }
 
 //Map処理
-void DirectX12::map(const ModelData& modelData, int number)
+void DirectX12::map(const ModelData& modelData,int number )
 {
 
 
@@ -3855,7 +3856,7 @@ void DirectX12::map(const ModelData& modelData, int number)
 			DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
 			DirectX::XMFLOAT3 bonePos;
 
-			auto mulRotateOrTrans = [](const float& num, const float& mag)
+			auto mulRotateOrTrans = [](const float& num , const float& mag)
 			{
 				return num * mag - num;
 			};
@@ -3930,12 +3931,12 @@ void DirectX12::map(const ModelData& modelData, int number)
 				}
 				if (parentNums.size() != 0)
 				{
-
+			
 
 					DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
 					const int maxParentSize = static_cast<int>(parentNums.size());
 
-					DirectX::XMFLOAT3 pAngle = { 0,0,0 };
+					DirectX::XMFLOAT3 pAngle = {0,0,0};
 					DirectX::XMFLOAT3 pScale = { 1,1,1 };
 					DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
 					DirectX::XMFLOAT3 pPos = { 0,0,0 };
@@ -3943,7 +3944,7 @@ void DirectX12::map(const ModelData& modelData, int number)
 					DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
 					DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
 					DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
-
+					
 					mulMat = DirectX::XMMatrixIdentity();
 
 					//最後にある親のボーンを基準に回すので、入れる
@@ -3951,7 +3952,7 @@ void DirectX12::map(const ModelData& modelData, int number)
 					pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
 					pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
 
-					for (auto& num : parentNums)
+					for(auto& num : parentNums)
 					{
 						pAngle.x += boneConstData[modelData.key].angle[number][num].x;
 						pAngle.y += boneConstData[modelData.key].angle[number][num].y;
@@ -3965,31 +3966,31 @@ void DirectX12::map(const ModelData& modelData, int number)
 						pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
 						pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
 
-
+					
 
 						pAngleImpact.x *= parentBoneData[modelData.key][num + 1].angleImpact.x;
 						pAngleImpact.y *= parentBoneData[modelData.key][num + 1].angleImpact.y;
 						pAngleImpact.z *= parentBoneData[modelData.key][num + 1].angleImpact.z;
-						pScaleImpact.x *= parentBoneData[modelData.key][num + 1].scaleImpact.x;
-						pScaleImpact.y *= parentBoneData[modelData.key][num + 1].scaleImpact.y;
-						pScaleImpact.z *= parentBoneData[modelData.key][num + 1].scaleImpact.z;
-						pMoveVectorImpact.x *= parentBoneData[modelData.key][num + 1].moveVectorImpact.x;
-						pMoveVectorImpact.y *= parentBoneData[modelData.key][num + 1].moveVectorImpact.y;
-						pMoveVectorImpact.z *= parentBoneData[modelData.key][num + 1].moveVectorImpact.z;
+						pScaleImpact.x *= parentBoneData[modelData.key][num+1].scaleImpact.x;
+						pScaleImpact.y *= parentBoneData[modelData.key][num+1].scaleImpact.y;
+						pScaleImpact.z *= parentBoneData[modelData.key][num+1].scaleImpact.z;
+						pMoveVectorImpact.x *= parentBoneData[modelData.key][num+1].moveVectorImpact.x;
+						pMoveVectorImpact.y *= parentBoneData[modelData.key][num+1].moveVectorImpact.y;
+						pMoveVectorImpact.z *= parentBoneData[modelData.key][num+1].moveVectorImpact.z;
 					}
+					
+						pAngle.x *= pAngleImpact.x;
+						pAngle.y *= pAngleImpact.y;
+						pAngle.z *= pAngleImpact.z;
 
-					pAngle.x *= pAngleImpact.x;
-					pAngle.y *= pAngleImpact.y;
-					pAngle.z *= pAngleImpact.z;
+						pScale.x *= pScaleImpact.x;
+						pScale.y *= pScaleImpact.y;
+						pScale.z *= pScaleImpact.z;
 
-					pScale.x *= pScaleImpact.x;
-					pScale.y *= pScaleImpact.y;
-					pScale.z *= pScaleImpact.z;
-
-					pMoveVector.x *= pMoveVectorImpact.x;
-					pMoveVector.y *= pMoveVectorImpact.y;
-					pMoveVector.z *= pMoveVectorImpact.z;
-
+						pMoveVector.x *= pMoveVectorImpact.x;
+						pMoveVector.y *= pMoveVectorImpact.y;
+						pMoveVector.z *= pMoveVectorImpact.z;
+					
 
 					//ボーンから頂点の距離分移動
 					mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
@@ -4006,7 +4007,7 @@ void DirectX12::map(const ModelData& modelData, int number)
 					mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
 
 
-					boneMat *= mulMat;
+                     boneMat *= mulMat;
 				}
 				constData3D->boneMat[i + 1] = boneMat;
 
@@ -4021,7 +4022,6 @@ void DirectX12::map(const ModelData& modelData, int number)
 	constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
 }
-
 
 
 void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber)

@@ -33,8 +33,8 @@ private:
 #pragma endregion
 
 #pragma region âK‚Ì•ûŒü‚ğ¦‚·–îˆó
-	sprite arrowSprite;
-	texture arrowTexture;
+	static sprite arrowSprite;
+	static texture arrowTexture;
 
 	//À•W
 	Vector2 arrowPosition;
@@ -64,9 +64,10 @@ public:
 	void initialize();
 	void update();
 	void draw();
-	void end();
-	std::string getNextScene();
+	void end(); 
+	Scene* getNextScene();
 
+	static void loadResources();
 	static void setStageData
 	(
 		std::vector<Vector3>blockPos,

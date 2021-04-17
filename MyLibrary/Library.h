@@ -37,6 +37,9 @@ using font = int;
 class Library
 {
 private:
+	Library(){}
+	~Library(){}
+
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	static DirectX12* dx12;
@@ -96,12 +99,12 @@ public:
 	/// <summary>
 	/// 描画準備をします。更新処理部分の一番上で呼び出してください
 	/// </summary>
-	static void roopStartProcess();
+	static void loopStartProcess();
 
 	/// <summary>
 	/// 描画します。描画処理の一番最後の呼び出してください
 	/// </summary>
-	static void roopEndProcess();
+	static void loopEndProcess();
 
 	/// <summary>
 	/// ライブラリの終了フラグをtrueにします
@@ -614,7 +617,7 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	static void deleteObject3DData(const ModelData& modelData);
+	static void deleteModelData(const ModelData& modelData);
 
 	/// <summary>
 	/// スプライトを削除します

@@ -3,21 +3,32 @@
 #include"ObjectManager.h"
 #include"Play.h"
 
-
+std::vector<std::vector<std::unique_ptr<Block>>>StageSelect::blocks;
+std::vector<std::vector<Vector3>>StageSelect::blockPositions;
+std::vector<std::vector<Vector3>>StageSelect::blockScales;
+std::vector<float>StageSelect::targetDistance;
+std::vector<float>StageSelect::playerDistance;
+std::vector<int>StageSelect::targetNumbers;
+std::vector<Vector3>StageSelect::leftUpPositions;
+std::vector<Vector3>StageSelect::rightDownPositions;
 
 StageSelect::StageSelect()
 {
-	selectStageNum = 0;
+}
 
+StageSelect::~StageSelect()
+{
+}
 
-
+void StageSelect::loadResources()
+{
 	for (int i = 0; ; i++)
 	{
 
 		const std::wstring path = L"Resources/Map/ms_map" + std::to_wstring(i + 1) + L".msmap";
 		std::ifstream openFile;
 		openFile.open(path, std::ios_base::binary);
-		
+
 		//全部読み込み終わったら(開くの失敗したら)抜ける
 		//ここ最初にパス全部取得してその分だけループしたほうがいい?
 		if (!openFile)break;
@@ -58,7 +69,7 @@ StageSelect::StageSelect()
 		blocks[i].resize(blockNum);
 		blockPositions[i].resize(blockNum);
 		blockScales[i].resize(blockNum);
-		for (int j = 0; j < blockNum;j++)
+		for (int j = 0; j < blockNum; j++)
 		{
 			Vector3 blockPos;
 			Vector3 blockScale;
@@ -68,7 +79,7 @@ StageSelect::StageSelect()
 			blockScales[i][j] = blockScale;
 
 			blocks[i][j] = std::make_unique<Block>(blockPos, blockScale);
-			
+
 		}
 
 		openFile.close();
@@ -84,15 +95,13 @@ StageSelect::StageSelect()
 
 	}
 
-	int z = 0;
-}
-
-StageSelect::~StageSelect()
-{
 }
 
 void StageSelect::initialize()
 {
+	selectStageNum = 0;
+
+
 }
 
 void StageSelect::update()
@@ -133,8 +142,8 @@ void StageSelect::end()
 
 }
 
-std::string StageSelect::getNextScene()
+Scene* StageSelect::getNextScene()
 {
-	return "Play";
+	return new Play();
 }
 

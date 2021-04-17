@@ -5,13 +5,15 @@
 #include"XInputManager.h"
 
 #include"LibMath.h"
-
+#include"StageSelect.h"
 #pragma region オブジェクト
 #include"Block.h"
 
 
 #pragma endregion
 
+sprite Play::arrowSprite;
+texture Play::arrowTexture;
 
 float Play::targetDistance;
 float Play::playerDistance;
@@ -23,11 +25,17 @@ std::vector<Vector3> Play::blockScales;
 
 Play::Play()
 {
+}
+
+
+Play::~Play(){}
+
+void Play::loadResources()
+{
 	Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");
 }
 
-Play::~Play(){}
 
 void Play::initialize()
 {
@@ -85,6 +93,7 @@ void Play::initialize()
 
 void Play::update()
 {
+
 	ObjectManager::getInstance()->update();
 	ObjectManager::getInstance()->isDeadCheck();
 #pragma region 祠処理
@@ -240,6 +249,8 @@ void Play::update()
 		//プレイヤーから一番近いターゲットのベクトルを正規化したもの
 		Vector3 playerToTargetVector = nearTargetPos - playerHeadPos;
 		Vector3 playerToTargetNVector = vector3Normalize(playerToTargetVector);
+		
+		//クォータニオンで回す?
 		//座標
 		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x /2, 720.0f / 2.0f - arrowTexSize.y / 2};
 		//祠の方に移動させる
@@ -280,13 +291,14 @@ void Play::draw()
 
 void Play::end()
 {
-	ObjectManager::getInstance()->allDeleteObject();
+	ObjectManager::getInstance()->allEraseObject();
 }
 
-std::string Play::getNextScene()
+Scene* Play::getNextScene()
 {
-	return "";
+	return new StageSelect();
 }
+
 
 void Play::setStageData
 (

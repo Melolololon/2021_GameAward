@@ -409,11 +409,12 @@ bool LibMath::sphereAndBoxCollision
 	if (spherePos.z > maxPos.z)
 		dir2 += (spherePos.z - maxPos.z) * (spherePos.z - maxPos.z);
 
-	bool flag = dir2 < r* r;
+	bool flag = dir2 < r * r;
 
 	//ボックスのどこに当たったかを返す
 	if (direction)
 	{
+
 		if (!flag)
 		{
 			*direction = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
@@ -424,7 +425,7 @@ bool LibMath::sphereAndBoxCollision
 		//2 Yが多い
 		//3 Zが多い
 		char top = 0;
-		//球へのベクトル
+		//ボックスへのベクトル
 		Vector3 sphereToVector = centerPos - spherePos;
 
 		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
@@ -517,16 +518,16 @@ bool LibMath::boxAndBoxCollision
 
 		}
 	}
-
+		
 	if (direction1 || direction2)
 	{
 
 		if (!isHit)
 		{
-			if (direction1)
-				*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
-			if (direction2)
-				*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			if(direction1)
+			*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			if(direction2)
+			*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
 			return isHit;
 		}
 
@@ -562,7 +563,7 @@ bool LibMath::boxAndBoxCollision
 				if (direction2)
 					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
 			}
-			else
+			else 
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
@@ -579,7 +580,7 @@ bool LibMath::boxAndBoxCollision
 				if (direction2)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
 			}
-			else
+			else 
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
@@ -589,14 +590,14 @@ bool LibMath::boxAndBoxCollision
 		}
 		if (top == 3)
 		{
-			if (targetToVector.z >= 0)
+			if (targetToVector.z >= 0) 
 			{
-				if (direction1)
+				if(direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
 				if (direction2)
 					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
 			}
-			else
+			else 
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;

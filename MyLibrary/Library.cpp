@@ -1,8 +1,11 @@
 #include "Library.h"
 #include"LibMath.h"
+
 #include"XInputManager.h"
+
 #pragma comment(lib,"winmm.lib")//timeGetTimeと
 #include"ObjectManager.h"
+#include"LibWinAPI.h"
 
 std::unique_ptr<Audio> Library::audio;
 DirectX12* Library::dx12;
@@ -61,9 +64,21 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
-	//OutputDebugStringA("Hello,DirectX!!\n");
+	hwnd = LibWinAPI::createNormalWindow
+	(
+		windowName,
+		windowName,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		windowWidth,
+		windowHeight,
+		nullptr,
+		WindowProc
+	);
 
-	w.cbSize = sizeof(WNDCLASSEX);
+
+	/*w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc;
 	w.lpszClassName = windowName;
 	w.hInstance = GetModuleHandle(nullptr);
@@ -86,7 +101,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 		w.hInstance,
 		nullptr);
 
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(hwnd, SW_SHOW);*/
 
 
 
@@ -121,7 +136,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 	//modelDatas.reserve(99999);
 }
 
-void Library::roopStartProcess()
+void Library::loopStartProcess()
 {
 	startProsessTime = timeGetTime();
 
@@ -151,7 +166,7 @@ void Library::roopStartProcess()
 
 }
 
-void Library::roopEndProcess()
+void Library::loopEndProcess()
 {
 	//ソート
 	//dx12->sortModelData(modelDatas);
@@ -243,7 +258,6 @@ float Library::getRandomNumberRangeSelectFloat(const int& start, const int& end)
 {
 	return static_cast<float>(getRandomNumber(abs(end - start) + 1) + start);
 }
-
 
 #pragma region プライベート関数
 bool Library::checkSetKeyName(const std::string& key)
@@ -880,10 +894,10 @@ void Library::drawBox
 #pragma endregion
 
 #pragma region 削除
-void Library::deleteObject3DData(const ModelData& modelData)
+void Library::deleteModelData(const ModelData& modelData)
 {
-	dx12->deletePolygonData(modelData.key);
-	dx12->deleteHeapData(modelData.key);
+	dx12->deletePolygonData(modelData);
+	dx12->deleteHeapData(modelData);
 }
 
 

@@ -82,7 +82,7 @@ public:
 	/// </summary>
 	/// <param name="type"></param>
 	void setCollisionFlag3D(const CollisionFlag& type);
-
+	
 	/// <summary>
 	/// マウスカーソルとの判定をとるか設定します
 	/// </summary>
@@ -109,22 +109,23 @@ public:
 	/// </summary>
 	/// <param name="sort">ソートの仕方</param>
 	/// <param name="orderType">true 昇順  false 降順</param>
-	void setAddObjectSortState(const ObjectSort& sort, const bool& orderType);
+	void setAddObjectSortState(const ObjectSort& sort,const bool& orderType);
 
-
-	/// <summary>
-	/// オブジェクトの配列をソートします。
-	/// </summary>
-	/// <param name="sort">ソートの仕方</param>
-	/// <param name="orderType">true 昇順  false 降順</param>
-	void objectSort(const ObjectSort& sort, const bool& orderType);
+	
+/// <summary>
+/// オブジェクトの配列をソートします。
+/// </summary>
+/// <param name="sort">ソートの仕方</param>
+/// <param name="orderType">true 昇順  false 降順</param>
+	void objectSort(const ObjectSort& sort,const bool& orderType);
 #pragma endregion
 
-
+	
 
 	/// <summary>
-	/// 全てのオブジェクトを解放します
+	/// 全てのオブジェクトを配列から削除します
 	/// </summary>
-	void allDeleteObject();
+	void allEraseObject();
+
 };
 

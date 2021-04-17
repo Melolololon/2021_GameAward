@@ -34,10 +34,10 @@ void Game::run()
 	initialize();
 	while (1)
 	{
-		Library::roopStartProcess();
+		Library::loopStartProcess();
 		update();
 		draw();
-		Library::roopEndProcess();
+		Library::loopEndProcess();
 		if (Library::getIsEnd())break;
 	}
 
@@ -54,7 +54,7 @@ void Game::initialize()
 #pragma endregion
 
 
-#pragma region モデル読み込み
+#pragma region リソース読み込み
 	Player::loadModel();
 	TargetObject::loadModel();
 	Block::loadModel();
@@ -62,6 +62,8 @@ void Game::initialize()
 	MoveEnemy::loadModel();
 	ShotEnemy::loadModel();
 
+	StageSelect::loadResources();
+	Play::loadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
@@ -71,9 +73,7 @@ void Game::initialize()
 	f.sphere = true;
 	ObjectManager::getInstance()->setCollisionFlag3D(f);
 
-	SceneManager::getInstace()->initialize();
-	SceneManager::getInstace()->addScene("StageSelect", new StageSelect());
-	SceneManager::getInstace()->addScene("Play", new Play());
+	SceneManager::getInstace()->initialize(new StageSelect());
 #pragma endregion
 
 }

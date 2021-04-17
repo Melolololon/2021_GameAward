@@ -76,6 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -84,6 +86,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -182,8 +186,10 @@
     <ClCompile Include="CreatePolygon.cpp" />
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="DirectX12.cpp" />
+    <ClCompile Include="DirectXStruct.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="LibMath.cpp" />
+    <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="ModelBone.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
@@ -448,6 +454,7 @@
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
     <ClInclude Include="LibMath.h" />
+    <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelBone.h" />
     <ClInclude Include="ModelLoader.h" />

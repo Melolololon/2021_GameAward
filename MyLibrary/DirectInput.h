@@ -47,6 +47,9 @@ enum MouseButton
 class DirectInput
 {
 private:
+	DirectInput(){}
+	~DirectInput(){}
+
 	//列挙用コールバック
 	static BOOL CALLBACK diEnumDevicesCallBack(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 	static BOOL CALLBACK diEnumDevicesObjectCallBack(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
@@ -120,6 +123,12 @@ public:
 	static bool keyTrigger(const BYTE& keyDef);
 	//離した瞬間か
 	static bool keyRelease(const BYTE& keyDef);
+
+	/// <summary>
+	/// キーの文字を返します
+	/// </summary>
+	/// <returns></returns>
+	static char keyChar();
 
 	/// <summary>
 	/// アローキーが何度を示しているかを角度で返します。	
