@@ -28,6 +28,7 @@ private:
 
 #pragma region ƒJƒƒ‰
 	Vector3 cameraPosition;
+	Vector3 addCameraPosition;
 	Vector3 cameraTarget;
 #pragma endregion
 

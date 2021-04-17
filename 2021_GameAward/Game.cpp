@@ -48,7 +48,7 @@ void Game::initialize()
 {
 #pragma region ライブラリ初期化_設定
 	Library::initialize(1280, 720, { 0,0,0,255 }, L"メビウスネーク");
-	Library::setCameraNearAndFar(0.1f, 100.0f);
+	Library::setCameraNearAndFar(0.1f, 400.0f);
 	
 	Library::setFramesPerSecond60(true);
 #pragma endregion
