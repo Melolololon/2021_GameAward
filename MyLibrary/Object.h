@@ -14,14 +14,14 @@ public:
 
 protected:
 	//座標
-	Vector3 position;
+	Vector3 position = { 0,0,0 };
 	//向き
-	Vector3 velocity;
+	Vector3 velocity = { 0,0,0 };
 	//移動速度
-	Vector3 speed;
+	Vector3 speed = { 0,0,0 };
 
 	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
-	bool eraseManager;
+	bool eraseManager = false;
 
 
 #pragma region 判定データ
@@ -33,7 +33,7 @@ protected:
 	std::vector<BoardData>boardData;
 #pragma endregion
 
-	CollisionFlag collisionFlag;
+	CollisionFlag collisionFlag = { false,false,false,false,false,false };
 public:
 
 	//コンストラクタ
@@ -56,19 +56,20 @@ public:
 	/// <param name="arrayNum">何個目の判定に当たったか</param>
 	virtual void hit
 	(
-		const Object *const  object,
+		const Object* const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	);
 
 	virtual void* getPtr();
 
-	//オブジェクトマネージャーから削除するか同課のフラグを返す
+	//オブジェクトマネージャーから削除するかどうかのフラグを返す
 	bool getEraseManager();
+
 
 	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
 	void objectInitialize();
-	
+
 	Vector3 getPosition() { return position; };
 
 	//判定用関数
@@ -78,11 +79,11 @@ public:
 	std::vector<LineSegmentData> getLineSegmentData();
 	std::vector<PlaneData> getPlaneData();
 	std::vector<BoardData> getBoardData();
-	Vector3& getLineSegmentHitPosition(const int & num);
-	Vector3& getBoardHitPosition(const int & num);
-	BoxHitDirection& getSphereBoxHitDistance(const int & num) { return sphereData[num].boxHitDistance; }
-	BoxHitDirection& getBoxBoxHitDistance(const int & num) { return boxData[num].boxHitDistance; }
+	Vector3& getLineSegmentHitPosition(const int& num);
+	Vector3& getBoardHitPosition(const int& num);
+	BoxHitDirection& getSphereBoxHitDistance(const int& num) { return sphereData[num].boxHitDistance; }
+	BoxHitDirection& getBoxBoxHitDistance(const int& num) { return boxData[num].boxHitDistance; }
 
 
-	
+
 };
