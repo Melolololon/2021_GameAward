@@ -30,13 +30,6 @@ struct ModelData
 	VertexType type;//頂点構造体の種類
 };
 
-//モデルのデータを所持し、スコープから外れた時にモデルを自動的に削除します
-struct SmartModelData
-{
-	SmartModelData();
-	~SmartModelData();
-	ModelData modelData;
-};
 
 #pragma endregion
 

@@ -132,9 +132,6 @@
     <ClCompile Include="LibWinAPI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXStruct.cpp">
-      <Filter>ソース ファイル\Struct</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
