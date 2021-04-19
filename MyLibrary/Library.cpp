@@ -825,7 +825,7 @@ void Library::drawSprite
 {
 	//dx12->spriteSetObjectPosition({ position.x,position.y }, *spriteNumber);
 	dx12->spriteMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,false);
 }
 
 void Library::drawSpriteAnimation
@@ -840,7 +840,7 @@ void Library::drawSpriteAnimation
 	//この順番じゃないとuvがちゃんとセットされない
 	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
 	dx12->setSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
 void Library::drawSpriteAnimation2
@@ -867,16 +867,67 @@ void Library::drawSpriteAnimation2
 		currentEndNum.y
 	);
 
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
-void Library::drawPointTexture(Vector3 pos, point point, texture texture, int num)
+void Library::drawSprite3D
+(
+	const Vector3& position,
+	const Vector2& size,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
+{
+	dx12->spriteMap3D
+	(
+		position.toXMFLOAT3(),
+		size.toXMFLOAT2(),
+		*spriteNumber, 
+		textureNumber
+	);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
+}
+
+void Library::drawSprite3DAnimation
+(
+	const Vector3& position,
+	const Vector2& size,
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
+{
+	dx12->spriteMap3D
+	(
+		position.toXMFLOAT3(),
+		size.toXMFLOAT2(),
+		*spriteNumber,
+		textureNumber
+	);
+	dx12->setSprite3DAnimation
+	(
+		leftUpPos.toXMFLOAT2(),
+		rightDownPos.toXMFLOAT2(),
+		*spriteNumber,
+		textureNumber
+	);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
+}
+
+void Library::drawPointTexture
+(
+	Vector3 pos, 
+	point point, 
+	texture texture, 
+	int num
+)
 {
 	dx12->pointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
 }
 
-#pragma region べた塗
-void Library::drawBox
+#pragma region 形状
+void Library::drawSpriteBox
 (
 	const Vector2& position,
 	const Vector2& size,
@@ -886,8 +937,22 @@ void Library::drawBox
 {
 	setSpriteAddColor(color, spriteHandle);
 	dx12->spriteMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
-	dx12->spriteSetCmdList(*spriteHandle, 0);
+	dx12->spriteSetCmdList(*spriteHandle, 0,false);
 }
+
+void Library::drawSprite3DBox
+(
+	const Vector3& position,
+	const Vector2& size,
+	const Color& color,
+	const sprite& spriteHandle
+)
+{
+	setSpriteAddColor(color, spriteHandle);
+	dx12->spriteMap3D(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->spriteSetCmdList(*spriteHandle, 0,true);
+}
+
 #pragma endregion
 
 
@@ -1043,7 +1108,11 @@ void Library::setSpriteScale(Vector2 scale, sprite sptiteNumber)
 }
 void Library::setSpriteAngle(float angle, sprite spriteNumber)
 {
-	dx12->spriteSetObjectAngle(angle, *spriteNumber);
+	dx12->spriteSetObjectAngle({0,0,angle }, *spriteNumber);
+}
+void Library::setSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber)
+{
+	dx12->spriteSetObjectAngle(angle.toXMFLOAT3(), *spriteNumber);
 }
 
 void changeSpriteSize(Vector2 size, int *spriteData)
@@ -1211,6 +1280,18 @@ void Library::setParentOBJBoneMoveVectorImpact
 #pragma endregion
 
 #pragma region アニメーション
+
+void Library::setPointBoardAnimation
+(
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	const point& p,
+	const int& num
+)
+{
+
+}
+
 //
 //void Library::changeAnimation(vertex createNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
 //{

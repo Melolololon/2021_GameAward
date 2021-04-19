@@ -7,6 +7,8 @@ ModelData TargetObject::modelData;
 int TargetObject::createCount;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
+std::vector<sprite> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
+std::vector<sprite> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
 
 TargetObject::TargetObject(const Vector3& pos) 
 {
@@ -25,7 +27,13 @@ void TargetObject::loadModel()
 
 	modelData.key = "tergetObject";
 	Library::create3DBox({ 2,5,2 }, modelData);
-	Library::createHeapData2({120,200,120,255}, CREATE_NUMBER, modelData);
+	Library::createHeapData2({ 120,200,120,255 }, CREATE_NUMBER, modelData);
+
+	/*for (int i = 0; i < CREATE_NUMBER; i++) 
+	{
+		Library::createSprite(&lifeGaugeSprite[i]);
+		Library::createSprite(&lifeGaugeFreamSprite[i]);
+	}*/
 }
 
 void TargetObject::setHeapNum()
@@ -72,6 +80,8 @@ void TargetObject::draw()
 {
 	
 	Library::drawGraphic(modelData, heapNum);
+
+	
 }
 
 

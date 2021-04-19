@@ -123,17 +123,20 @@ private:
 	//vectorじゃなくて普通の配列にする?
 	std::vector<ComPtr<ID3D12PipelineState>> pipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> spritePipelineStates;
+	std::vector<ComPtr<ID3D12PipelineState>> sprite3DPipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> pointPipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> objPipelineStates;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC spriteGpipeline;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC sprite3DGpipeline;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pointGpipeline;
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc;
 	int startPipelineCreateNum;//Initialize時に作る3Dのパイプライン数
 
 	int pipelineNum;
 	int spritePipelineNum;
+	int sprite3DPipelineNum;
 
 
 #pragma endregion
@@ -285,13 +288,13 @@ private:
 
 #pragma endregion
 
-
 	std::unordered_map<std::string, std::vector<Material>>materials;
+
 
 
 	//std::vector<DirectX::XMVECTOR> spritePosition;
 	std::vector<DirectX::XMFLOAT2> spriteScale;
-	std::vector<float> spriteAngle;
+	std::vector<DirectX::XMFLOAT3> spriteAngle;
 
 
 
@@ -393,11 +396,12 @@ private:
 	bool isBillBoardY;
 	bool isBillBoardZ;
 
-	bool smoothing;
+	bool smoothingFlag;
 #pragma endregion
 
 
 #pragma region スプライトフォント
+	const int SPRITEFONT_MAX = 300;
 	std::vector<SpriteFontData>spriteFontData;
 #pragma endregion
 
@@ -494,6 +498,9 @@ private:
 
 #pragma endregion
 
+#pragma region map処理
+	void calcBillboardMat(DirectX::XMMATRIX& matWorld);
+#pragma endregion
 
 
 	/// <summary>
@@ -691,11 +698,24 @@ public:
 	void setCmdList(const ModelData& modelData, int number);
 	void map(const ModelData& modelData, int number);
 
-	void spriteSetCmdList(int spriteNum, int textureNum);
+	void spriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
 
 	void spriteMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, int spriteNum, int textureNum);
+	void spriteMap3D
+	(
+		const DirectX::XMFLOAT3& position,
+		const DirectX::XMFLOAT2& size ,
+		const int& spriteNumber,
+		const int& textureNumber
+	);
 
-	void pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int textureNum, int num);
+	void pointSetCmdList
+	(
+		DirectX::XMFLOAT3 pos, 
+		int pointNum, 
+		int textureNum, 
+		int num
+	);
 
 #pragma endregion
 
@@ -758,7 +778,7 @@ public:
 
 	void spriteSetObjectPosition(DirectX::XMFLOAT2 position, int spriteNum);
 	void spriteSetObjectScale(DirectX::XMFLOAT2 scale, int spriteNum);
-	void spriteSetObjectAngle(float angle, int spriteNum);
+	void spriteSetObjectAngle(const DirectX::XMFLOAT3& angle,const int& spriteNum);
 
 	void changeSpriteSize(DirectX::XMFLOAT2 size, int spriteData);
 
@@ -882,6 +902,21 @@ public:
 
 #pragma region アニメーション
 
+	/// <summary>
+	/// 点から生成した板ポリゴンの表示範囲を設定します。
+	/// </summary>
+	/// <param name="leftUpPos">テクスチャの左上座標</param>
+	/// <param name="rightDownPos">テクスチャの右下座標</param>
+	/// <param name="p">点</param>
+	/// <param name="num">番号</param>
+	//void setPointBoardAnimation
+	//(
+	//	const DirectX::XMFLOAT2& leftUpPos,
+	//	const DirectX::XMFLOAT2& rightDownPos,
+	//	const int& p,
+	//	const int& num
+	//);
+
 	//void setAnimation(int polyNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
 	//void setAnimation2(int polyNum, int dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
@@ -893,6 +928,15 @@ public:
 		const DirectX::XMFLOAT2& currentNumber
 	);
 	void setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
+
+	void setSprite3DAnimation
+	(
+		DirectX::XMFLOAT2 leftUpPosition,
+	    DirectX::XMFLOAT2 rightDownPosition,
+		const int& spriteNumber,
+		const int& textureNumber
+	);
+
 #pragma endregion
 
 

@@ -76,7 +76,7 @@ void Player::initialize()
 	hp = iMap["hp"];
 	isMuteki = false;
 	mutekiTimer = 0;
-	mutekiTime = 60 * 1;
+	mutekiTime = 60 * 3;
 #pragma endregion
 
 	boneMovePos.resize(boneNum, 0.0f);

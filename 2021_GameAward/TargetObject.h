@@ -1,5 +1,7 @@
 #pragma once
 #include"Object.h"
+
+//”j‰ó‘ÎÛ(âK)
 class TargetObject :public Object
 {
 
@@ -9,10 +11,13 @@ private:
 	static const int CREATE_NUMBER;
 	int heapNum;
 	static ModelData modelData;
+	static std::vector<sprite> lifeGaugeSprite;
+	static std::vector<sprite> lifeGaugeFreamSprite;
 	/// <summary>
 	/// •Ï”heapNumŠÖŒWBinitialize‚É•K‚¸ŒÄ‚Ño‚·B
 	/// </summary>
 	void setHeapNum();
+	
 
 	//‘Ì—Í
 	int hp;
