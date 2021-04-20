@@ -41,7 +41,7 @@ void Play::loadResources()
 void Play::initialize()
 {
 	player = std::make_shared<Player>();
-	enemy = std::make_shared<ShotEnemy>();
+	enemy = std::make_shared<FleeEnemy>();
 	enemy->setPPlayer(player.get());
 	enemy->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
 	ObjectManager::getInstance()->addObject(player);

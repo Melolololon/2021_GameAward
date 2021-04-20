@@ -27,7 +27,7 @@ void ShotEnemy::update()
 	{
 		//‚±‚±‚É’e‚ðŒ‚‚Âˆ—
 		if (shotWaitTimer == 60)
-			ObjectManager::getInstance()->addObject(new EnemyBullet(position, velocity));
+			ObjectManager::getInstance()->addObject(std::make_shared<EnemyBullet>(position, velocity));
 
 		shotWaitTimer--;
 
