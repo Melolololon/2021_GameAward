@@ -83,7 +83,7 @@ void Player::initialize()
 	bonePos.resize(boneNum);
 	for (int i = 0; i < boneNum; i++)
 		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
-		
+		  
 #pragma region ‚Ð‚Ë‚è
 	rotateFlag = false;
 	twistAngles.resize(boneNum);
