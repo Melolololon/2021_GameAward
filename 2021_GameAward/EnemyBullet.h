@@ -1,18 +1,15 @@
 #pragma once
 #include"Object.h"
-#include"Player.h"
-
-class Enemy : public Object
+class EnemyBullet :public Object
 {
-protected:
+private:
+
 #pragma region モデル関係
 
 	static ModelData modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
-	//プレイヤーのポインタ
-	Player* pPlayer;
 
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
@@ -20,16 +17,16 @@ protected:
 	void setHeapNum();
 #pragma endregion
 
-#pragma region 共通パラメータ
-	Vector3 position;
-	Vector3 velocity;
-	float moveSpeed = 0.15f;
-	int hp = 3;
+	int deadTimer;
+	int deadTime;
 
-#pragma endregion
-
-	//初期化と更新は各クラスでオーバーライド
 public:
+	EnemyBullet(const Vector3& pos,const Vector3& vel);
+	~EnemyBullet();
+
+
+	static void loadModel();
+
 	void initialize()override;
 	void update()override;
 	void draw()override;
@@ -40,12 +37,5 @@ public:
 		const int& arrayNum
 	)override;
 
-	/// <summary>
-	/// モデル読み込み
-	/// </summary>
-	static void loadModel();
-
-	void setPPlayer(Player* p) { pPlayer = p; };
-	void setPosition(Vector3 pos);
 };
 

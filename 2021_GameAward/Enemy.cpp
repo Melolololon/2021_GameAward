@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "PlayerBullet.h"
 ModelData Enemy::modelData;
 int Enemy::createCount;
 const int Enemy::CREATE_NUMBER = 1;
@@ -23,6 +24,17 @@ void Enemy::draw()
 {
 	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	Library::drawGraphic(modelData, heapNum);
+
+}
+
+void Enemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+{
+	//Œ‹\‹·‚¢Œ„ŠÔ‚Å‚à’Ê‚ê‚¿‚á‚¤‚©‚çC³‚·‚é‚©AŒ„ŠÔ‚ª‚Å‚«‚È‚¢‚æ‚¤‚É‚·‚é
+	if (typeid(*object) == typeid(Player) ||
+		typeid(*object) == typeid(PlayerBullet))
+	{
+
+	}
 
 }
 

@@ -1,6 +1,7 @@
 #include "Play.h"
 #include "MoveEnemy.h"
 #include "ShotEnemy.h"
+#include "FleeEnemy.h"
 #include"ObjectManager.h"
 #include"XInputManager.h"
 

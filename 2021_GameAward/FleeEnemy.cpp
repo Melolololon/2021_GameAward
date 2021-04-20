@@ -1,14 +1,15 @@
-#include "ShotEnemy.h"
+#include "FleeEnemy.h"
 #include "EnemyBullet.h"
 #include "ObjectManager.h"
 
-void ShotEnemy::initialize()
+void FleeEnemy::initialize()
 {
 	setHeapNum();
-	hp = 2;
+	hp = 1;
+
 }
 
-void ShotEnemy::update()
+void FleeEnemy::update()
 {
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->getHeadPosition().x - position.x, pPlayer->getHeadPosition().y - position.y, pPlayer->getHeadPosition().z - position.z };
@@ -18,30 +19,38 @@ void ShotEnemy::update()
 	//一定間隔以上なら座標更新
 	if (sqrt((pPlayer->getHeadPosition().x - position.x) * (pPlayer->getHeadPosition().x - position.x) +
 		(pPlayer->getHeadPosition().y - position.y) * (pPlayer->getHeadPosition().y - position.y) +
-		(pPlayer->getHeadPosition().z - position.z) * (pPlayer->getHeadPosition().z - position.z)) >= 20 && shotWaitTimer == 60)
+		(pPlayer->getHeadPosition().z - position.z) * (pPlayer->getHeadPosition().z - position.z)) >= 20 && escapeTimer == 300)
 	{
 		position = position + velocity * moveSpeed;
 	}
 	//距離が一定未満だったら停止・弾を撃つ
 	else
 	{
-		//ここに弾を撃つ処理
-		if (shotWaitTimer == 60)
-			ObjectManager::getInstance()->addObject(new EnemyBullet(position, velocity));
+		//逃げる
+		if (escapeTimer < 300 - 60 * 2)
+		{
+			position = position - velocity * moveSpeed * 2;
+		}
+		//とまる
+		else
+		{
 
-		shotWaitTimer--;
+		}
+
+		escapeTimer--;
 
 	}
-	if (shotWaitTimer < 0) shotWaitTimer = 60;
+	if (escapeTimer < 0) escapeTimer = 300;
+
 	setPosition(position);
 
 }
 
-void ShotEnemy::loadModel()
+void FleeEnemy::loadModel()
 {
 	std::string mtl;
 
-	modelData.key = "shotenemy";
+	modelData.key = "fleeenemy";
 	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
-	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+	Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
 }

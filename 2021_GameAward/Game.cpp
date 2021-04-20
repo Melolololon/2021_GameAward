@@ -16,6 +16,8 @@
 #include"Block.h"
 #include"MoveEnemy.h"
 #include"ShotEnemy.h"
+#include"FleeEnemy.h"
+#include"EnemyBullet.h"
 #pragma endregion
 
 
@@ -59,8 +61,10 @@ void Game::initialize()
 	TargetObject::loadModel();
 	Block::loadModel();
 	PlayerBullet::loadModel();
+	EnemyBullet::loadModel();
 	MoveEnemy::loadModel();
 	ShotEnemy::loadModel();
+	FleeEnemy::loadModel();
 
 	StageSelect::loadResources();
 	Play::loadResources();

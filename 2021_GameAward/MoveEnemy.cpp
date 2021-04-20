@@ -3,6 +3,14 @@
 void MoveEnemy::initialize()
 {
 	setHeapNum();
+	hp = 3;
+
+	collisionFlag.sphere = true;
+
+	sphereData.resize(1);
+	sphereData[0].position = position;
+	sphereData[0].r = 0.5f;
+	
 }
 
 void MoveEnemy::update()

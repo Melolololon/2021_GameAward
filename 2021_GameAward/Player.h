@@ -91,6 +91,8 @@ public:
 		const int& arrayNum
 	)override;
 	void* getPtr()override;
+	void setHp(int hp) { this->hp = hp; }
+	int GetHp() { return hp; }
 
 	/// <summary>
 	/// ƒ‚ƒfƒ‹“Ç‚İ‚İ
