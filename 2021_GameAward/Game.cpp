@@ -96,6 +96,7 @@ void Game::end()
 
 void Game::update()
 {
+
 	SceneManager::getInstace()->update();
 
 }

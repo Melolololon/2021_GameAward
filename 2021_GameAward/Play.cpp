@@ -33,6 +33,7 @@ Play::~Play(){}
 
 void Play::loadResources()
 {
+	//ƒŠƒ\[ƒX‚Ì“Ç‚İ‚İ
 	Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");
 }
