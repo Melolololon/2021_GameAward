@@ -114,7 +114,7 @@ void Player::initialize()
 	for (int i = 0; i < boneNum; i++)
 	{
 		sphereData[i].position = bonePos[i];
-		sphereData[i].r = 0.25f;
+		sphereData[i].r = 0.4f;
 	}
 
 #pragma endregion
@@ -302,7 +302,7 @@ void Player::update()
 
 	if (shotTimer >= shotTime)
 		shotTimer = 0;
-	if (twistAngles[boneNum - 1] == 0)
+	if (twistAngles[0] == 0)
 		shotTimer++;
 
 	if (shotTimer >= shotTime)
