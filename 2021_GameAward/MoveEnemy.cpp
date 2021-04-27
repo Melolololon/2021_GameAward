@@ -1,5 +1,14 @@
 #include "MoveEnemy.h"
 
+ModelData MoveEnemy::modelData;
+int MoveEnemy::createCount;
+const int MoveEnemy::CREATE_NUMBER = 1;
+
+MoveEnemy::MoveEnemy()
+{
+	initialize();
+}
+
 void MoveEnemy::initialize()
 {
 	setHeapNum();
@@ -25,6 +34,13 @@ void MoveEnemy::update()
 	setPosition(position);
 }
 
+void MoveEnemy::draw()
+{
+	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	Library::drawGraphic(modelData, heapNum);
+
+}
+
 void MoveEnemy::loadModel()
 {
 	std::string mtl;
@@ -34,3 +50,15 @@ void MoveEnemy::loadModel()
 	Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
 }
 
+void MoveEnemy::setHeapNum()
+{
+	heapNum = createCount;
+	createCount++;
+	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
+}
+
+void MoveEnemy::setPosition(Vector3 pos)
+{
+	position = pos;
+	Library::setPosition(position, modelData, heapNum);
+}

@@ -42,11 +42,27 @@ void Play::loadResources()
 void Play::initialize()
 {
 	player = std::make_shared<Player>();
-	enemy = std::make_shared<FleeEnemy>();
-	enemy->setPPlayer(player.get());
-	enemy->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
+	
+	//“G’Ç‰Á
+	std::shared_ptr<Enemy> enemy1 = std::make_shared<MoveEnemy>();
+	enemy1->setPPlayer(player.get());
+	enemy1->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
+	enemies.push_back(enemy1);
+	std::shared_ptr<Enemy> enemy2 = std::make_shared<ShotEnemy>();
+	enemy2->setPPlayer(player.get());
+	enemy2->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
+	enemies.push_back(enemy2);
+	std::shared_ptr<Enemy> enemy3 = std::make_shared<FleeEnemy>();
+	enemy3->setPPlayer(player.get());
+	enemy3->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
+	enemies.push_back(enemy3);
+
+
 	ObjectManager::getInstance()->addObject(player);
-	ObjectManager::getInstance()->addObject(enemy);
+
+	for (int i = 0; i < enemies.size(); i++) {
+		ObjectManager::getInstance()->addObject(enemies[i]);
+	}
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SETTARGET;
 

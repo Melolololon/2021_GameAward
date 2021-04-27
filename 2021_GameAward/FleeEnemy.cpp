@@ -1,6 +1,13 @@
 #include "FleeEnemy.h"
-#include "EnemyBullet.h"
-#include "ObjectManager.h"
+
+ModelData FleeEnemy::modelData;
+int FleeEnemy::createCount;
+const int FleeEnemy::CREATE_NUMBER = 1;
+
+FleeEnemy::FleeEnemy()
+{
+	initialize();
+}
 
 void FleeEnemy::initialize()
 {
@@ -46,6 +53,13 @@ void FleeEnemy::update()
 
 }
 
+void FleeEnemy::draw()
+{
+	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	Library::drawGraphic(modelData, heapNum);
+
+}
+
 void FleeEnemy::loadModel()
 {
 	std::string mtl;
@@ -53,4 +67,17 @@ void FleeEnemy::loadModel()
 	modelData.key = "fleeenemy";
 	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
 	Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
+}
+
+void FleeEnemy::setHeapNum()
+{
+	heapNum = createCount;
+	createCount++;
+	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
+}
+
+void FleeEnemy::setPosition(Vector3 pos)
+{
+	position = pos;
+	Library::setPosition(position, modelData, heapNum);
 }

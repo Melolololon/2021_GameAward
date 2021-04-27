@@ -5,6 +5,8 @@
 #include"Enemy.h"
 #include"Block.h"
 #include"TargetObject.h"
+#include<vector>
+
 class Play :
 	public Scene
 {
@@ -20,7 +22,7 @@ public:
 
 private:
 	std::shared_ptr<Player> player;
-	std::shared_ptr<Enemy> enemy;
+	std::vector<std::shared_ptr<Enemy>> enemies;
 
 
 	//ƒQ[ƒ€ó‘Ô
