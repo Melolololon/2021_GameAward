@@ -15,6 +15,12 @@ void ShotEnemy::initialize()
 {
 	setHeapNum();
 	hp = 2;
+
+	collisionFlag.sphere = true;
+
+	sphereData.resize(1);
+	sphereData[0].position = position;
+	sphereData[0].r = OBJSIZE / 2;
 }
 
 void ShotEnemy::update()
@@ -53,12 +59,16 @@ void ShotEnemy::draw()
 
 }
 
+void ShotEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+{
+}
+
 void ShotEnemy::loadModel()
 {
 	std::string mtl;
 
 	modelData.key = "shotenemy";
-	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
+	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
 	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
 }
 
@@ -72,5 +82,6 @@ void ShotEnemy::setHeapNum()
 void ShotEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
+	sphereData[0].position = position;
 	Library::setPosition(position, modelData, heapNum);
 }

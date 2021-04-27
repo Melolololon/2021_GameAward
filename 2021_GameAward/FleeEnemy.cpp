@@ -14,6 +14,12 @@ void FleeEnemy::initialize()
 	setHeapNum();
 	hp = 1;
 
+	collisionFlag.sphere = true;
+
+	sphereData.resize(1);
+	sphereData[0].position = position;
+	sphereData[0].r = OBJSIZE / 2;
+
 }
 
 void FleeEnemy::update()
@@ -60,12 +66,16 @@ void FleeEnemy::draw()
 
 }
 
+void FleeEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+{
+}
+
 void FleeEnemy::loadModel()
 {
 	std::string mtl;
 
 	modelData.key = "fleeenemy";
-	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
+	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
 	Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
 }
 
@@ -79,5 +89,6 @@ void FleeEnemy::setHeapNum()
 void FleeEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
+	sphereData[0].position = position;
 	Library::setPosition(position, modelData, heapNum);
 }

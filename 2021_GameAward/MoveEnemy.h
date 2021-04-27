@@ -18,6 +18,12 @@ public:
 	void initialize()override;
 	void update()override;
 	void draw()override;
+	void hit
+	(
+		const Object* const  object,
+		const CollisionType& collisionType,
+		const int& arrayNum
+	)override;
 
 	/// <summary>
 /// 変数heapNum関係。initialize時に必ず呼び出す。

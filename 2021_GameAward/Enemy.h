@@ -7,9 +7,6 @@ class Enemy : public Object
 protected:
 #pragma region モデル関係
 
-	static ModelData modelData;
-	static int createCount;
-	static const int CREATE_NUMBER;
 	int heapNum;
 	//プレイヤーのポインタ
 	Player* pPlayer;
@@ -17,7 +14,7 @@ protected:
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
 	/// </summary>
-	void setHeapNum();
+	virtual void setHeapNum() = 0;
 #pragma endregion
 
 #pragma region 共通パラメータ
@@ -25,6 +22,7 @@ protected:
 	Vector3 velocity;
 	float moveSpeed = 0.15f;
 	int hp = 3;
+	static const float OBJSIZE;
 
 #pragma endregion
 
@@ -46,6 +44,6 @@ public:
 	static void loadModel();
 
 	void setPPlayer(Player* p) { pPlayer = p; };
-	void setPosition(Vector3 pos);
+	virtual void setPosition(Vector3 pos) = 0;
 };
 

@@ -1,4 +1,5 @@
 #include "MoveEnemy.h"
+#include "Block.h"
 
 ModelData MoveEnemy::modelData;
 int MoveEnemy::createCount;
@@ -18,7 +19,7 @@ void MoveEnemy::initialize()
 
 	sphereData.resize(1);
 	sphereData[0].position = position;
-	sphereData[0].r = 0.5f;
+	sphereData[0].r = OBJSIZE / 2;
 	
 }
 
@@ -41,12 +42,20 @@ void MoveEnemy::draw()
 
 }
 
+void MoveEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+{
+	if (typeid(*object) == typeid(Block))
+	{
+		
+	}
+}
+
 void MoveEnemy::loadModel()
 {
 	std::string mtl;
 
 	modelData.key = "moveenemy";
-	Library::create3DBox(Vector3{ 1,1,1 }, modelData);
+	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
 	Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
 }
 
@@ -60,5 +69,6 @@ void MoveEnemy::setHeapNum()
 void MoveEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
+	sphereData[0].position = position;
 	Library::setPosition(position, modelData, heapNum);
 }
