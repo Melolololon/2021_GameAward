@@ -12,18 +12,18 @@ struct Matrix
 	Matrix operator*(const Matrix& mat)const;
 	void operator*=(const Matrix& mat);
 	
-	std::array<float, 4>&operator[](const unsigned int& num);
-	std::array<float, 4>operator[](const unsigned int& num)const;
+	std::array<float, 4>&operator[](const unsigned int num);
+	std::array<float, 4>operator[](const unsigned int num)const;
 
 };
 
 
-Matrix getZeroMatrix();
+Matrix GetZeroMatrix();
 
-Matrix getIdentityMatrix();
-Matrix getRotateXMatrix(const float& angle);
-Matrix getRotateYMatrix(const float& angle);
-Matrix getRotateZMatrix(const float& angle);
-Matrix getScalingMatrix(const Vector3& vector);
-Matrix getTranslationMatrix(const Vector3& vector);
+Matrix GetIdentityMatrix();
+Matrix GetRotateXMatrix(const float angle);
+Matrix GetRotateYMatrix(const float angle);
+Matrix GetRotateZMatrix(const float angle);
+Matrix GetScalingMatrix(const Vector3& vector);
+Matrix GetTranslationMatrix(const Vector3& vector);
 

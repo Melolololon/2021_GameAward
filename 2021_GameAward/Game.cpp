@@ -25,83 +25,84 @@ Game::Game() {}
 
 Game::~Game() {}
 
-Game* Game::getInstance()
+Game* Game::GetInstance()
 {
 	static Game game;
 	return &game;
 }
 
-void Game::run()
+void Game::Run()
 {
-	initialize();
+	Initialize();
 	while (1)
 	{
-		Library::loopStartProcess();
-		update();
-		draw();
-		Library::loopEndProcess();
-		if (Library::getIsEnd())break;
+		Library::LoopStartProcess();
+		Update();
+		Draw();
+		Library::LoopEndProcess();
+		if (Library::GetIsEnd())break;
 	}
 
-	end();
+	Finitialize();
 }
 
-void Game::initialize()
+void Game::Initialize()
 {
 #pragma region ライブラリ初期化_設定
-	Library::initialize(1280, 720, { 0,0,0,255 }, L"メビウスネーク");
-	Library::setCameraNearAndFar(0.1f, 400.0f);
-	
-	Library::setFramesPerSecond60(true);
+	Library::Initialize(1280, 720, { 0,0,0,255 }, L"メビウスネーク");
+	Library::SetCameraNearAndFar(0.1f, 400.0f);
+
+	Library::SetFramesPerSecond60(true);
 #pragma endregion
 
 
 #pragma region リソース読み込み
-	Player::loadModel();
-	TargetObject::loadModel();
-	Block::loadModel();
-	PlayerBullet::loadModel();
-	EnemyBullet::loadModel();
-	MoveEnemy::loadModel();
-	ShotEnemy::loadModel();
-	FleeEnemy::loadModel();
+	Player::LoadResource();
+	TargetObject::LoadResource();
+	Block::LoadResource();
+	PlayerBullet::LoadResource();
+	EnemyBullet::LoadResource();
+	MoveEnemy::LoadResource();
+	ShotEnemy::LoadResource();
+	FleeEnemy::LoadResource();
 
-	StageSelect::loadResources();
-	Play::loadResources();
+	StageSelect::LoadResources();
+	Play::LoadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
-	ObjectManager::getInstance()->initialize();
-	ObjectManager::getInstance()->reserveObjectArray(200);
+	ObjectManager::GetInstance()->Initialize();
+	ObjectManager::GetInstance()->ReserveObjectArray(200);
 	CollisionFlag f;
 	f.sphere = true;
-	ObjectManager::getInstance()->setCollisionFlag3D(f);
+	f.box = true;
+	ObjectManager::GetInstance()->SetCollisionFlag3D(f);
 
-	SceneManager::getInstace()->initialize(new StageSelect());
+	SceneManager::GetInstace()->Initialize(new StageSelect());
 #pragma endregion
 
 }
 
 
-void Game::end()
+void Game::Finitialize()
 {
 #pragma region マネージャー終了
-	ObjectManager::getInstance()->end();
-	SceneManager::getInstace()->end();
+	ObjectManager::GetInstance()->Finitialize();
+	SceneManager::GetInstace()->Finitialize();
 #pragma endregion
 
 
-	Library::end();//絶対に最後に書く
+	Library::Finalize();//絶対に最後に書く
 }
 
-void Game::update()
+void Game::Update()
 {
 
-	SceneManager::getInstace()->update();
+	SceneManager::GetInstace()->Update();
 
 }
 
-void Game::draw()
+void Game::Draw()
 {
-	SceneManager::getInstace()->draw();
+	SceneManager::GetInstace()->Draw();
 }

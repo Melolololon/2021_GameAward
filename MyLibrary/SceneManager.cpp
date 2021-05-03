@@ -12,54 +12,54 @@ SceneManager::~SceneManager()
 
 }
 
-SceneManager* SceneManager::getInstace()
+SceneManager* SceneManager::GetInstace()
 {
 	static SceneManager inst;
 	return &inst;
 }
 
-void SceneManager::initialize(Scene* startScene)
+void SceneManager::Initialize(Scene* startScene)
 {
 	if (!startScene)
 		assert(0);
 
 	currentScene = startScene;
-	currentScene->initialize();
+	currentScene->Initialize();
 }
 
-void SceneManager::update()
+void SceneManager::Update()
 {
 
-	if (currentScene->getIsEnd())
+	if (currentScene->GetIsEnd())
 	{
 		//終了処理
-		currentScene->end();
+		currentScene->Finitialize();
 
 		//シーン切り替え
 		//シーンを保存
 		Scene* previousScene = currentScene;
 		//切り替え
-		currentScene = currentScene->getNextScene();
+		currentScene = currentScene->GetNextScene();
 		//同じポインタセット防止
 		if (currentScene == previousScene)assert(0);
 		//前のシーンを削除
 		delete previousScene;
 
 		//初期化
-		currentScene->falseIsEnd();
-		currentScene->initialize();
+		currentScene->FalseIsEnd();
+		currentScene->Initialize();
 	}
 
-	currentScene->update();
+	currentScene->Update();
 
 }
 
-void SceneManager::draw()
+void SceneManager::Draw()
 {
-	currentScene->draw();
+	currentScene->Draw();
 }
 
-void SceneManager::end()
+void SceneManager::Finitialize()
 {
 	if (currentScene)
 		delete currentScene;
@@ -67,7 +67,7 @@ void SceneManager::end()
 
 
 
-Scene* SceneManager::getCurrentScene()
+Scene* SceneManager::GetCurrentScene()
 {
 	return currentScene;
 }

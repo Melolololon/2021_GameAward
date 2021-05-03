@@ -1,7 +1,7 @@
 #include "Block.h"
 #include"SceneManager.h"
 
-ModelData Block::modelData;
+PrimitiveModel Block::modelData;
 int Block::createCount;
 const int Block::CREATE_NUMBER = 300;
 
@@ -10,12 +10,14 @@ bool Block::gameStart;
 
 Block::Block(const Vector3& pos, const Vector3& scale)
 {
-	initialize();
+	Initialize();
 	position = pos;
 	this->scale = scale;
 
-	Library::setScale(scale, modelData, heapNum);
-	Library::setPosition(position, modelData, heapNum);
+	/*Library::setScale(scale, modelData, heapNum);
+	Library::setPosition(position, modelData, heapNum);*/
+	modelData.SetScale(scale, heapNum);
+	modelData.SetPosition(position, heapNum);
 }
 
 
@@ -23,16 +25,17 @@ Block::~Block()
 {
 }
 
-void Block::loadModel()
+void Block::LoadResource()
 {
 	std::string mtl;
 
-	modelData.key = "block";
-	//Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
-	//Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);
-	Library::create3DBox({ 1,1,1 }, modelData);
-	Library::createHeapData2({ 150,150,150,255 }, CREATE_NUMBER, modelData);
+	//modelData.key = "block";
+	////Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
+	////Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);
+	//Library::create3DBox({ 1,1,1 }, modelData);
+	//Library::createHeapData2({ 150,150,150,255 }, CREATE_NUMBER, modelData);
 
+	modelData.CreateBox({ 1,1,1 }, { 150,150,150,255 }, CREATE_NUMBER);
 }
 
 void Block::setHeapNum()
@@ -42,7 +45,7 @@ void Block::setHeapNum()
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
-void Block::initialize()
+void Block::Initialize()
 {
 
 	setHeapNum();
@@ -55,16 +58,17 @@ void Block::initialize()
 	scale = 1;
 
 
-	Library::setScale(scale, modelData, heapNum);
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setScale(scale, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetScale(scale, heapNum);
+	modelData.SetPosition(position, heapNum);
 
-	
 }
 
-void Block::update()
+void Block::Update()
 {
 
-	if(gameStart)
+	if (gameStart)
 	{
 		boxData[0].position = position;
 		boxData[0].size = scale;
@@ -77,21 +81,22 @@ void Block::update()
 
 }
 
-void Block::draw()
+void Block::Draw()
 {
-	Library::drawGraphic(modelData, heapNum);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 }
 
-void Block::hit
+void Block::Hit
 (
-	const Object *const  object,
+	const Object* const  object,
 	const CollisionType& collisionType,
 	const int& arrayNum
 )
 {
 }
 
-void* Block::getPtr()
+void* Block::GetPtr()
 {
 	return this;
 }

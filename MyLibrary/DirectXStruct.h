@@ -14,6 +14,7 @@ using namespace Microsoft::WRL;
 //これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
 //これパイプラインセットするときに設定するようにする?
 //その場合、ヒープの構造体も作ったほうがいい?
+//これ新しいヘッダーファイル作ってそこに書く?(DirectXに直接関わらないし)
 enum VertexType
 {
 	VERTEX_TYPE_NONE,//未設定(まだ頂点バッファを生成していない)
@@ -23,10 +24,10 @@ enum VertexType
 
 };
 
-//モデルのデータを所持します
+//モデルのデータを所持します。
 struct ModelData
 {
-	std::string key;
+	std::string key;//モデルデータを呼び出すための文字列
 	VertexType type;//頂点構造体の種類
 };
 
@@ -36,18 +37,13 @@ struct ModelData
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報
 //頂点バッファで送る情報
+//Vertex.h作ってそっちに実装する
 #pragma region 頂点構造体
 
 
 
-struct Vertex
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
-	DirectX::XMFLOAT3 normal;
-};
 
-struct OBJAnimationVertex
+struct ObjAnimationVertex
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;
@@ -55,6 +51,16 @@ struct OBJAnimationVertex
 	UINT boneNumber;
 };
 
+struct Vertex
+{
+	/*Vertex();
+	Vertex(const Vertex& vertex);
+	Vertex(const ObjAnimationVertex& objVertex);
+	~Vertex();*/
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
+	DirectX::XMFLOAT3 normal;
+};
 
 struct SpriteVertex
 {
@@ -62,11 +68,12 @@ struct SpriteVertex
 	DirectX::XMFLOAT2 uv;
 };
 
- 
+
 struct PointVertex
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 scale;
+	//DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT4 color;
 
 };
@@ -103,17 +110,56 @@ struct PMDHeader
 
 #pragma region 定数構造体
 
-struct ConstBufferData
+struct ModelConstData
 {
-	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT3 position = {0,0,0};
+	DirectX::XMFLOAT3 scale = {1,1,1};
+	DirectX::XMFLOAT3 angle = {0,0,0};
+	DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
+	DirectX::XMFLOAT4 subColor = {0,0,0,0};
+	DirectX::XMFLOAT4 mulColor = {1,1,1,1};
+	float pushPolygonNum = 0.0f;
+
+};
+
+struct SpriteConstData
+{
+	DirectX::XMFLOAT3 position = { 0,0,0 };
+	DirectX::XMFLOAT2 scale = { 1,1 };
+	DirectX::XMFLOAT3 angle = { 0,0,0 };
+	DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
+	DirectX::XMFLOAT4 subColor = { 0,0,0,0 };
+	DirectX::XMFLOAT4 mulColor = { 1,1,1,1 };
+};
+
+//表示してるモデル1つ1つが違う値の構造体
+struct BoneData
+{
+	//0,0,0から、どのくらい動かすかを表したfloat3
+	DirectX::XMFLOAT3 moveVector = {0,0,0};
+	DirectX::XMFLOAT3 scale = {1,1,1};
+	DirectX::XMFLOAT3 angle = {0,0,0};
+};
+
+//ボーンの親をセットするときにセットする値
+struct ParentBoneData
+{
+	int parentBoneNum = -1;//-1を未セットにするため、int型
+	DirectX::XMFLOAT3 angleImpact = {1,1,1};
+	DirectX::XMFLOAT3 scaleImpact = {1,1,1};
+	DirectX::XMFLOAT3 moveVectorImpact = {1,1,1};
+};
+
+struct ModelConstBufferData
+{
+	DirectX::XMMATRIX boneMat[64];
 	DirectX::XMMATRIX mat;
 	DirectX::XMMATRIX normalMat;
+	DirectX::XMMATRIX worldMat;
 	DirectX::XMFLOAT4 mulColor;
 	DirectX::XMFLOAT4 addColor;
 	DirectX::XMFLOAT4 subColor;
 	float ex;
-	DirectX::XMMATRIX worldMat;
-	DirectX::XMMATRIX boneMat[64];
 };
 
 struct CommonConstData
@@ -127,9 +173,10 @@ struct CommonConstData
 
 struct SpriteConstBufferData
 {
-	DirectX::XMFLOAT4 color;
-	DirectX::XMFLOAT4 addColor;
 	DirectX::XMMATRIX mat;
+	DirectX::XMFLOAT4 mulColor;
+	DirectX::XMFLOAT4 addColor;
+	DirectX::XMFLOAT4 subColor;
 };
 
 struct PointConstBufferData
@@ -154,13 +201,13 @@ struct Material
 	Material()
 	{
 		ambient = { 0.3f,0.3f,0.3f };
-		diffuse = { 1.0f,1.0f,1.0f};
+		diffuse = { 1.0f,1.0f,1.0f };
 		specular = { 0.0f,0.0f,0.0f };
 		alpha = 1.0f;
 	}
 };
 
-struct MaterialConstBuffData
+struct MaterialConstData
 {
 	DirectX::XMFLOAT3 ambient;
 	float pad1;
@@ -175,18 +222,12 @@ struct MaterialConstBuffData
 
 #pragma endregion
 
-#pragma region テクスチャ
-
+#pragma region テクスチャ類
 //テクスチャバッファで送る情報
 struct RGBA
 {
 	unsigned char r, g, b, a;
 };
-
-#pragma endregion
-
-#pragma region テクスチャ類
-
 #pragma region 自力読み込み
 
 #pragma pack(2)
@@ -233,7 +274,7 @@ struct SpriteFontData
 
 #pragma region バッファ類
 
-struct WorldMatData 
+struct WorldMatData
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 angle;
@@ -273,7 +314,7 @@ struct ConstBufferSet
 {
 	//書き換え多くなるから仮に配列使ってない
 
-	//objのモデルごとに変更できるようにするために配列
+	//obj内のモデルごとに変更できるようにするために配列
 	std::vector<ComPtr<ID3D12Resource>> constBuffer;
 };
 
@@ -282,7 +323,7 @@ struct TextureBufferSet
 	//書き換え多くなるから仮に配列使ってない
 
 	//.obj内のオブジェクトごとにテクスチャ違う可能性あるから配列
-	std::vector<ComPtr<ID3D12Resource>> textureBuff;
+	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 };
 
 
@@ -345,7 +386,7 @@ struct DepthBufferSet
 //};
 
 #pragma region ポストエフェクト
-struct PostEffectConstData 
+struct PostEffectConstData
 {
 	DirectX::XMMATRIX worldMat;
 };

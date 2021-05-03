@@ -5,16 +5,16 @@ private:
 	Game();
 	~Game();
 
-	void initialize();
-	void update();
-	void draw();
-	void end();
+	void Initialize();
+	void Update();
+	void Draw();
+	void Finitialize();
 
 public:
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
+	Game(const Game& g) = delete;
+	Game& operator=(const Game& g) = delete;
 
-	static Game* getInstance();
-	void run();
+	static Game* GetInstance();
+	void Run();
 };
 

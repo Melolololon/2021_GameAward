@@ -3,17 +3,17 @@
 #include"Player.h"
 #include"Block.h"
 #include"PlayerBullet.h"
-ModelData TargetObject::modelData;
+PrimitiveModel TargetObject::modelData;
 int TargetObject::createCount;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
-std::vector<sprite> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
-std::vector<sprite> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
+std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
+std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
 
-TargetObject::TargetObject(const Vector3& pos) 
+TargetObject::TargetObject(const Vector3& pos)
 {
 	position = pos;
-	initialize();
+	Initialize();
 }
 
 TargetObject::~TargetObject()
@@ -21,15 +21,16 @@ TargetObject::~TargetObject()
 }
 
 
-void TargetObject::loadModel()
+void TargetObject::LoadResource()
 {
 	std::string mtl;
 
-	modelData.key = "tergetObject";
+	/*modelData.key = "tergetObject";
 	Library::create3DBox({ 2,5,2 }, modelData);
-	Library::createHeapData2({ 120,200,120,255 }, CREATE_NUMBER, modelData);
+	Library::createHeapData2({ 120,200,120,255 }, CREATE_NUMBER, modelData);*/
+	modelData.CreateBox({ 2,5,2 }, { 120,200,120,255 }, CREATE_NUMBER);
 
-	/*for (int i = 0; i < CREATE_NUMBER; i++) 
+	/*for (int i = 0; i < CREATE_NUMBER; i++)
 	{
 		Library::createSprite(&lifeGaugeSprite[i]);
 		Library::createSprite(&lifeGaugeFreamSprite[i]);
@@ -43,7 +44,7 @@ void TargetObject::setHeapNum()
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
-void TargetObject::initialize()
+void TargetObject::Initialize()
 {
 	setHeapNum();
 
@@ -56,45 +57,46 @@ void TargetObject::initialize()
 	//sphereData[0].position = position;
 	//sphereData[0].r = 1.0f;
 
-	Library::setPosition(position, modelData, heapNum);
-	
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
+
 	hp = 20;
 	setEnd = false;
 }
 
-void TargetObject::update()
+void TargetObject::Update()
 {
 	hitSegment = false;
 	createHitObject = false;
 
 
 	boxData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
-
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 
 	if (hp <= 0)
 		eraseManager = true;
 }
 
-void TargetObject::draw()
+void TargetObject::Draw()
 {
-	
-	Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
+	//Library::drawGraphic(modelData, heapNum);
 
-	
+
 }
 
 
-void TargetObject::hit
+void TargetObject::Hit
 (
-	const Object *const  object,
+	const Object* const  object,
 	const CollisionType& collisionType,
 	const int& arrayNum
 )
 {
 	if (typeid(*object) == typeid(Player))
 		createHitObject = true;
-	if(typeid(*object) == typeid(Block))
+	if (typeid(*object) == typeid(Block))
 		createHitObject = true;
 
 
@@ -114,7 +116,8 @@ bool TargetObject::getCreateHitObject() { return createHitObject; }
 void TargetObject::setPosition(const Vector3& pos)
 {
 	position = pos;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 	boxData[0].position = position;
 }
 

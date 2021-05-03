@@ -20,11 +20,11 @@ public:
 	StageSelect();
 	~StageSelect();
 
-	void initialize();
-	void update();
-	void draw();
-	void end();
-	Scene* getNextScene();
-	static void loadResources();
+	void Initialize();
+	void Update();
+	void Draw();
+	void Finitialize();
+	Scene* GetNextScene();
+	static void LoadResources();
 };
 

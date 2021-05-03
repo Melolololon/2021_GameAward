@@ -1,16 +1,16 @@
 #include "MoveEnemy.h"
 #include "Block.h"
 
-ModelData MoveEnemy::modelData;
+PrimitiveModel MoveEnemy::modelData;
 int MoveEnemy::createCount;
 const int MoveEnemy::CREATE_NUMBER = 1;
 
 MoveEnemy::MoveEnemy()
 {
-	initialize();
+	Initialize();
 }
 
-void MoveEnemy::initialize()
+void MoveEnemy::Initialize()
 {
 	setHeapNum();
 	hp = 3;
@@ -23,26 +23,26 @@ void MoveEnemy::initialize()
 	
 }
 
-void MoveEnemy::update()
+void MoveEnemy::Update()
 {
 	//プレイヤーへの方向ベクトルを求める
-	velocity = {pPlayer->getHeadPosition().x - position.x, pPlayer->getHeadPosition().y - position.y, pPlayer->getHeadPosition().z - position.z };
+	velocity = {pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
-	velocity = vector3Normalize(velocity);
+	velocity = Vector3Normalize(velocity);
 
 	//座標更新
 	position = position + velocity * moveSpeed;
 	setPosition(position);
 }
 
-void MoveEnemy::draw()
+void MoveEnemy::Draw()
 {
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(modelData, heapNum);
-
+	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 }
 
-void MoveEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+void MoveEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 	if (typeid(*object) == typeid(Block))
 	{
@@ -50,13 +50,14 @@ void MoveEnemy::hit(const Object* const object, const CollisionType& collisionTy
 	}
 }
 
-void MoveEnemy::loadModel()
+void MoveEnemy::LoadResource()
 {
-	std::string mtl;
+	//std::string mtl;
 
-	modelData.key = "moveenemy";
-	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
+	//modelData.key = "moveenemy";
+	//Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+	//Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
+	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 180,153,108,255 }, CREATE_NUMBER);
 }
 
 void MoveEnemy::setHeapNum()
@@ -70,5 +71,6 @@ void MoveEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
 	sphereData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 }

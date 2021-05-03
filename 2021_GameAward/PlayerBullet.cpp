@@ -3,14 +3,14 @@
 #include"Block.h"
 #include"Player.h"
 
-ModelData PlayerBullet::modelData;
+PrimitiveModel PlayerBullet::modelData;
 int PlayerBullet::createCount;
 const int PlayerBullet::CREATE_NUMBER = 100;
 
 
 PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 {
-	initialize();
+	Initialize();
 	position = pos;
 	velocity = vel;
 }
@@ -26,14 +26,15 @@ void PlayerBullet::setHeapNum()
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
-void PlayerBullet::loadModel()
+void PlayerBullet::LoadResource()
 {
-	modelData.key = "pBullet";
+	/*modelData.key = "pBullet";
 	Library::create3DBox({ 0.5,0.5,0.5 }, modelData);
-	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);
+	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);*/
+	modelData.CreateBox({ 0.5,0.5,0.5 }, { 255,255,0,255 }, CREATE_NUMBER);
 }
 
-void PlayerBullet::initialize()
+void PlayerBullet::Initialize()
 {
 	position = 0;
 	velocity = 0;
@@ -49,7 +50,7 @@ void PlayerBullet::initialize()
 	sphereData[0].r = 0.25f;
 }
 
-void PlayerBullet::update()
+void PlayerBullet::Update()
 {
 	deadTimer++;
 	if (deadTimer >= deadTime)
@@ -57,15 +58,17 @@ void PlayerBullet::update()
 
 	position += velocity * speed;
 	sphereData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 }
 
-void PlayerBullet::draw()
+void PlayerBullet::Draw()
 {
-	Library::drawGraphic(modelData, heapNum);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 }
 
-void PlayerBullet::hit
+void PlayerBullet::Hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,
@@ -76,8 +79,8 @@ void PlayerBullet::hit
 		typeid(*object) == typeid(Block))
 		eraseManager = true;
 
-	
-		if(typeid(*object) == typeid(Player) &&
-			deadTimer >= 60 * 0.1f)
-			eraseManager = true;
+
+	if (typeid(*object) == typeid(Player) &&
+		deadTimer >= 60 * 0.1f)
+		eraseManager = true;
 }

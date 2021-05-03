@@ -4,7 +4,7 @@ class MoveEnemy :
     public Enemy
 {
 private:
-	static ModelData modelData;
+	static PrimitiveModel modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 
@@ -14,11 +14,11 @@ private:
 
 public:
 	MoveEnemy();
-	static void loadModel();
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+	static void LoadResource();
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
 		const Object* const  object,
 		const CollisionType& collisionType,

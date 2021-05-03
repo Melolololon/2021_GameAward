@@ -1,15 +1,15 @@
 #include "FleeEnemy.h"
 
-ModelData FleeEnemy::modelData;
+PrimitiveModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
 const int FleeEnemy::CREATE_NUMBER = 1;
 
 FleeEnemy::FleeEnemy()
 {
-	initialize();
+	Initialize();
 }
 
-void FleeEnemy::initialize()
+void FleeEnemy::Initialize()
 {
 	setHeapNum();
 	hp = 1;
@@ -22,17 +22,17 @@ void FleeEnemy::initialize()
 
 }
 
-void FleeEnemy::update()
+void FleeEnemy::Update()
 {
 	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->getHeadPosition().x - position.x, pPlayer->getHeadPosition().y - position.y, pPlayer->getHeadPosition().z - position.z };
+	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
-	velocity = vector3Normalize(velocity);
+	velocity = Vector3Normalize(velocity);
 
 	//一定間隔以上なら座標更新
-	if (sqrt((pPlayer->getHeadPosition().x - position.x) * (pPlayer->getHeadPosition().x - position.x) +
-		(pPlayer->getHeadPosition().y - position.y) * (pPlayer->getHeadPosition().y - position.y) +
-		(pPlayer->getHeadPosition().z - position.z) * (pPlayer->getHeadPosition().z - position.z)) >= 20 && escapeTimer == 300)
+	if (sqrt((pPlayer->GetHeadPosition().x - position.x) * (pPlayer->GetHeadPosition().x - position.x) +
+		(pPlayer->GetHeadPosition().y - position.y) * (pPlayer->GetHeadPosition().y - position.y) +
+		(pPlayer->GetHeadPosition().z - position.z) * (pPlayer->GetHeadPosition().z - position.z)) >= 20 && escapeTimer == 300)
 	{
 		position = position + velocity * moveSpeed;
 	}
@@ -59,24 +59,26 @@ void FleeEnemy::update()
 
 }
 
-void FleeEnemy::draw()
+void FleeEnemy::Draw()
 {
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(modelData, heapNum);
+	/*Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	Library::drawGraphic(modelData, heapNum);*/
+	modelData.Draw(heapNum);
 
 }
 
-void FleeEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 }
 
-void FleeEnemy::loadModel()
+void FleeEnemy::LoadResource()
 {
 	std::string mtl;
 
-	modelData.key = "fleeenemy";
-	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
+	//modelData.key = "fleeenemy";
+	//Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+	//Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
+	modelData.CreateBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, { 220,144,201,255 }, CREATE_NUMBER);
 }
 
 void FleeEnemy::setHeapNum()
@@ -90,5 +92,6 @@ void FleeEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
 	sphereData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 }

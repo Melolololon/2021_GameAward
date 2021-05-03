@@ -15,7 +15,7 @@
 
 //ファイルから読みとってstaticに入れられるか確かめる
 
-ModelData Player::modelData;
+ObjModel Player::modelData;
 int Player::createCount;
 const int Player::CREATE_NUMBER = 1;
 std::vector<Vector3> Player::initialBonePos;
@@ -23,38 +23,39 @@ std::vector<Vector3> Player::initialBonePos;
 
 Player::Player()
 {
-	initialize();
+	Initialize();
 }
 
 Player::~Player()
 {
 }
 
-void Player::loadModel()
+void Player::LoadResource()
 {
 	std::string mtl;
 
-	modelData.key = "player";
-	Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
-	Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);
-	initialBonePos = Library::getBonePosition(modelData);
+	modelData.LoadModel("Resources/Model/testSnake.obj", true, CREATE_NUMBER, 0);
+	/*Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
+	Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);*/
+	//initialBonePos = Library::getBonePosition(modelData);
+	initialBonePos = modelData.GetBonePosition();
 }
 
 
 
-void Player::setHeapNum()
+void Player::SetHeapNum()
 {
 	heapNum = createCount;
 	createCount++;
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
-void Player::initialize()
+void Player::Initialize()
 {
 	//ボーン数
 	const int boneNum = static_cast<int>(initialBonePos.size());
 
-	setHeapNum();
+	SetHeapNum();
 
 #pragma region 読み取り
 	std::unordered_map<std::string, int>iMap;
@@ -66,8 +67,8 @@ void Player::initialize()
 #pragma endregion
 
 
-	position = {0.0f,0.0f,0.0f};
-	velocity = {1.0f,0.0f,0.0f};
+	position = { 0.0f,0.0f,0.0f };
+	velocity = { 1.0f,0.0f,0.0f };
 	speed = fMap["speed"];
 
 #pragma region パラメーター
@@ -83,7 +84,7 @@ void Player::initialize()
 	bonePos.resize(boneNum);
 	for (int i = 0; i < boneNum; i++)
 		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
-		  
+
 #pragma region ひねり
 	rotateFlag = false;
 	twistAngles.resize(boneNum);
@@ -121,7 +122,7 @@ void Player::initialize()
 
 
 }
-void Player::update()
+void Player::Update()
 {
 	//ボーン数
 	const int boneNum = static_cast<int>(initialBonePos.size());
@@ -150,23 +151,23 @@ void Player::update()
 #pragma region イチカワ移動
 	previousRot = velRot;
 
-	if (XInputManager::getPadConnectedFlag(1))
+	if (XInputManager::GetPadConnectedFlag(1))
 	{
-		if (XInputManager::leftStickDown(40, 1) ||
-			XInputManager::leftStickUp(40, 1) ||
-			XInputManager::leftStickLeft(40, 1) ||
-			XInputManager::leftStickRight(40, 1))
+		if (XInputManager::LeftStickDown(40, 1) ||
+			XInputManager::LeftStickUp(40, 1) ||
+			XInputManager::LeftStickLeft(40, 1) ||
+			XInputManager::LeftStickRight(40, 1))
 		{
-			velRot = XInputManager::leftStickAngle(1);
+			velRot = XInputManager::LeftStickAngle(1);
 		}
 	}
 	else
-		velRot = DirectInput::arrowKeyAngle();
+		velRot = DirectInput::ArrowKeyAngle();
 
 
 	if (velRot != -1)
 	{
-		float radVelRot = LibMath::angleConversion(0, velRot);
+		float radVelRot = LibMath::AngleConversion(0, velRot);
 		velocity = { cos(radVelRot) ,0,sin(radVelRot) };
 		float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
 		velocity /= length;
@@ -195,7 +196,8 @@ void Player::update()
 			boneMovePos[i] += velocity * speed;
 
 			//初期位置からどのくらい動いているかをセット
-			Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 			boneVelocity[i] = velocity;
 		}
 		else
@@ -210,7 +212,7 @@ void Player::update()
 				forwardVector.z * forwardVector.z
 			);
 
-			moveRotateAngle[i] = LibMath::angleConversion(1, atan2(forwardVector.z, forwardVector.x));
+			moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
 
 			//moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
 
@@ -220,7 +222,8 @@ void Player::update()
 			if (length >= size)
 			{
 				boneMovePos[i] += forwardVector / length * speed;
-				Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+				//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+				modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 				boneVelocity[i] = forwardVector / length;
 			}
 		}
@@ -239,13 +242,13 @@ void Player::update()
 
 #pragma region ひねり処理
 
-	if (!XInputManager::getPadConnectedFlag(1))
+	if (!XInputManager::GetPadConnectedFlag(1))
 	{
-		if (DirectInput::keyTrigger(DIK_SPACE))
+		if (DirectInput::KeyTrigger(DIK_SPACE))
 			rotateFlag = true;
 	}
 	else
-		if (XInputManager::buttonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
+		if (XInputManager::ButtonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
 			rotateFlag = true;
 
 
@@ -288,16 +291,16 @@ void Player::update()
 
 	//角度セット
 	for (int i = 0; i < boneNum; i++)
-		Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
-
+		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
+		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
 #pragma region 弾を発射
 
 	auto shotBullet = [&](const UINT& arrayNum)
 	{
-		Vector3 normalizeForwordVector = vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
-		Quaternion q = getRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
-	
-		ObjectManager::getInstance()->addObject(std::make_shared<PlayerBullet>(bonePos[arrayNum], Vector3(q.x, 0, q.z)));
+		Vector3 normalizeForwordVector = Vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
+		Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
+
+		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>(bonePos[arrayNum], Vector3(q.x, 0, q.z)));
 	};
 
 	if (shotTimer >= shotTime)
@@ -336,10 +339,10 @@ void Player::update()
 #pragma endregion
 
 #pragma region 無敵処理
-	if(isMuteki)
+	if (isMuteki)
 	{
 		mutekiTimer++;
-		if(mutekiTimer >= mutekiTime)
+		if (mutekiTimer >= mutekiTime)
 		{
 			mutekiTimer = 0;
 			isMuteki = false;
@@ -354,13 +357,14 @@ void Player::update()
 
 }
 
-void Player::draw()
+void Player::Draw()
 {
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(modelData, heapNum);
+	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 }
 
-void Player::hit
+void Player::Hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,
@@ -394,7 +398,7 @@ void Player::hit
 
 				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 				previousBoneVector.x = 0;
-				previousBoneVector = vector3Normalize(previousBoneVector);
+				previousBoneVector = Vector3Normalize(previousBoneVector);
 				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
 			}
 
@@ -411,7 +415,7 @@ void Player::hit
 
 				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 				previousBoneVector.x = 0;
-				previousBoneVector = vector3Normalize(previousBoneVector);
+				previousBoneVector = Vector3Normalize(previousBoneVector);
 				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
 			}
 
@@ -428,7 +432,7 @@ void Player::hit
 
 				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 				previousBoneVector.z = 0;
-				previousBoneVector = vector3Normalize(previousBoneVector);
+				previousBoneVector = Vector3Normalize(previousBoneVector);
 				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
 			}
 
@@ -444,14 +448,14 @@ void Player::hit
 			{
 				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 				previousBoneVector.z = 0;
-				previousBoneVector = vector3Normalize(previousBoneVector);
+				previousBoneVector = Vector3Normalize(previousBoneVector);
 				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
 			}
 			break;
 		}
 
 		bonePos[arrayNum] = initialBonePos[arrayNum] + boneMovePos[arrayNum] + position;
-		
+
 	}
 
 	if (isMuteki)return;
@@ -462,7 +466,7 @@ void Player::hit
 	}
 }
 
-void* Player::getPtr()
+void* Player::GetPtr()
 {
 	return this;
 }

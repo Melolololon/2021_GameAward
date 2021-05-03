@@ -6,7 +6,7 @@ private:
 
 #pragma region ƒ‚ƒfƒ‹ŠÖŒW
 
-	static ModelData modelData;
+	static PrimitiveModel modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
@@ -21,17 +21,17 @@ private:
 	int deadTime;
 
 public:
-	PlayerBullet(const Vector3& pos,const Vector3& vel);
+	PlayerBullet(const Vector3& pos, const Vector3& vel);
 	~PlayerBullet();
 
 
 
-	static void loadModel();
+	static void LoadResource();
 
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
 		const Object* const  object,
 		const CollisionType& collisionType,

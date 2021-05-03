@@ -3,14 +3,14 @@
 #include"Block.h"
 #include"Player.h"
 
-ModelData EnemyBullet::modelData;
+PrimitiveModel EnemyBullet::modelData;
 int EnemyBullet::createCount;
 const int EnemyBullet::CREATE_NUMBER = 100;
 
 
 EnemyBullet::EnemyBullet(const Vector3& pos, const Vector3& vel)
 {
-	initialize();
+	Initialize();
 	position = pos;
 	velocity = vel;
 }
@@ -26,14 +26,15 @@ void EnemyBullet::setHeapNum()
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }
 
-void EnemyBullet::loadModel()
+void EnemyBullet::LoadResource()
 {
-	modelData.key = "eBullet";
+	/*modelData.key = "eBullet";
 	Library::create3DBox({ 0.2,0.2,0.2 }, modelData);
-	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);
+	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);*/
+	modelData.CreateBox({ 0.2,0.2,0.2 }, { 255,255,0,255 }, CREATE_NUMBER);
 }
 
-void EnemyBullet::initialize()
+void EnemyBullet::Initialize()
 {
 	position = 0;
 	velocity = 0;
@@ -49,7 +50,7 @@ void EnemyBullet::initialize()
 	sphereData[0].r = 0.1f;
 }
 
-void EnemyBullet::update()
+void EnemyBullet::Update()
 {
 	deadTimer++;
 	if (deadTimer >= deadTime)
@@ -57,15 +58,17 @@ void EnemyBullet::update()
 
 	position += velocity * speed;
 	sphereData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 }
 
-void EnemyBullet::draw()
+void EnemyBullet::Draw()
 {
-	Library::drawGraphic(modelData, heapNum);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 }
 
-void EnemyBullet::hit
+void EnemyBullet::Hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,

@@ -2,16 +2,16 @@
 #include "EnemyBullet.h"
 #include "ObjectManager.h"
 
-ModelData ShotEnemy::modelData;
+PrimitiveModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
 const int ShotEnemy::CREATE_NUMBER = 1;
 
 ShotEnemy::ShotEnemy()
 {
-	initialize();
+	Initialize();
 }
 
-void ShotEnemy::initialize()
+void ShotEnemy::Initialize()
 {
 	setHeapNum();
 	hp = 2;
@@ -23,17 +23,17 @@ void ShotEnemy::initialize()
 	sphereData[0].r = OBJSIZE / 2;
 }
 
-void ShotEnemy::update()
+void ShotEnemy::Update()
 {
 	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->getHeadPosition().x - position.x, pPlayer->getHeadPosition().y - position.y, pPlayer->getHeadPosition().z - position.z };
+	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
-	velocity = vector3Normalize(velocity);
+	velocity = Vector3Normalize(velocity);
 
 	//一定間隔以上なら座標更新
-	if (sqrt((pPlayer->getHeadPosition().x - position.x) * (pPlayer->getHeadPosition().x - position.x) +
-		(pPlayer->getHeadPosition().y - position.y) * (pPlayer->getHeadPosition().y - position.y) +
-		(pPlayer->getHeadPosition().z - position.z) * (pPlayer->getHeadPosition().z - position.z)) >= 20 && shotWaitTimer == 60)
+	if (sqrt((pPlayer->GetHeadPosition().x - position.x) * (pPlayer->GetHeadPosition().x - position.x) +
+		(pPlayer->GetHeadPosition().y - position.y) * (pPlayer->GetHeadPosition().y - position.y) +
+		(pPlayer->GetHeadPosition().z - position.z) * (pPlayer->GetHeadPosition().z - position.z)) >= 20 && shotWaitTimer == 60)
 	{
 		position = position + velocity * moveSpeed;
 	}
@@ -42,7 +42,7 @@ void ShotEnemy::update()
 	{
 		//ここに弾を撃つ処理
 		if (shotWaitTimer == 60)
-			ObjectManager::getInstance()->addObject(std::make_shared<EnemyBullet>(position, velocity));
+			ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyBullet>(position, velocity));
 
 		shotWaitTimer--;
 
@@ -52,24 +52,26 @@ void ShotEnemy::update()
 
 }
 
-void ShotEnemy::draw()
+void ShotEnemy::Draw()
 {
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(modelData, heapNum);
+	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	//Library::drawGraphic(modelData, heapNum);
+	modelData.Draw(heapNum);
 
 }
 
-void ShotEnemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+void ShotEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 }
 
-void ShotEnemy::loadModel()
+void ShotEnemy::LoadResource()
 {
-	std::string mtl;
-
-	modelData.key = "shotenemy";
-	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+//	std::string mtl;
+//
+//	modelData.key = "shotenemy";
+//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
 }
 
 void ShotEnemy::setHeapNum()
@@ -83,5 +85,6 @@ void ShotEnemy::setPosition(Vector3 pos)
 {
 	position = pos;
 	sphereData[0].position = position;
-	Library::setPosition(position, modelData, heapNum);
+	//Library::setPosition(position, modelData, heapNum);
+	modelData.SetPosition(position, heapNum);
 }

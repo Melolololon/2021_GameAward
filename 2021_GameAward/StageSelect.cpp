@@ -20,7 +20,7 @@ StageSelect::~StageSelect()
 {
 }
 
-void StageSelect::loadResources()
+void StageSelect::LoadResources()
 {
 	for (int i = 0; ; i++)
 	{
@@ -97,37 +97,37 @@ void StageSelect::loadResources()
 
 }
 
-void StageSelect::initialize()
+void StageSelect::Initialize()
 {
 	selectStageNum = 0;
 
 
 }
 
-void StageSelect::update()
+void StageSelect::Update()
 {
 	/*for (auto& b : blocks)
 	{
 		for (auto& b2 : b)
-			b2.get()->update();
+			b2.get()->Update();
 	}*/
 
 	isEnd = true;
 }
 
-void StageSelect::draw()
+void StageSelect::Draw()
 {
 	/*for (auto& b : blocks)
 	{
 		for (auto& b2 : b)
-			b2.get()->draw();
+			b2.get()->Draw();
 	}*/
 }
 
-void StageSelect::end()
+void StageSelect::Finitialize()
 {
 	//èÓïÒÉZÉbÉg
-	Play::setStageData
+	Play::SetStageData
 	(
 		blockPositions[selectStageNum],
 		blockScales[selectStageNum],
@@ -137,12 +137,12 @@ void StageSelect::end()
 		leftUpPositions[selectStageNum],
 		rightDownPositions[selectStageNum]
 	);
-	
-	
+
+
 
 }
 
-Scene* StageSelect::getNextScene()
+Scene* StageSelect::GetNextScene()
 {
 	return new Play();
 }

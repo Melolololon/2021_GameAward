@@ -3,6 +3,6 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	Game::getInstance()->run();
+	Game::GetInstance()->Run();
 	return 0;
 }

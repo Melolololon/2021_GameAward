@@ -13,8 +13,8 @@
 
 #pragma endregion
 
-sprite Play::arrowSprite;
-texture Play::arrowTexture;
+Sprite2D Play::arrowSprite;
+Texture Play::arrowTexture;
 
 float Play::targetDistance;
 float Play::playerDistance;
@@ -29,40 +29,26 @@ Play::Play()
 }
 
 
-Play::~Play(){}
+Play::~Play() {}
 
-void Play::loadResources()
+void Play::LoadResources()
 {
 	//リソースの読み込み
-	Library::createSprite(&arrowSprite);
-	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");
+	/*Library::createSprite(&arrowSprite);
+	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
+	arrowSprite.CreateSprite();
+	arrowTexture.LoadSpriteTexture("Resources/Texture/arrow.png");
 }
 
 
-void Play::initialize()
+void Play::Initialize()
 {
 	player = std::make_shared<Player>();
-	
-	//敵追加
-	std::shared_ptr<Enemy> enemy1 = std::make_shared<MoveEnemy>();
-	enemy1->setPPlayer(player.get());
-	enemy1->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
-	enemies.push_back(enemy1);
-	std::shared_ptr<Enemy> enemy2 = std::make_shared<ShotEnemy>();
-	enemy2->setPPlayer(player.get());
-	enemy2->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
-	enemies.push_back(enemy2);
-	std::shared_ptr<Enemy> enemy3 = std::make_shared<FleeEnemy>();
-	enemy3->setPPlayer(player.get());
-	enemy3->setPosition(Vector3(Library::getRandomNumber(50), 0, Library::getRandomNumber(50)));
-	enemies.push_back(enemy3);
-
-
-	ObjectManager::getInstance()->addObject(player);
-
-	for (int i = 0; i < enemies.size(); i++) {
-		ObjectManager::getInstance()->addObject(enemies[i]);
-	}
+	enemy = std::make_shared<FleeEnemy>();
+	enemy->setPPlayer(player.get());
+	enemy->setPosition(Vector3(Library::GetRandomNumber(50), 0, Library::GetRandomNumber(50)));
+	ObjectManager::GetInstance()->AddObject(player);
+	ObjectManager::GetInstance()->AddObject(enemy);
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SETTARGET;
 
@@ -76,7 +62,7 @@ void Play::initialize()
 	int blockNum = static_cast<int>(blockPositions.size());
 
 	for (int i = 0; i < blockNum; i++)
-		ObjectManager::getInstance()->addObject(std::make_shared<Block>(blockPositions[i], blockScales[i]));
+		ObjectManager::GetInstance()->AddObject(std::make_shared<Block>(blockPositions[i], blockScales[i]));
 #pragma endregion
 
 
@@ -89,13 +75,13 @@ void Play::initialize()
 		//ここ範囲乱数作って変える
 		Vector3 targetPos =
 		{
-			Library::getRandomNumberRangeSelectFloat(leftUpPosition.x,rightDownPosition.x),
+			Library::GetRandomNumberRangeSelectFloat(leftUpPosition.x,rightDownPosition.x),
 			0,
-			Library::getRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
+			Library::GetRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
 		};
 
 		t = std::make_shared<TargetObject>(targetPos);
-		ObjectManager::getInstance()->addObject(t);
+		ObjectManager::GetInstance()->AddObject(t);
 	}
 #pragma endregion
 
@@ -109,16 +95,16 @@ void Play::initialize()
 
 }
 
-void Play::update()
+void Play::Update()
 {
 
-	ObjectManager::getInstance()->update();
-	ObjectManager::getInstance()->isDeadCheck();
+	ObjectManager::GetInstance()->Update();
+	ObjectManager::GetInstance()->EraseObjectCheck();
 #pragma region 祠処理
 
-//	//祠セット
-//	//座標の値が変わってないのにワープしてたのは、
-//	//生成を繰り返してヒープの番号が被った時に、元から置かれてた祠のモデルの座標が消えるやつの座標で上書きされたから
+	//	//祠セット
+	//	//座標の値が変わってないのにワープしてたのは、
+	//	//生成を繰り返してヒープの番号が被った時に、元から置かれてた祠のモデルの座標が消えるやつの座標で上書きされたから
 	if (playSceneState == PlaySceneState::PLAY_SCENE_SETTARGET)
 	{
 		int createMissCount = 0;
@@ -143,10 +129,10 @@ void Play::update()
 			{
 				//ターゲット同士
 				if (!t2 || t == t2)continue;
-				dis = LibMath::calcDistance3D
+				dis = LibMath::CalcDistance3D
 				(
-					t->getPosition(),
-					t2->getPosition()
+					t->GetPosition(),
+					t2->GetPosition()
 				);
 
 				//最低ライン超えられなかったらカウント&即抜け
@@ -162,10 +148,10 @@ void Play::update()
 
 
 			//プレイヤー
-			dis = LibMath::calcDistance3D
+			dis = LibMath::CalcDistance3D
 			(
-				t->getPosition(),
-				player->getPosition()
+				t->GetPosition(),
+				player->GetPosition()
 			);
 			if (dis <= playerDistance)
 			{
@@ -191,9 +177,9 @@ void Play::update()
 			//ここ範囲乱数作って変える
 			Vector3 targetPos =
 			{
-				Library::getRandomNumberRangeSelectFloat(leftUpPosition.x,rightDownPosition.x),
+				Library::GetRandomNumberRangeSelectFloat(leftUpPosition.x,rightDownPosition.x),
 				0,
-				Library::getRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
+				Library::GetRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
 			};
 
 			t->setPosition(targetPos);
@@ -216,24 +202,24 @@ void Play::update()
 		for (auto& t : targetObjects)
 		{
 			//やられてオブジェクトマネージャーから削除されてたらカウント
-			if (t->getEraseManager())
+			if (t->GetEraseManager())
 				deadCount++;
 		}
 
 		//終了処理
 		/*if(deadCount == targetObjects.size())
-		{ 
+		{
 		}*/
 	}
 
 #pragma endregion
 
 #pragma region カメラ移動
-	Vector3 pHeapPos = player->getHeadPosition();
+	Vector3 pHeapPos = player->GetHeadPosition();
 	cameraPosition = pHeapPos;
 	cameraPosition += addCameraPosition;
 	cameraTarget = pHeapPos;
-	Library::setCamera(cameraPosition, cameraTarget, { 0,1,0 });
+	Library::SetCamera(cameraPosition, cameraTarget, { 0,1,0 });
 
 #pragma endregion
 
@@ -241,36 +227,37 @@ void Play::update()
 #pragma region 祠を示す矢印
 	//一番近い祠を求める
 	float minDistance = 9999999.0f;
-	Vector3 playerHeadPos = player->getHeadPosition();
+	Vector3 playerHeadPos = player->GetHeadPosition();
 	Vector3 nearTargetPos = 0;
-	for(auto& t : targetObjects)
+	for (auto& t : targetObjects)
 	{
-		if(!t->getEraseManager())
+		if (!t->GetEraseManager())
 		{
-			float dis = LibMath::calcDistance3D
+			float dis = LibMath::CalcDistance3D
 			(
 				playerHeadPos,
-				t->getPosition()
+				t->GetPosition()
 			);
-			if (dis < minDistance) 
+			if (dis < minDistance)
 			{
 				minDistance = dis;
-				nearTargetPos = t->getPosition();
+				nearTargetPos = t->GetPosition();
 			}
 		}
 	}
 	//祠あったら計算
-	if (minDistance < 9999999.0f) 
+	if (minDistance < 9999999.0f)
 	{
-		Vector2 arrowTexSize = Library::getTextureSize(arrowTexture);
+		//Vector2 arrowTexSize = Library::GetTextureSize(arrowTexture);
+		Vector2 arrowTexSize = arrowTexture.GetTextureSize();
 
 		//プレイヤーから一番近いターゲットのベクトルを正規化したもの
 		Vector3 playerToTargetVector = nearTargetPos - playerHeadPos;
-		Vector3 playerToTargetNVector = vector3Normalize(playerToTargetVector);
-		
+		Vector3 playerToTargetNVector = Vector3Normalize(playerToTargetVector);
+
 		//クォータニオンで回す?
 		//座標
-		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x /2, 720.0f / 2.0f - arrowTexSize.y / 2};
+		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x / 2, 720.0f / 2.0f - arrowTexSize.y / 2 };
 		//祠の方に移動させる
 		arrowPosition.x += playerToTargetNVector.x * (1280 / 2);
 		arrowPosition.y -= playerToTargetNVector.z * (720 / 2);
@@ -286,7 +273,7 @@ void Play::update()
 			arrowPosition.y = 0;
 
 		//角度
-		arrowAngle = LibMath::vecto2ToAngle({ playerToTargetNVector.x,playerToTargetNVector.z }, false);
+		arrowAngle = LibMath::Vecto2ToAngle({ playerToTargetNVector.x,playerToTargetNVector.z }, false);
 
 		//描画するかどうか
 		drawArrow = false;
@@ -297,28 +284,31 @@ void Play::update()
 #pragma endregion
 }
 
-void Play::draw()
+void Play::Draw()
 {
-	ObjectManager::getInstance()->draw();
-	
+	ObjectManager::GetInstance()->Draw();
 
-	Library::setSpriteAngle(arrowAngle, arrowSprite);
-	if(drawArrow)
-	Library::drawSprite(arrowPosition, arrowSprite, arrowTexture);
+
+	//Library::setSpriteAngle(arrowAngle, arrowSprite);
+	arrowSprite.SetAngle(arrowAngle);
+	arrowSprite.SetPosition(arrowPosition);
+	if (drawArrow)
+		//Library::drawSprite(arrowPosition, arrowSprite, arrowTexture);
+		arrowSprite.Draw(&arrowTexture);
 }
 
-void Play::end()
+void Play::Finitialize()
 {
-	ObjectManager::getInstance()->allEraseObject();
+	ObjectManager::GetInstance()->AllEraseObject();
 }
 
-Scene* Play::getNextScene()
+Scene* Play::GetNextScene()
 {
 	return new StageSelect();
 }
 
 
-void Play::setStageData
+void Play::SetStageData
 (
 	std::vector<Vector3>blockPos,
 	std::vector<Vector3>blockScale,

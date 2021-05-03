@@ -13,13 +13,13 @@ ModelLoader::~ModelLoader()
 {
 }
 
-ModelLoader* ModelLoader::getInstance()
+ModelLoader* ModelLoader::GetInstance()
 {
 	static ModelLoader inst;
 	return &inst;
 }
 
-bool ModelLoader::loadPMDModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices)
+bool ModelLoader::LoadPmdModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices)
 {
 	char sig[3];
 	PMDHeader pmdHeader;
@@ -46,16 +46,16 @@ bool ModelLoader::loadPMDModel(const char* path, std::vector<PMDVertex>& vertex,
 }
 
 
-bool  ModelLoader::loadOBJModel
+bool  ModelLoader::LoadObjModel
 (
-	const char* path,
-	bool loadUV, 
-	bool loadNormal, 
-	std::vector<std::vector<Vertex>>& vertices, 
+	const std::string& path,
+	bool loadUV,
+	bool loadNormal,
+	std::vector<std::vector<ObjAnimationVertex>>& vertices,
 	std::vector<std::vector<USHORT>>& indices,
-	std::string* materialFileName,
-	std::vector<std::string>&materialName, 
-	std::vector<std::unordered_map<USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
+	std::string& materialFileName,
+	std::vector<std::string>& materialName,
+	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
 	std::vector<DirectX::XMFLOAT3>* bonePosVector,
 	std::vector<std::vector<int>>* boneNumVector
@@ -98,7 +98,7 @@ bool  ModelLoader::loadOBJModel
 	obj.open(path);
 	if(!obj)
 	{
-		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりませんでした。\n");
+		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりません。\n");
 		return false;
 	}
 
@@ -106,7 +106,7 @@ bool  ModelLoader::loadOBJModel
 	bool loadPreparation = false;
 
 	//読み込んだ.obj内のモデル数
-	int loadModel = 0;
+	int LoadModel = 0;
 
 	//ポリゴンの枚数
 	int polygonCount = 0;
@@ -181,7 +181,7 @@ bool  ModelLoader::loadOBJModel
 
 
 				//読み込み数カウントインクリメント
-				loadModel++;
+				LoadModel++;
 
 				//カウント初期化
 				vertexLoadCount = 0;
@@ -202,8 +202,8 @@ bool  ModelLoader::loadOBJModel
 
 
 			std::vector<USHORT>u;
-			smoothNormalCalcData[loadModel - 1].emplace(vertexLoadCount, u);
-			smoothVertexPos[loadModel - 1].emplace(vertexLoadCount, pos);
+			smoothNormalCalcData[LoadModel - 1].emplace(vertexLoadCount, u);
+			smoothVertexPos[LoadModel - 1].emplace(vertexLoadCount, pos);
 			vertexLoadCount++;
 		}
 
@@ -212,10 +212,9 @@ bool  ModelLoader::loadOBJModel
 #pragma region マテリアル関係
 
 		//マテリアルのファイル名取得
-		if (topStr.find("mtllib") != std::string::npos &&
-			materialFileName) 
+		if (topStr.find("mtllib") != std::string::npos) 
 		{
-			lineStream >> *materialFileName;
+			lineStream >> materialFileName;
 			loadMtlFile = true;
 		}
 		//マテリアル名取得
@@ -245,7 +244,7 @@ bool  ModelLoader::loadOBJModel
 			char sluch;
 			
 			//頂点。これに一時的に入れてから、配列に入れる
-			Vertex vertex;
+			ObjAnimationVertex vertex;
 
 			//三角形ポリゴンを読み込むので3
 			int polygonValue = 3;
@@ -269,8 +268,8 @@ bool  ModelLoader::loadOBJModel
 					vertex.uv = { 0,0 };
 
 				//格納
-				vertices[loadModel - 1].push_back(vertex);
-				indices[loadModel - 1].push_back(polygonCount);
+				vertices[LoadModel - 1].push_back(vertex);
+				indices[LoadModel - 1].push_back(polygonCount);
 				polygonCount++;
 			}
 			
@@ -324,7 +323,7 @@ bool  ModelLoader::loadOBJModel
 	}
 
 	if(loadNum)
-	*loadNum = loadModel;
+	*loadNum = LoadModel;
 
 	//仮配列から移動
 	if (boneNumVector)
@@ -352,7 +351,7 @@ bool  ModelLoader::loadOBJModel
 	//smoothNormalCalcData.resize(smoothVertexPos.size());
 	int v1Count = 0;
 
-	for (int i = 0; i < loadModel; i++)
+	for (int i = 0; i < LoadModel; i++)
 	{
 		for (auto& v1 : vertices[i])
 		{
@@ -387,7 +386,7 @@ bool  ModelLoader::loadOBJModel
 
 }
 
-bool ModelLoader::loadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& material,  int* loadCount)
+bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& material,  int* loadCount)
 {
 	//読み込んだ回数
 	int loadNum = 0;

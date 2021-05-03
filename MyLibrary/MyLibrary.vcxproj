@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
@@ -118,7 +118,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
@@ -187,23 +187,34 @@
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
+    <ClCompile Include="FbxLoader.cpp" />
+    <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelBone.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
     <ClCompile Include="Library.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
+    <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
+    <ClCompile Include="PrimitiveModel.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="TextLoader.cpp" />
-    <ClCompile Include="TextureLoad.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="Sprite3D.cpp" />
+    <ClCompile Include="SpriteFont2D.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="XInputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -452,23 +463,33 @@
     <ClInclude Include="CreatePolygon.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
+    <ClInclude Include="FbxLoader.h" />
+    <ClInclude Include="FbxModel.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelBone.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Library.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PipelineManager.h" />
+    <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PolygonManager.h" />
+    <ClInclude Include="PrimitiveModel.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderData.h" />
-    <ClInclude Include="TextLoader.h" />
-    <ClInclude Include="TextureLoad.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="Sprite3D.h" />
+    <ClInclude Include="SpriteFont2D.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />
   </ItemGroup>

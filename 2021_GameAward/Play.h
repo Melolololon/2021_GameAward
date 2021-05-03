@@ -5,8 +5,6 @@
 #include"Enemy.h"
 #include"Block.h"
 #include"TargetObject.h"
-#include<vector>
-
 class Play :
 	public Scene
 {
@@ -22,7 +20,7 @@ public:
 
 private:
 	std::shared_ptr<Player> player;
-	std::vector<std::shared_ptr<Enemy>> enemies;
+	std::shared_ptr<Enemy> enemy;
 
 
 	//ƒQ[ƒ€ó‘Ô
@@ -35,8 +33,8 @@ private:
 #pragma endregion
 
 #pragma region âK‚Ì•ûŒü‚ğ¦‚·–îˆó
-	static sprite arrowSprite;
-	static texture arrowTexture;
+	static Sprite2D arrowSprite;
+	static Texture arrowTexture;
 
 	//À•W
 	Vector2 arrowPosition;
@@ -63,14 +61,14 @@ public:
 	Play();
 	~Play();
 
-	void initialize();
-	void update();
-	void draw();
-	void end(); 
-	Scene* getNextScene();
+	void Initialize();
+	void Update();
+	void Draw();
+	void Finitialize();
+	Scene* GetNextScene();
 
-	static void loadResources();
-	static void setStageData
+	static void LoadResources();
+	static void SetStageData
 	(
 		std::vector<Vector3>blockPos,
 		std::vector<Vector3>blockScale,

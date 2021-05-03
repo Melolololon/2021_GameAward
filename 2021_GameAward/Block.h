@@ -9,7 +9,7 @@ private:
 
 #pragma region ÉÇÉfÉãä÷åW
 
-	static ModelData modelData;
+	static PrimitiveModel modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
@@ -27,27 +27,27 @@ private:
 	Vector3 scale;
 
 	static bool gameStart;
-	
-	
+
+
 
 public:
-	Block(const Vector3& pos ,const Vector3& scale);
+	Block(const Vector3& pos, const Vector3& scale);
 	~Block();
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
-		const Object *const  object,
+		const Object* const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
-	void* getPtr()override;
+	void* GetPtr()override;
 
 	/// <summary>
 	/// ÉÇÉfÉãì«Ç›çûÇ›
 	/// </summary>
-	static void loadModel();
+	static void LoadResource();
 
 	static void setGameStart(const bool& flag) { gameStart = flag; }
 

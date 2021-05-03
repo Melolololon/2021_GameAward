@@ -37,9 +37,6 @@
     <Filter Include="ソース ファイル\Scene">
       <UniqueIdentifier>{3a51d6af-f59c-4635-9050-29c89be0f67e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Scene">
-      <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Loader">
       <UniqueIdentifier>{fb63133a-3a85-42ca-9cfb-e2badc981d0e}</UniqueIdentifier>
     </Filter>
@@ -49,6 +46,21 @@
     <Filter Include="ソース ファイル\Input">
       <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Model">
+      <UniqueIdentifier>{917291d3-5a22-46c3-9404-b78e4cb60f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{98e113da-0251-46f7-94c3-dcd71844592c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Sprite">
+      <UniqueIdentifier>{219bd474-a2ac-41e8-9612-1d0b856f8587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sprite">
+      <UniqueIdentifier>{f50a39a5-46af-4612-8e6a-715b6245337b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -57,7 +69,7 @@
     <ClCompile Include="CreatePolygon.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="TextureLoad.cpp">
+    <ClCompile Include="TextureLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
     <ClCompile Include="CreatePipeline.cpp">
@@ -74,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="Library.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TextLoader.cpp">
-      <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
     <ClCompile Include="LibMath.cpp">
       <Filter>ソース ファイル</Filter>
@@ -132,6 +141,42 @@
     <ClCompile Include="LibWinAPI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="FbxLoader.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite2D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite3D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteFont2D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -186,10 +231,7 @@
     <ClInclude Include="ShaderData.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
-    <ClInclude Include="TextureLoad.h">
-      <Filter>ヘッダー ファイル\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="TextLoader.h">
+    <ClInclude Include="TextureLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
     </ClInclude>
     <ClInclude Include="LibMath.h">
@@ -245,6 +287,39 @@
     </ClInclude>
     <ClInclude Include="LibWinAPI.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxLoader.h">
+      <Filter>ヘッダー ファイル\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite2D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite3D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteFont2D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

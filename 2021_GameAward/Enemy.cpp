@@ -5,20 +5,20 @@ void Enemy::setHeapNum()
 {
 }
 
-void Enemy::initialize()
+void Enemy::Initialize()
 {
 	setHeapNum();
 }
 
-void Enemy::update()
+void Enemy::Update()
 {
 }
 
-void Enemy::draw()
+void Enemy::Draw()
 {
 }
 
-void Enemy::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+void Enemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 }
 

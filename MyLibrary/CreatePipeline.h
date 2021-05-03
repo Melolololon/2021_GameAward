@@ -9,25 +9,7 @@
 #include"DirectXStruct.h"
 #include"ShaderData.h"
 
-enum FORMAT_TYPE
-{
-	FORMAT_TYPE_UNSIGNED_INT,
-	FORMAT_TYPE_SIGNED_INT,
-	FORMAT_TYPE_FLOAT,
-};
 
-//パイプライン作成時に
-struct InputLayoutData
-{
-	//セマンティクス名
-	const char* semantics;
-
-	//送る値の数
-	UINT number;
-
-	//送る数値の型
-	FORMAT_TYPE formatType;
-};
 
 
 class CreatePipeline
@@ -45,10 +27,10 @@ public:
 	CreatePipeline(ID3D12Device* dev);
 	~CreatePipeline();
 
-	void createRootSigneture(D3D12_ROOT_SIGNATURE_DESC rootSigDesc, ID3D12RootSignature** rootSigneture);
-	void createPipeline(int dimention, D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc, ID3D12PipelineState** pipeline);
+	void CreateRootSigneture(D3D12_ROOT_SIGNATURE_DESC rootSigDesc, ID3D12RootSignature** rootSigneture);
+	void CreatePipelineState(int dimention, D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc, ID3D12PipelineState** pipeline);
 	
-	bool createUserPipeline
+	bool CreateUserPipeline
 	(
 		int dimention,
 		ShaderData vShaderData,
@@ -66,10 +48,10 @@ public:
 /// </summary>
 /// <param name="semantics">セマンティクス名</param>
 /// <param name="num">データ数(Vector3の場合、三次元なので3を入力)</param>
-	void setInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
+	void SetInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
 
 	/// <summary>
 /// 現在のインプットレイアウトを削除します
 /// </summary>
-	void deleteInputLayout();
+	void DeleteInputLayout();
 };

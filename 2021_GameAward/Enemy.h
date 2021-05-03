@@ -28,10 +28,10 @@ protected:
 
 	//初期化と更新は各クラスでオーバーライド
 public:
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
 		const Object* const  object,
 		const CollisionType& collisionType,

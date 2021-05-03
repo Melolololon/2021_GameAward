@@ -10,14 +10,14 @@ private:
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
-	static ModelData modelData;
-	static std::vector<sprite> lifeGaugeSprite;
-	static std::vector<sprite> lifeGaugeFreamSprite;
+	static PrimitiveModel modelData;
+	static std::vector<Sprite3D> lifeGaugeSprite;
+	static std::vector<Sprite3D> lifeGaugeFreamSprite;
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
 	/// </summary>
 	void setHeapNum();
-	
+
 
 	//体力
 	int hp;
@@ -36,15 +36,15 @@ public:
 	/// <summary>
 	/// モデル読み込み
 	/// </summary>
-	static void loadModel();
+	static void LoadResource();
 
-	
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
-		const Object *const  object,
+		const Object* const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
@@ -53,7 +53,7 @@ public:
 	void trueSetEnd();
 	bool getSetEnd();
 	bool getCreateHitObject();
-	
+
 	void setPosition(const Vector3& pos);
 
 };

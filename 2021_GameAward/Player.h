@@ -1,5 +1,6 @@
 #pragma once
 #include"Object.h"
+#include"ObjModel.h"
 class Player :public Object
 {
 public:
@@ -9,7 +10,7 @@ private:
 
 #pragma region モデル関係
 
-	static ModelData modelData;
+	static ObjModel modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
@@ -17,7 +18,7 @@ private:
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
 	/// </summary>
-	void setHeapNum();
+	void SetHeapNum();
 #pragma endregion
 
 
@@ -81,26 +82,26 @@ private:
 public:
 	Player();
 	~Player();
-	void initialize()override;
-	void update()override;
-	void draw()override;
-	void hit
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
+	void Hit
 	(
-		const Object *const  object,
+		const Object* const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
-	void* getPtr()override;
-	void setHp(int hp) { this->hp = hp; }
+	void* GetPtr()override;
+	void SetHp(int hp) { this->hp = hp; }
 	int GetHp() { return hp; }
 
 	/// <summary>
 	/// モデル読み込み
 	/// </summary>
-	static void loadModel();
-	
+	static void LoadResource();
+
 #pragma region ゲッター
-	Vector3 getHeadPosition() {return initialBonePos[0] + boneMovePos[0] + position; }
+	Vector3 GetHeadPosition() { return initialBonePos[0] + boneMovePos[0] + position; }
 #pragma endregion
 
 
