@@ -46,7 +46,7 @@ void MoveEnemy::hit(const Object* const object, const CollisionType& collisionTy
 {
 	if (typeid(*object) == typeid(Block))
 	{
-		
+		//
 	}
 }
 
