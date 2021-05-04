@@ -4,11 +4,11 @@
 #include"Block.h"
 #include"PlayerBullet.h"
 PrimitiveModel TargetObject::modelData;
-int TargetObject::createCount;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
 std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
 std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
+HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
 
 TargetObject::TargetObject(const Vector3& pos)
 {
@@ -18,6 +18,7 @@ TargetObject::TargetObject(const Vector3& pos)
 
 TargetObject::~TargetObject()
 {
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 
@@ -37,16 +38,10 @@ void TargetObject::LoadResource()
 	}*/
 }
 
-void TargetObject::setHeapNum()
-{
-	heapNum = createCount;
-	createCount++;
-	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
-}
 
 void TargetObject::Initialize()
 {
-	setHeapNum();
+	heapNum = heapIndexManager.GetHeapIndex();
 
 	collisionFlag.box = true;
 	boxData.resize(1);

@@ -20,11 +20,10 @@
 //ファイルから読みとってstaticに入れられるか確かめる
 
 ObjModel Player::modelData;
-int Player::createCount;
 const int Player::CREATE_NUMBER = 2;
 std::vector<Vector3> Player::initialBonePos;
 int Player::boneNum;
-
+HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
 Player::Player()
 {
 	Initialize();
@@ -41,6 +40,7 @@ Player::Player(const Vector3& pos)
 
 Player::~Player()
 {
+	playerModelHeapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void Player::LoadResource()
@@ -56,18 +56,9 @@ void Player::LoadResource()
 }
 
 
-
-void Player::SetHeapNum()
-{
-	heapNum = createCount;
-	createCount++;
-	createCount = createCount >= CREATE_NUMBER ? 1 : createCount;
-}
-
 void Player::Initialize()
 {
-
-	SetHeapNum();
+	heapNum = playerModelHeapIndexManager.GetHeapIndex();
 
 #pragma region 読み取り
 	std::unordered_map<std::string, int>iMap;

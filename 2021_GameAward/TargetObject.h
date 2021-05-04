@@ -1,5 +1,6 @@
 #pragma once
 #include"Object.h"
+#include"HeapIndexManager.h"
 
 //”j‰ó‘ÎÛ(âK)
 class TargetObject :public Object
@@ -7,17 +8,13 @@ class TargetObject :public Object
 
 
 private:
-	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
 	static PrimitiveModel modelData;
 	static std::vector<Sprite3D> lifeGaugeSprite;
 	static std::vector<Sprite3D> lifeGaugeFreamSprite;
-	/// <summary>
-	/// •Ï”heapNumŠÖŒWBinitialize‚É•K‚¸ŒÄ‚Ño‚·B
-	/// </summary>
-	void setHeapNum();
 
+	static HeapIndexManager heapIndexManager;
 
 	//‘Ì—Í
 	int hp;

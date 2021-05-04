@@ -1,5 +1,6 @@
 #pragma once
 #include <Object.h>
+#include"HeapIndexManager.h"
 class Block :
 	public Object
 {
@@ -10,14 +11,11 @@ private:
 #pragma region モデル関係
 
 	static PrimitiveModel modelData;
-	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
 
-	/// <summary>
-	/// 変数heapNum関係。initialize時に必ず呼び出す。
-	/// </summary>
-	void SetHeapNum();
+	static HeapIndexManager heapIndexManager;
+
 
 
 #pragma endregion

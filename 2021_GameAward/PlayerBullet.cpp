@@ -4,9 +4,8 @@
 #include"Player.h"
 
 PrimitiveModel PlayerBullet::modelData;
-int PlayerBullet::createCount;
 const int PlayerBullet::CREATE_NUMBER = 100;
-
+HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
 PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 {
@@ -17,14 +16,9 @@ PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 
 PlayerBullet::~PlayerBullet()
 {
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
-void PlayerBullet::setHeapNum()
-{
-	heapNum = createCount;
-	createCount++;
-	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
-}
 
 void PlayerBullet::LoadResource()
 {
@@ -39,7 +33,7 @@ void PlayerBullet::Initialize()
 	position = 0;
 	velocity = 0;
 	speed = 0.4;
-	setHeapNum();
+	heapNum = heapIndexManager.GetHeapIndex();
 
 	deadTimer = 0;
 	deadTime = 60 * 3;

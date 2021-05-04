@@ -1,5 +1,6 @@
 #pragma once
 #include"Object.h"
+#include"HeapIndexManager.h"
 class PlayerBullet :public Object
 {
 private:
@@ -7,14 +8,11 @@ private:
 #pragma region モデル関係
 
 	static PrimitiveModel modelData;
-	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
 
-	/// <summary>
-	/// 変数heapNum関係。initialize時に必ず呼び出す。
-	/// </summary>
-	void setHeapNum();
+	static HeapIndexManager heapIndexManager;
+
 #pragma endregion
 
 	int deadTimer;

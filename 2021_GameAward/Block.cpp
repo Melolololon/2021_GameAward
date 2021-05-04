@@ -3,9 +3,8 @@
 #include"Play.h"
 
 PrimitiveModel Block::modelData;
-int Block::createCount;
 const int Block::CREATE_NUMBER = 300;
-
+HeapIndexManager Block::heapIndexManager(CREATE_NUMBER);
 
 
 Block::Block(const Vector3& pos, const Vector3& scale)
@@ -23,6 +22,7 @@ Block::Block(const Vector3& pos, const Vector3& scale)
 
 Block::~Block()
 {
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void Block::LoadResource()
@@ -38,17 +38,10 @@ void Block::LoadResource()
 	modelData.CreateBox({ 1,1,1 }, { 150,150,150,255 }, CREATE_NUMBER);
 }
 
-void Block::SetHeapNum()
-{
-	heapNum = createCount;
-	createCount++;
-	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
-}
-
 void Block::Initialize()
 {
 
-	SetHeapNum();
+	heapNum = heapIndexManager.GetHeapIndex();
 
 	velocity = 0;
 	collisionFlag.box = true;
