@@ -1,14 +1,17 @@
 #pragma once
 #include"Scene.h"
 #include"Block.h"
+#include"Player.h"
 #include<memory>
 class StageSelect :public Scene
 {
 private:
-	int selectStageNum;
+	static int selectStageNum;
+	static int maxStageNum;;
 
-	//マップ表示用(回すために入れる)allDeleteで消さないようにするために、マネージャー管理外
-	static std::vector<std::vector<std::unique_ptr<Block>>>blocks;
+	//シーン切り替え手も消えないようにするためにstatic
+	//[ステージ][ブロック]
+	static std::vector<std::vector<std::shared_ptr<Block>>>blocks;
 	static std::vector<std::vector<Vector3>>blockPositions;
 	static std::vector<std::vector<Vector3>>blockScales;
 	static std::vector<float>targetDistance;
@@ -16,6 +19,8 @@ private:
 	static std::vector<int>targetNumbers;
 	static std::vector<Vector3>leftUpPositions;
 	static std::vector<Vector3>rightDownPositions;
+
+	static std::shared_ptr<Player>player;
 public:
 	StageSelect();
 	~StageSelect();
@@ -26,5 +31,7 @@ public:
 	void Finitialize();
 	Scene* GetNextScene();
 	static void LoadResources();
+
+	static int GetSelectStageNum() { return selectStageNum; }
 };
 

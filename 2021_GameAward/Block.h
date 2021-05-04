@@ -17,7 +17,7 @@ private:
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
 	/// </summary>
-	void setHeapNum();
+	void SetHeapNum();
 
 
 #pragma endregion
@@ -26,7 +26,6 @@ private:
 
 	Vector3 scale;
 
-	static bool gameStart;
 
 
 
@@ -49,7 +48,7 @@ public:
 	/// </summary>
 	static void LoadResource();
 
-	static void setGameStart(const bool& flag) { gameStart = flag; }
 
+	void MovePosition(const Vector3& vector);
 };
 

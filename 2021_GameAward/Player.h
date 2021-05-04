@@ -14,6 +14,8 @@ private:
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
+	static int boneNum;
+	
 
 	/// <summary>
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
@@ -77,10 +79,14 @@ private:
 	int mutekiTime;
 #pragma endregion
 
+	void StageSelectSceneUpdate();
+	void PlaySceneUpdate();
 
+	void Move();
 
 public:
 	Player();
+	Player(const Vector3& pos);
 	~Player();
 	void Initialize()override;
 	void Update()override;
@@ -91,6 +97,7 @@ public:
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
+
 	void* GetPtr()override;
 	void SetHp(int hp) { this->hp = hp; }
 	int GetHp() { return hp; }

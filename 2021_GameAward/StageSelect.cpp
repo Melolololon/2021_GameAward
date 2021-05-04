@@ -1,16 +1,24 @@
 #include "StageSelect.h"
+
 #include<fstream>
+
 #include"ObjectManager.h"
 #include"Play.h"
+#include"Quaternion.h"
+#include"LibMath.h"
 
-std::vector<std::vector<std::unique_ptr<Block>>>StageSelect::blocks;
+int StageSelect::maxStageNum;
+int StageSelect::selectStageNum;
+
+std::vector<std::vector<std::shared_ptr<Block>>>StageSelect::blocks;
 std::vector<std::vector<Vector3>>StageSelect::blockPositions;
 std::vector<std::vector<Vector3>>StageSelect::blockScales;
 std::vector<float>StageSelect::targetDistance;
 std::vector<float>StageSelect::playerDistance;
 std::vector<int>StageSelect::targetNumbers;
 std::vector<Vector3>StageSelect::leftUpPositions;
-std::vector<Vector3>StageSelect::rightDownPositions;
+std::vector<Vector3>StageSelect::rightDownPositions; 
+std::shared_ptr<Player>StageSelect::player;
 
 StageSelect::StageSelect()
 {
@@ -22,9 +30,9 @@ StageSelect::~StageSelect()
 
 void StageSelect::LoadResources()
 {
+	//マップ読み込み
 	for (int i = 0; ; i++)
 	{
-
 		const std::wstring path = L"Resources/Map/ms_map" + std::to_wstring(i + 1) + L".msmap";
 		std::ifstream openFile;
 		openFile.open(path, std::ios_base::binary);
@@ -32,7 +40,7 @@ void StageSelect::LoadResources()
 		//全部読み込み終わったら(開くの失敗したら)抜ける
 		//ここ最初にパス全部取得してその分だけループしたほうがいい?
 		if (!openFile)break;
-
+		maxStageNum++;
 
 		targetDistance.resize(i + 1);
 		playerDistance.resize(i + 1);
@@ -78,50 +86,52 @@ void StageSelect::LoadResources()
 			blockPositions[i][j] = blockPos;
 			blockScales[i][j] = blockScale;
 
-			blocks[i][j] = std::make_unique<Block>(blockPos, blockScale);
-
+			blocks[i][j] = std::make_shared<Block>(blockPos, blockScale);
+			ObjectManager::GetInstance()->AddObject(blocks[i][j]);
 		}
 
 		openFile.close();
-
-
-		//追加
-		/*targetDistance.push_back(targetDis);
-		playerDistance.push_back(playerDis);
-		targetNumbers.push_back(targetNum);
-		blocks.push_back(blockVector);
-		blockPositions.push_back(blockPosVector);
-		blockScales.push_back(blockScaleVector);*/
-
 	}
 
+	
+	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
+	const Vector3 mapMovePos = { 0,0,550 };
+	const float mapRotateAngle = 360.0f / maxStageNum;
+	
+	for(int i = 0; i < maxStageNum;i++)
+	{
+		auto blockNum = blocks[i].size();
+		Vector3 movePos = mapMovePos;
+		float rotateAngle = mapRotateAngle * i;
+
+		movePos = LibMath::RotateVector3(movePos, { 0,1,0 }, rotateAngle);
+		for(int j = 0; j < blockNum;j++)
+			blocks[i][j]->MovePosition(movePos);
+		
+	}
+
+	player = std::make_shared<Player>(mapMovePos + Vector3(-100,0,-300));
+	ObjectManager::GetInstance()->AddObject(player);
 }
 
 void StageSelect::Initialize()
 {
-	selectStageNum = 0;
-
-
+	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
 }
 
 void StageSelect::Update()
 {
-	/*for (auto& b : blocks)
-	{
-		for (auto& b2 : b)
-			b2.get()->Update();
-	}*/
+	ObjectManager::GetInstance()->Update();
 
 	isEnd = true;
+
+
+
 }
 
 void StageSelect::Draw()
 {
-	/*for (auto& b : blocks)
-	{
-		for (auto& b2 : b)
-			b2.get()->Draw();
-	}*/
+	ObjectManager::GetInstance()->Draw();
 }
 
 void StageSelect::Finitialize()
@@ -138,7 +148,7 @@ void StageSelect::Finitialize()
 		rightDownPositions[selectStageNum]
 	);
 
-
+	ObjectManager::GetInstance()->AllEraseObject();
 
 }
 

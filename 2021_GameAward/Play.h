@@ -11,8 +11,8 @@ class Play :
 public:
 	enum PlaySceneState
 	{
-		PLAY_SCENE_SETTARGET,//ターゲット設置中
-		PLAY_SCENE_STARTPREBIOUS,//ゲーム開始前
+		PLAY_SCENE_SET_TARGET,//ターゲット設置中
+		PLAY_SCENE_START_PREBIOUS,//ゲーム開始前
 		PLAY_SCENE_PLAY,//ゲーム中
 		PLAY_SCENE_GAMEOVER,//ゲームオーバー
 		PLAY_SCENE_GAMECREAL,//ゲームクリア
@@ -24,7 +24,7 @@ private:
 
 
 	//ゲーム状態
-	PlaySceneState playSceneState;
+	static PlaySceneState playSceneState;
 
 #pragma region カメラ
 	Vector3 cameraPosition;
@@ -68,6 +68,7 @@ public:
 	Scene* GetNextScene();
 
 	static void LoadResources();
+	
 	static void SetStageData
 	(
 		std::vector<Vector3>blockPos,
@@ -78,5 +79,11 @@ public:
 		const Vector3& leftUpPos,
 		const Vector3& rightDownPos
 	);
+
+	static PlaySceneState GetPlaySceneState()
+	{
+		return playSceneState;
+	}
+
 };
 

@@ -1,12 +1,12 @@
 #include "Block.h"
-#include"SceneManager.h"
+
+#include"Play.h"
 
 PrimitiveModel Block::modelData;
 int Block::createCount;
 const int Block::CREATE_NUMBER = 300;
 
 
-bool Block::gameStart;
 
 Block::Block(const Vector3& pos, const Vector3& scale)
 {
@@ -38,7 +38,7 @@ void Block::LoadResource()
 	modelData.CreateBox({ 1,1,1 }, { 150,150,150,255 }, CREATE_NUMBER);
 }
 
-void Block::setHeapNum()
+void Block::SetHeapNum()
 {
 	heapNum = createCount;
 	createCount++;
@@ -48,7 +48,7 @@ void Block::setHeapNum()
 void Block::Initialize()
 {
 
-	setHeapNum();
+	SetHeapNum();
 
 	velocity = 0;
 	collisionFlag.box = true;
@@ -68,16 +68,12 @@ void Block::Initialize()
 void Block::Update()
 {
 
-	if (gameStart)
-	{
-		boxData[0].position = position;
-		boxData[0].size = scale;
-	}
-	else
-	{
-		boxData[0].position = position;
+	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)
 		boxData[0].size = scale + Vector3(15, 0, 15);
-	}
+	else
+		boxData[0].size = scale;
+	
+	boxData[0].position = position;
 
 }
 
@@ -99,4 +95,10 @@ void Block::Hit
 void* Block::GetPtr()
 {
 	return this;
+}
+
+void Block::MovePosition(const Vector3& vector)
+{
+	position += vector;
+	modelData.SetPosition(position, heapNum);
 }

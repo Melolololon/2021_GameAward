@@ -24,6 +24,7 @@ Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
 
+Play::PlaySceneState Play::playSceneState;
 Play::Play()
 {
 }
@@ -50,7 +51,7 @@ void Play::Initialize()
 	ObjectManager::GetInstance()->AddObject(player);
 	ObjectManager::GetInstance()->AddObject(enemy);
 
-	playSceneState = PlaySceneState::PLAY_SCENE_SETTARGET;
+	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
 #pragma region カメラ
 	addCameraPosition = { 0,50,-2 };
@@ -105,7 +106,7 @@ void Play::Update()
 	//	//祠セット
 	//	//座標の値が変わってないのにワープしてたのは、
 	//	//生成を繰り返してヒープの番号が被った時に、元から置かれてた祠のモデルの座標が消えるやつの座標で上書きされたから
-	if (playSceneState == PlaySceneState::PLAY_SCENE_SETTARGET)
+	if (playSceneState == PlaySceneState::PLAY_SCENE_SET_TARGET)
 	{
 		int createMissCount = 0;
 		for (auto& t : targetObjects)
@@ -190,11 +191,9 @@ void Play::Update()
 
 		//カウントされなかったらセット終了
 		if (createMissCount == 0)
-		{
 			//仮にこうしてる
 			playSceneState = PlaySceneState::PLAY_SCENE_PLAY;
-			Block::setGameStart(true);
-		}
+
 	}
 	else//祠生き残り確認(クリア判定用)
 	{
@@ -219,7 +218,7 @@ void Play::Update()
 	cameraPosition = pHeapPos;
 	cameraPosition += addCameraPosition;
 	cameraTarget = pHeapPos;
-	Library::SetCamera(cameraPosition, cameraTarget, { 0,1,0 });
+	Library::SetCamera(cameraPosition, cameraTarget, { 0,0,1 });
 
 #pragma endregion
 

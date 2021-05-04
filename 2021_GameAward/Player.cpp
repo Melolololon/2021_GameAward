@@ -4,10 +4,14 @@
 #include"ValueLoader.h"
 #include"XInputManager.h"
 #include"ObjectManager.h"
+#include"SceneManager.h"
 
 #include"PlayerBullet.h"
 #include"TargetObject.h"
 #include"Block.h"
+
+#include"Play.h"
+#include"StageSelect.h"
 
 #include<fstream>
 
@@ -17,13 +21,22 @@
 
 ObjModel Player::modelData;
 int Player::createCount;
-const int Player::CREATE_NUMBER = 1;
+const int Player::CREATE_NUMBER = 2;
 std::vector<Vector3> Player::initialBonePos;
-
+int Player::boneNum;
 
 Player::Player()
 {
 	Initialize();
+}
+
+
+Player::Player(const Vector3& pos)
+{
+	Initialize();
+
+	position = pos;
+	modelData.SetPosition(position,heapNum);
 }
 
 Player::~Player()
@@ -39,6 +52,7 @@ void Player::LoadResource()
 	Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);*/
 	//initialBonePos = Library::getBonePosition(modelData);
 	initialBonePos = modelData.GetBonePosition();
+	boneNum = static_cast<int>(initialBonePos.size());
 }
 
 
@@ -47,13 +61,11 @@ void Player::SetHeapNum()
 {
 	heapNum = createCount;
 	createCount++;
-	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
+	createCount = createCount >= CREATE_NUMBER ? 1 : createCount;
 }
 
 void Player::Initialize()
 {
-	//ボーン数
-	const int boneNum = static_cast<int>(initialBonePos.size());
 
 	SetHeapNum();
 
@@ -107,7 +119,6 @@ void Player::Initialize()
 	shotTimer = 0;
 #pragma endregion
 
-
 #pragma region 判定
 	collisionFlag.sphere = true;
 
@@ -122,49 +133,22 @@ void Player::Initialize()
 
 
 }
+
+
+
 void Player::Update()
 {
-	//ボーン数
-	const int boneNum = static_cast<int>(initialBonePos.size());
+	StageSelectSceneUpdate();
+	PlaySceneUpdate();
 
+	//角度セット
+	for (int i = 0; i < boneNum; i++)
+		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
+		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+}
 
-
-#pragma region 移動_移動時の回転処理
-
-#pragma region オオイシ移動
-
-	//if (DirectInput::keyState(DIK_LEFT))
-	//	velRot += 5.0f;
-	//if (DirectInput::keyState(DIK_RIGHT))
-	//	velRot -= 5.0f;
-
-
-
-	/*float radVelRot = LibMath::angleConversion(0, velRot);
-	velocity = { cos(radVelRot) ,0,sin(radVelRot) };
-	float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
-	velocity /= length;
-*/
-
-#pragma endregion
-
-#pragma region イチカワ移動
-	previousRot = velRot;
-
-	if (XInputManager::GetPadConnectedFlag(1))
-	{
-		if (XInputManager::LeftStickDown(40, 1) ||
-			XInputManager::LeftStickUp(40, 1) ||
-			XInputManager::LeftStickLeft(40, 1) ||
-			XInputManager::LeftStickRight(40, 1))
-		{
-			velRot = XInputManager::LeftStickAngle(1);
-		}
-	}
-	else
-		velRot = DirectInput::ArrowKeyAngle();
-
-
+void Player::Move()
+{
 	if (velRot != -1)
 	{
 		float radVelRot = LibMath::AngleConversion(0, velRot);
@@ -172,20 +156,8 @@ void Player::Update()
 		float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
 		velocity /= length;
 	}
-	else
+	else//入力されてなかったら前フレームの角度を代入
 		velRot = previousRot;
-
-#pragma endregion
-
-#pragma region Unity移動
-	//velRot = DirectInput::getMouseAngle();
-
-	//float radVelRot = LibMath::angleConversion(0, velRot);
-	//velocity = { cos(radVelRot) ,0,sin(radVelRot) };
-	//float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
-	//velocity /= length;
-#pragma endregion
-
 
 	for (int i = 0; i < boneNum; i++)
 	{
@@ -231,13 +203,48 @@ void Player::Update()
 		//座標を代入
 		bonePos[i] = initialBonePos[i] + boneMovePos[i] + position;
 	}
+}
+
+void Player::StageSelectSceneUpdate()
+{
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	//準備前、Playシーン以外は動かないように
+	if (typeid(*currentScene) != typeid(StageSelect))return;
+
+	velRot += 0.4f;
+	if (velRot >= 360.0f)
+		velRot -= 360.0f;
+	Move();
+
+	modelData.SetScale({ 10,10,10 }, heapNum);
+}
+
+void Player::PlaySceneUpdate()
+{
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	//準備前、Playシーン以外は動かないように
+	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET ||
+		Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREBIOUS ||
+		typeid(*currentScene) != typeid(Play))return;
 
 
-	//場外防止
-	//テストプレイ終了のリセットに使用
 
+#pragma region 移動_移動時の回転処理
 
+	previousRot = velRot;
 
+	if (XInputManager::GetPadConnectedFlag(1))
+	{
+		if (XInputManager::LeftStickDown(40, 1) ||
+			XInputManager::LeftStickUp(40, 1) ||
+			XInputManager::LeftStickLeft(40, 1) ||
+			XInputManager::LeftStickRight(40, 1))
+			velRot = XInputManager::LeftStickAngle(1);
+	}
+	else
+		velRot = DirectInput::ArrowKeyAngle();
+
+	Move();
 #pragma endregion
 
 #pragma region ひねり処理
@@ -250,7 +257,6 @@ void Player::Update()
 	else
 		if (XInputManager::ButtonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
 			rotateFlag = true;
-
 
 
 	if (rotateFlag)
@@ -285,14 +291,11 @@ void Player::Update()
 		//回転してたらカウント
 		tienTimer++;
 	}
-
+	
 #pragma endregion
+	
+	
 
-
-	//角度セット
-	for (int i = 0; i < boneNum; i++)
-		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
-		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
 #pragma region 弾を発射
 
 	auto shotBullet = [&](const UINT& arrayNum)
@@ -371,6 +374,9 @@ void Player::Hit
 	const int& arrayNum
 )
 {
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	if (typeid(*currentScene) == typeid(StageSelect))return;
+
 	//結構狭い隙間でも通れちゃうから修正するか、隙間ができないようにする
 	if (typeid(*object) == typeid(Block) ||
 		typeid(*object) == typeid(TargetObject))
