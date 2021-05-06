@@ -2,9 +2,11 @@
 #include"TargetObject.h"
 #include"Block.h"
 #include"Player.h"
+#include"SceneManager.h"
+#include"StageSelect.h"
 
 PrimitiveModel PlayerBullet::modelData;
-const int PlayerBullet::CREATE_NUMBER = 100;
+const int PlayerBullet::CREATE_NUMBER = 1000;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
 PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
@@ -42,6 +44,16 @@ void PlayerBullet::Initialize()
 	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = 0.25f;
+
+	scale = 15;
+
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	if (typeid(*currentScene) == typeid(StageSelect)) 
+	{
+		speed *= 25.0f;
+		modelData.SetScale(scale, heapNum);
+		sphereData[0].r *= scale.x;
+	}
 }
 
 void PlayerBullet::Update()
@@ -52,13 +64,11 @@ void PlayerBullet::Update()
 
 	position += velocity * speed;
 	sphereData[0].position = position;
-	//Library::setPosition(position, modelData, heapNum);
 	modelData.SetPosition(position, heapNum);
 }
 
 void PlayerBullet::Draw()
 {
-	//Library::drawGraphic(modelData, heapNum);
 	modelData.Draw(heapNum);
 }
 

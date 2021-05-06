@@ -20,7 +20,9 @@ private:
 	static std::vector<Vector3>leftUpPositions;
 	static std::vector<Vector3>rightDownPositions;
 
-	static std::shared_ptr<Player>player;
+	std::shared_ptr<Player>player;
+
+	bool moveToAnotherStage;//別ステージへ移動中かどうか
 public:
 	StageSelect();
 	~StageSelect();

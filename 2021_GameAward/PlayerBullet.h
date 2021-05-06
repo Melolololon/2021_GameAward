@@ -18,6 +18,8 @@ private:
 	int deadTimer;
 	int deadTime;
 
+	Vector3 scale;
+
 public:
 	PlayerBullet(const Vector3& pos, const Vector3& vel);
 	~PlayerBullet();

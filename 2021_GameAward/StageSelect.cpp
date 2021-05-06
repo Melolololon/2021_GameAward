@@ -18,7 +18,7 @@ std::vector<float>StageSelect::playerDistance;
 std::vector<int>StageSelect::targetNumbers;
 std::vector<Vector3>StageSelect::leftUpPositions;
 std::vector<Vector3>StageSelect::rightDownPositions; 
-std::shared_ptr<Player>StageSelect::player;
+
 
 StageSelect::StageSelect()
 {
@@ -110,17 +110,21 @@ void StageSelect::LoadResources()
 		
 	}
 
-	player = std::make_shared<Player>(mapMovePos + Vector3(-100,0,-300));
-	ObjectManager::GetInstance()->AddObject(player);
+	
 }
 
 void StageSelect::Initialize()
 {
 	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
+
+	moveToAnotherStage = false;
+	player = std::make_shared<Player>();
+	ObjectManager::GetInstance()->AddObject(player);
 }
 
 void StageSelect::Update()
 {
+
 	ObjectManager::GetInstance()->Update();
 
 	isEnd = true;

@@ -100,7 +100,6 @@ void Play::Update()
 {
 
 	ObjectManager::GetInstance()->Update();
-	ObjectManager::GetInstance()->EraseObjectCheck();
 #pragma region 祠処理
 
 	//	//祠セット
@@ -190,10 +189,11 @@ void Play::Update()
 #pragma endregion
 
 		//カウントされなかったらセット終了
-		if (createMissCount == 0)
+		if (createMissCount == 0) 
+		{
 			//仮にこうしてる
 			playSceneState = PlaySceneState::PLAY_SCENE_PLAY;
-
+		}
 	}
 	else//祠生き残り確認(クリア判定用)
 	{
@@ -204,6 +204,17 @@ void Play::Update()
 			if (t->GetEraseManager())
 				deadCount++;
 		}
+
+		//ターゲットの座標をプレイヤーに渡す
+		auto targetObjectsSize = targetObjects.size();
+		std::vector<Vector3>targetObjectPos;
+		targetObjectPos.reserve(30);
+		for (int i = 0; i < targetObjectsSize; i++) 
+		{
+			if (!targetObjects[i]->GetEraseManager())
+				targetObjectPos.push_back(targetObjects[i]->GetPosition());
+		}
+		Player::SetTargetObjectPosition(targetObjectPos);
 
 		//終了処理
 		/*if(deadCount == targetObjects.size())

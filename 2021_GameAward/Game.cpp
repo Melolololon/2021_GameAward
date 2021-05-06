@@ -82,6 +82,8 @@ void Game::Initialize()
 	SceneManager::GetInstace()->Initialize(new StageSelect());
 #pragma endregion
 
+
+
 }
 
 

@@ -9,6 +9,7 @@ public:
 
 private:
 
+
 #pragma region モデル関係
 
 	static ObjModel modelData;
@@ -17,19 +18,9 @@ private:
 	static HeapIndexManager playerModelHeapIndexManager;
 	
 	static int boneNum;
-	
+
+	Vector3 scale;
 #pragma endregion
-
-
-
-	//ボーン座標(objに記述されてる位置。あたり判定用。これ+bonePosが判定に使用する位置)
-	static std::vector<Vector3> initialBonePos;
-
-	//initial&movePos
-	std::vector<Vector3> bonePos;
-
-
-
 
 #pragma region 移動
 	//ボーン座標(initialからどのくらい動いてるか)
@@ -42,8 +33,23 @@ private:
 
 	float previousRot;
 
+	float initSpeed;//スピード初期値
 
 	std::vector<Vector3>boneVelocity;
+
+	//ボーン座標(objに記述されてる位置。あたり判定用。これ+bonePosが判定に使用する位置)
+	static std::vector<Vector3> initialBonePos;
+	static std::vector<Vector3> initialBonePosMulScale;//スケール乗算版
+
+	//initial&movePos
+	std::vector<Vector3> bonePos;
+
+#pragma region 祠を囲む回転
+	//ターゲットの周りをまわっているかどうか
+	bool targetRotatePlayer;
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 回転
@@ -76,10 +82,12 @@ private:
 	int mutekiTime;
 #pragma endregion
 
-	void StageSelectSceneUpdate();
-	void PlaySceneUpdate();
+#pragma region 祠の座標(回転用)
+	static std::vector<Vector3>targetObjectPos;
+#pragma endregion
 
-	void Move();
+
+
 
 public:
 	Player();
@@ -96,8 +104,7 @@ public:
 	)override;
 
 	void* GetPtr()override;
-	void SetHp(int hp) { this->hp = hp; }
-	int GetHp() { return hp; }
+	
 
 	/// <summary>
 	/// モデル読み込み
@@ -106,6 +113,11 @@ public:
 
 #pragma region ゲッター
 	Vector3 GetHeadPosition() { return initialBonePos[0] + boneMovePos[0] + position; }
+	int GetHp() { return hp; }
+#pragma endregion
+
+#pragma region セッター
+	static void SetTargetObjectPosition(const std::vector<Vector3>& pos) { targetObjectPos = pos; }
 #pragma endregion
 
 
