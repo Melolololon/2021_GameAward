@@ -17,6 +17,9 @@
 #include"MoveEnemy.h"
 #include"ShotEnemy.h"
 #include"FleeEnemy.h"
+#include"DefenceEnemy.h"
+#include"SimEnemy.h"
+#include"HealEnemy.h"
 #include"EnemyBullet.h"
 #pragma endregion
 
@@ -66,6 +69,9 @@ void Game::Initialize()
 	MoveEnemy::LoadResource();
 	ShotEnemy::LoadResource();
 	FleeEnemy::LoadResource();
+	DefenceEnemy::LoadResource();
+	SimEnemy::LoadResource();
+	HealEnemy::LoadResource();
 
 	StageSelect::LoadResources();
 	Play::LoadResources();

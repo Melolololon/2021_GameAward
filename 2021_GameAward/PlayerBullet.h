@@ -20,6 +20,8 @@ private:
 
 	Vector3 scale;
 
+	bool IsEnemy(const Object* p);
+
 public:
 	PlayerBullet(const Vector3& pos, const Vector3& vel);
 	~PlayerBullet();

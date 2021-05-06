@@ -81,6 +81,15 @@
     <ClCompile Include="PlayerBullet.cpp">
       <Filter>ソース ファイル\Object\Player</Filter>
     </ClCompile>
+    <ClCompile Include="DefenceEnemy.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="HealEnemy.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SimEnemy.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -121,6 +130,15 @@
     </ClInclude>
     <ClInclude Include="PlayerBullet.h">
       <Filter>ヘッダー ファイル\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenceEnemy.h">
+      <Filter>ヘッダー ファイル\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HealEnemy.h">
+      <Filter>ヘッダー ファイル\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SimEnemy.h">
+      <Filter>ヘッダー ファイル\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
