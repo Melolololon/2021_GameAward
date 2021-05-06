@@ -2,6 +2,10 @@
 #include "MoveEnemy.h"
 #include "ShotEnemy.h"
 #include "FleeEnemy.h"
+#include "SimEnemy.h"
+#include "DefenceEnemy.h"
+#include "HealEnemy.h"
+
 #include"ObjectManager.h"
 #include"XInputManager.h"
 
@@ -45,11 +49,38 @@ void Play::LoadResources()
 void Play::Initialize()
 {
 	player = std::make_shared<Player>();
-	enemy = std::make_shared<FleeEnemy>();
-	enemy->setPPlayer(player.get());
-	enemy->setPosition(Vector3(Library::GetRandomNumber(50), 0, Library::GetRandomNumber(50)));
 	ObjectManager::GetInstance()->AddObject(player);
-	ObjectManager::GetInstance()->AddObject(enemy);
+
+	//“G’Ç‰Á
+	for (int i = 0; i < ENEMY_COUNT; i++)
+	{
+		std::shared_ptr<Enemy> enemy;
+		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(1);
+		if (enemyType == Play::EnemyType::ET_MoveEnemy){
+			enemy = std::make_shared<MoveEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_ShotEnemy) {
+			enemy = std::make_shared<ShotEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_FleeEnemy) {
+			enemy = std::make_shared<FleeEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_SimEnemy) {
+			enemy = std::make_shared<SimEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_DefenceEnemy) {
+			enemy = std::make_shared<DefenceEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_HealEnemy) {
+			enemy = std::make_shared<HealEnemy>();
+		}
+
+		enemy->setPPlayer(player.get());
+		//enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+		enemy->setPosition(Vector3(50,0,20));
+		ObjectManager::GetInstance()->AddObject(enemy);
+		enemies.push_back(enemy);
+	}
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 

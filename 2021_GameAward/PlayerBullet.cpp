@@ -1,11 +1,31 @@
 #include "PlayerBullet.h"
-#include"TargetObject.h"
-#include"Block.h"
-#include"Player.h"
+#include "TargetObject.h"
+#include "Block.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "MoveEnemy.h"
+#include "ShotEnemy.h"
+#include "FleeEnemy.h"
+#include "SimEnemy.h"
+#include "DefenceEnemy.h"
+#include "HealEnemy.h"
 
 PrimitiveModel PlayerBullet::modelData;
 const int PlayerBullet::CREATE_NUMBER = 100;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
+
+bool PlayerBullet::IsEnemy(const Object* p)
+{
+
+	if (typeid(*p) == typeid(MoveEnemy))
+	{
+		return true;
+	}
+
+	return false;
+
+		
+}
 
 PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 {
@@ -77,4 +97,9 @@ void PlayerBullet::Hit
 	if (typeid(*object) == typeid(Player) &&
 		deadTimer >= 60 * 0.1f)
 		eraseManager = true;
+
+
+	if (IsEnemy(object))
+		eraseManager = true;
 }
+

@@ -1,5 +1,5 @@
 #include "MoveEnemy.h"
-#include "Block.h"
+#include "Player.h"
 
 PrimitiveModel MoveEnemy::modelData;
 int MoveEnemy::createCount;
@@ -42,13 +42,6 @@ void MoveEnemy::Draw()
 	modelData.Draw(heapNum);
 }
 
-void MoveEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
-{
-	if (typeid(*object) == typeid(Block))
-	{
-		//
-	}
-}
 
 void MoveEnemy::LoadResource()
 {

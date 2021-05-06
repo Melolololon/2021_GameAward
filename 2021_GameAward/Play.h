@@ -5,6 +5,7 @@
 #include"Enemy.h"
 #include"Block.h"
 #include"TargetObject.h"
+#include<vector>
 class Play :
 	public Scene
 {
@@ -18,10 +19,21 @@ public:
 		PLAY_SCENE_GAMECREAL,//ゲームクリア
 	};
 
+	enum EnemyType
+	{
+		ET_MoveEnemy,
+		ET_ShotEnemy,
+		ET_FleeEnemy,
+		ET_SimEnemy,
+		ET_DefenceEnemy,
+		ET_HealEnemy,
+	};
+
 private:
 	std::shared_ptr<Player> player;
-	std::shared_ptr<Enemy> enemy;
-
+	std::vector<std::shared_ptr<Enemy>> enemies;
+	//とりあえず固定
+	const int ENEMY_COUNT = 1;
 
 	//ゲーム状態
 	static PlaySceneState playSceneState;

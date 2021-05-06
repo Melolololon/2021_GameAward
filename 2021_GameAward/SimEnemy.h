@@ -1,33 +1,19 @@
 #pragma once
-#include"Object.h"
-#include"HeapIndexManager.h"
-class PlayerBullet :public Object
+#include "Enemy.h"
+class SimEnemy :
+	public Enemy
 {
 private:
-
-#pragma region モデル関係
-
 	static PrimitiveModel modelData;
+	static int createCount;
 	static const int CREATE_NUMBER;
-	int heapNum;
 
-	static HeapIndexManager heapIndexManager;
-
+#pragma region 追加パラメータ
 #pragma endregion
 
-	int deadTimer;
-	int deadTime;
-
-	bool IsEnemy(const Object* p);
-
 public:
-	PlayerBullet(const Vector3& pos, const Vector3& vel);
-	~PlayerBullet();
-
-
-
+	SimEnemy();
 	static void LoadResource();
-
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
@@ -38,5 +24,9 @@ public:
 		const int& arrayNum
 	)override;
 
+	/// <summary>
+/// 変数heapNum関係。initialize時に必ず呼び出す。
+/// </summary>
+	void setHeapNum()override;
+	void setPosition(Vector3 pos)override;
 };
-
