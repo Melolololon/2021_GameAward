@@ -7,6 +7,8 @@
 #include"Quaternion.h"
 #include"LibMath.h"
 
+#include"Player.h"
+
 int StageSelect::maxStageNum;
 int StageSelect::selectStageNum;
 
@@ -97,7 +99,7 @@ void StageSelect::LoadResources()
 	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
 	const Vector3 mapMovePos = { 0,0,550 };
 	const float mapRotateAngle = 360.0f / maxStageNum;
-	
+	std::vector<Vector3>mapMovePositions(maxStageNum);
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		auto blockNum = blocks[i].size();
@@ -107,10 +109,12 @@ void StageSelect::LoadResources()
 		movePos = LibMath::RotateVector3(movePos, { 0,1,0 }, rotateAngle);
 		for(int j = 0; j < blockNum;j++)
 			blocks[i][j]->MovePosition(movePos);
+
+		mapMovePositions[i] = movePos;
 		
 	}
 
-	
+	Player::SetTargetPosition(mapMovePositions);
 }
 
 void StageSelect::Initialize()
@@ -124,10 +128,11 @@ void StageSelect::Initialize()
 
 void StageSelect::Update()
 {
-
+	
 	ObjectManager::GetInstance()->Update();
 
-	isEnd = true;
+
+	//isEnd = true;
 
 
 

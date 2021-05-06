@@ -10,6 +10,10 @@
 #include "DefenceEnemy.h"
 #include "HealEnemy.h"
 
+#include"Scene.h"
+#include"SceneManager.h"
+#include"StageSelect.h"
+
 PrimitiveModel PlayerBullet::modelData;
 const int PlayerBullet::CREATE_NUMBER = 1000;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);

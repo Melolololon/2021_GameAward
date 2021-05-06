@@ -245,7 +245,7 @@ void Play::Update()
 			if (!targetObjects[i]->GetEraseManager())
 				targetObjectPos.push_back(targetObjects[i]->GetPosition());
 		}
-		Player::SetTargetObjectPosition(targetObjectPos);
+		Player::SetTargetPosition(targetObjectPos);
 
 		//I—¹ˆ—
 		/*if(deadCount == targetObjects.size())

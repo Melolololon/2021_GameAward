@@ -83,7 +83,7 @@ private:
 #pragma endregion
 
 #pragma region 祠の座標(回転用)
-	static std::vector<Vector3>targetObjectPos;
+	static std::vector<Vector3>targetPos;
 #pragma endregion
 
 
@@ -117,7 +117,8 @@ public:
 #pragma endregion
 
 #pragma region セッター
-	static void SetTargetObjectPosition(const std::vector<Vector3>& pos) { targetObjectPos = pos; }
+	//囲むための配列を渡す関数
+	static void SetTargetPosition(const std::vector<Vector3>& pos) { targetPos = pos; }
 #pragma endregion
 
 

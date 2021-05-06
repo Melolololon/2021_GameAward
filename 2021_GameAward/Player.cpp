@@ -25,7 +25,7 @@ std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
 
-std::vector<Vector3>Player::targetObjectPos;
+std::vector<Vector3>Player::targetPos;
 
 Player::Player()
 {
@@ -166,40 +166,43 @@ void Player::Update()
 	if (DirectInput::KeyState(DIK_X))
 	{
 		//近いオブジェクトの距離を求める
-		float nearTergetObjectDis = 9999999.0f;
-		float targetObjectDistance = 0.0f;
-		Vector3 nearTergetObjectPosition = 0;
-		for (const auto& t : targetObjectPos)
+		float nearTergetDis = 9999999.0f;
+		float targetDistance = 0.0f;
+		Vector3 nearTergetPosition = 0;
+		for (const auto& t : targetPos)
 		{
-			targetObjectDistance = LibMath::CalcDistance3D
+			targetDistance = LibMath::CalcDistance3D
 			(
 				bonePos[0],
 				t
 			);
-			if (nearTergetObjectDis > targetObjectDistance)
+			if (nearTergetDis > targetDistance)
 			{
-				nearTergetObjectPosition = t;
-				nearTergetObjectDis = targetObjectDistance;
+				nearTergetPosition = t;
+				nearTergetDis = targetDistance;
 			}
 		}
-
-		const float maxDistance = 40.0f;
-		if (nearTergetObjectDis <= maxDistance) 
+		Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+		float maxDistance = 40.0f;
+		if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
+		if (nearTergetDis <= maxDistance) 
 		{
 			//祠に近づく処理
-			const float minDistance = 7.0f;
-			if (nearTergetObjectDis >= minDistance 
+			float minDistance = 7.0f;
+			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 40.0f;
+
+			if (nearTergetDis >= minDistance 
 				&& !targetRotatePlayer)
 			{
 				targetRotatePlayer = false;
 
-				Vector3 playerToNeraTargetObject = nearTergetObjectPosition - bonePos[0];
-				float playerToNeraTargetObjectAngle = LibMath::Vecto2ToAngle
+				Vector3 playerToNeraTarget = nearTergetPosition - bonePos[0];
+				float playerToNeraTargetAngle = LibMath::Vecto2ToAngle
 				(
-					{ playerToNeraTargetObject.x,playerToNeraTargetObject.z },
+					{ playerToNeraTarget.x,playerToNeraTarget.z },
 					true
 				);
-				velRot = playerToNeraTargetObjectAngle;
+				velRot = playerToNeraTargetAngle;
 
 			}
 			//回る処理
@@ -209,15 +212,17 @@ void Player::Update()
 				{
 					targetRotatePlayer = true;
 					//ここで、ターゲットからプレイヤーへのベクトルの角度を求め、velRotに入れる
-					Vector3 targetObjectToPlayerToNera = bonePos[0] - nearTergetObjectPosition;
-					float targetObjectToPlayerToNeraAngle = LibMath::Vecto2ToAngle
+					Vector3 targetToPlayerToNera = bonePos[0] - nearTergetPosition;
+					float targetToPlayerToNeraAngle = LibMath::Vecto2ToAngle
 					(
-						{ targetObjectToPlayerToNera .x,targetObjectToPlayerToNera .z},
+						{ targetToPlayerToNera .x,targetToPlayerToNera .z},
 						true
 					);
-					velRot = targetObjectToPlayerToNeraAngle - 90.0f;
+					velRot = targetToPlayerToNeraAngle - 90.0f;
 				}
-
+				if (typeid(*currentScene) == typeid(StageSelect))
+					velRot -= 1.0f;
+				else
 				velRot -= 1.5f;
 			}
 		}
