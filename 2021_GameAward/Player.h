@@ -49,10 +49,20 @@ private:
 	bool targetRotatePlayer;
 #pragma endregion
 
+#pragma region 祠の周りを回転するときのターゲット情報
+	std::vector<Vector3>targetPos;
+	int targetNum;
+#pragma endregion
+
+#pragma region ステージセレクト時
+	float stageSelectSpeedMag;
+	bool selectStage;//ステージ選択したかどうか
+#pragma endregion
+
 
 #pragma endregion
 
-#pragma region 回転
+#pragma region 回転(捻り)
 	//遅延中かどうか
 	bool rotateFlag;
 	//回転速度(1フレームに回転する角度)
@@ -82,9 +92,6 @@ private:
 	int mutekiTime;
 #pragma endregion
 
-#pragma region 祠の座標(回転用)
-	static std::vector<Vector3>targetPos;
-#pragma endregion
 
 
 
@@ -114,11 +121,16 @@ public:
 #pragma region ゲッター
 	Vector3 GetHeadPosition() { return initialBonePos[0] + boneMovePos[0] + position; }
 	int GetHp() { return hp; }
+
+	bool GetTargetRotatePlayer() { return targetRotatePlayer; }
+	int GetTargetNum() { return targetNum; }
 #pragma endregion
 
 #pragma region セッター
 	//囲むための配列を渡す関数
-	static void SetTargetPosition(const std::vector<Vector3>& pos) { targetPos = pos; }
+	void SetTargetPosition(const std::vector<Vector3>& pos) { targetPos = pos; }
+
+	void SetSelectStage(const bool flag) { selectStage = flag; }
 #pragma endregion
 
 

@@ -57,6 +57,9 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	createPolygon->Initialize(windowWidth, windowHeight);
 
 	srand((unsigned int)time(NULL));
+
+	ObjectManager::GetInstance()->Initialize();
+	
 	count = 0;
 	fps = 60;
 	startProsessTime = timeGetTime();

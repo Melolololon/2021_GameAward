@@ -50,6 +50,7 @@ void Play::Initialize()
 {
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
+	
 
 	//“G’Ç‰Á
 	for (int i = 0; i < ENEMY_COUNT; i++)
@@ -245,7 +246,7 @@ void Play::Update()
 			if (!targetObjects[i]->GetEraseManager())
 				targetObjectPos.push_back(targetObjects[i]->GetPosition());
 		}
-		Player::SetTargetPosition(targetObjectPos);
+		player->SetTargetPosition(targetObjectPos);
 
 		//I—¹ˆ—
 		/*if(deadCount == targetObjects.size())

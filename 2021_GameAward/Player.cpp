@@ -25,7 +25,6 @@ std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
 
-std::vector<Vector3>Player::targetPos;
 
 Player::Player()
 {
@@ -76,9 +75,11 @@ void Player::Initialize()
 
 	position = { 0.0f,0.0f,0.0f };
 	velocity = { 1.0f,0.0f,0.0f };
-	initSpeed = fMap["speed"];
+	//initSpeed = fMap["speed"];
+	initSpeed = 1.0f;
 	speed = initSpeed;
-
+	stageSelectSpeedMag = 25.0f;
+	selectStage = false;
 #pragma region パラメーター
 
 
@@ -89,10 +90,11 @@ void Player::Initialize()
 #pragma endregion
 
 	scale = { 1,1,1 };	
+
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))
 	{
-		speed = initSpeed * 25.0f;
+		speed = initSpeed * stageSelectSpeedMag;
 		scale = { 20,20,20 };
 	}
 	modelData.SetScale(scale, heapNum);
@@ -102,6 +104,7 @@ void Player::Initialize()
 	bonePos.resize(boneNum);
 	for (int i = 0; i < boneNum; i++) 
 	{
+		//スケールを掛ける
 		initialBonePosMulScale[i] *= scale;
 		
 		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
@@ -122,6 +125,7 @@ void Player::Initialize()
 	boneVelocity.resize(boneNum, 0.0f);
 
 	targetRotatePlayer = false;
+	targetNum = -1;
 #pragma endregion
 
 #pragma region 弾の発射
@@ -155,31 +159,36 @@ void Player::Update()
 			Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREBIOUS)return;
 	}
 
-	
+	targetNum = -1;
 
 
 #pragma region 移動_移動時の回転処理
 
 	previousRot = velRot;
 
-	
-	if (DirectInput::KeyState(DIK_X))
+
+	//回転
+	if (DirectInput::KeyState(DIK_X) ||
+		selectStage)
 	{
 		//近いオブジェクトの距離を求める
 		float nearTergetDis = 9999999.0f;
 		float targetDistance = 0.0f;
 		Vector3 nearTergetPosition = 0;
-		for (const auto& t : targetPos)
+
+		auto targetPosSize = targetPos.size();
+		for (int i = 0; i < targetPosSize;i++)
 		{
 			targetDistance = LibMath::CalcDistance3D
 			(
 				bonePos[0],
-				t
+				targetPos[i]
 			);
 			if (nearTergetDis > targetDistance)
 			{
-				nearTergetPosition = t;
+				nearTergetPosition = targetPos[i];
 				nearTergetDis = targetDistance;
+				targetNum = i;
 			}
 		}
 		Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
@@ -189,7 +198,7 @@ void Player::Update()
 		{
 			//祠に近づく処理
 			float minDistance = 7.0f;
-			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 40.0f;
+			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
 
 			if (nearTergetDis >= minDistance 
 				&& !targetRotatePlayer)
@@ -220,13 +229,23 @@ void Player::Update()
 					);
 					velRot = targetToPlayerToNeraAngle - 90.0f;
 				}
-				if (typeid(*currentScene) == typeid(StageSelect))
-					velRot -= 1.0f;
+				if (typeid(*currentScene) == typeid(StageSelect)) 
+				{
+					if (selectStage)
+					{
+						float subRotNum = 2.5f;
+						velRot -= subRotNum;
+						speed = initSpeed * stageSelectSpeedMag * subRotNum;
+					}
+					else
+						velRot -= 1.0f;
+				}
 				else
 				velRot -= 1.5f;
 			}
 		}
 	}
+	//移動
 	else 
 	{
 		targetRotatePlayer = false;
@@ -242,6 +261,7 @@ void Player::Update()
 		else
 			velRot = DirectInput::ArrowKeyAngle();
 	}
+	
 
 	
 
@@ -267,37 +287,41 @@ void Player::Update()
 			//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
 			modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 			boneVelocity[i] = velocity;
+
+			//座標を代入
+			bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
 		}
 		else
 		{
 			//前のボーンへのベクトル
 			Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
 
-			float length = sqrt
-			(
-				forwardVector.x * forwardVector.x +
-				forwardVector.y * forwardVector.y +
-				forwardVector.z * forwardVector.z
-			);
-
+			//移動によるY軸基準の回転角度を代入
 			moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
-
-			//moveRotateAngle[i] = moveRotateAngle[i] == 90.0f ? 0 : moveRotateAngle[i];
-
-
-			float size = initialBonePosMulScale[i - 1].x - initialBonePosMulScale[i].x;
-			//近づくバグ対策のif?
-			if (length >= size)
+	
+			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1]  , bonePos[i]);
+			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1],initialBonePosMulScale[i]);
+		
+			//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動
+			if (bonePosDistance >= defaultBoneDistance)
 			{
-				boneMovePos[i] += forwardVector / length * speed;
-				//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+				//差を求める
+				float disDifference = bonePosDistance - defaultBoneDistance;
+
+				boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
+				
+				//距離の差だけ移動させる
+				//これにより近づきすぎを防げる
+				boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
+				
+				//セット
 				modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-				boneVelocity[i] = forwardVector / length;
+				bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
 			}
+
 		}
 
-		//座標を代入
-		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
+		
 
 	}
 #pragma endregion
@@ -380,7 +404,8 @@ void Player::Update()
 	}*/
 
 	//新ショット(手動)
-	if(DirectInput::KeyTrigger(DIK_Z))
+	if(DirectInput::KeyTrigger(DIK_Z) && 
+		!rotateFlag)
 	{
 		for (int i = 1; i < boneNum - 1; i++)
 		{

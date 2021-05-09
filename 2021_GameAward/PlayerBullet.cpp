@@ -56,30 +56,38 @@ void PlayerBullet::Initialize()
 {
 	position = 0;
 	velocity = 0;
-	speed = 0.4;
+	speed = 0.6f;
 	heapNum = heapIndexManager.GetHeapIndex();
 
 	deadTimer = 0;
-	deadTime = 60 * 3;
+	deadTime = 60 * 2;
 
 	collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = 0.25f;
 
-	scale = 15;
+	scale = 1.0f;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect)) 
 	{
-		speed *= 25.0f;
-		modelData.SetScale(scale, heapNum);
+		scale = 15.0f;
+		speed *= 25.0f;	
 		sphereData[0].r *= scale.x;
 	}
+	if (heapNum != -1)
+	modelData.SetScale(scale, heapNum);
 }
 
 void PlayerBullet::Update()
 {
+	if(heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	deadTimer++;
 	if (deadTimer >= deadTime)
 		eraseManager = true;
@@ -91,6 +99,8 @@ void PlayerBullet::Update()
 
 void PlayerBullet::Draw()
 {
+	if (heapNum == -1)return;
+
 	modelData.Draw(heapNum);
 }
 
@@ -107,7 +117,7 @@ void PlayerBullet::Hit
 
 
 	if (typeid(*object) == typeid(Player) &&
-		deadTimer >= 60 * 0.1f)
+		deadTimer >= 60 * 0.05f)
 		eraseManager = true;
 
 

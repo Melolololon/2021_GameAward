@@ -78,14 +78,13 @@ void Game::Initialize()
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
-	ObjectManager::GetInstance()->Initialize();
 	ObjectManager::GetInstance()->ReserveObjectArray(200);
 	CollisionFlag f;
 	f.sphere = true;
 	f.box = true;
 	ObjectManager::GetInstance()->SetCollisionFlag3D(f);
 
-	SceneManager::GetInstace()->Initialize(new StageSelect());
+	SceneManager::GetInstace()->SetStartScene(new StageSelect());
 #pragma endregion
 
 

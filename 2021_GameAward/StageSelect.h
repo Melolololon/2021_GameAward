@@ -19,10 +19,13 @@ private:
 	static std::vector<int>targetNumbers;
 	static std::vector<Vector3>leftUpPositions;
 	static std::vector<Vector3>rightDownPositions;
+	static std::vector<Vector3>mapMovePositions;
 
 	std::shared_ptr<Player>player;
-
-	bool moveToAnotherStage;//別ステージへ移動中かどうか
+	UINT playerRotateTimer;
+	static const UINT playerRotateTime;
+	UINT nextFromSelectionTimer;//選択から次のシーンまでの時間
+	static const UINT nextFromSelectionTime;
 public:
 	StageSelect();
 	~StageSelect();

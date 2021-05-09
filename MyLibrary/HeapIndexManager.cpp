@@ -26,5 +26,9 @@ int HeapIndexManager::GetHeapIndex()
 	return -1;
 }
 
-
+void HeapIndexManager::DrawEndCallFunction(const int heapIndex)
+{
+	if (heapIndex >= 0 && heapIndex < createNum)
+		drawCheckVector[heapIndex] = false;
+}
 

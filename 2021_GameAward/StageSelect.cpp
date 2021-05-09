@@ -20,7 +20,10 @@ std::vector<float>StageSelect::playerDistance;
 std::vector<int>StageSelect::targetNumbers;
 std::vector<Vector3>StageSelect::leftUpPositions;
 std::vector<Vector3>StageSelect::rightDownPositions; 
+std::vector<Vector3>StageSelect::mapMovePositions;
 
+const UINT StageSelect::playerRotateTime = 60 * 2;
+const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
 StageSelect::StageSelect()
 {
@@ -99,7 +102,7 @@ void StageSelect::LoadResources()
 	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
 	const Vector3 mapMovePos = { 0,0,550 };
 	const float mapRotateAngle = 360.0f / maxStageNum;
-	std::vector<Vector3>mapMovePositions(maxStageNum);
+	mapMovePositions.resize(maxStageNum);
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		auto blockNum = blocks[i].size();
@@ -114,16 +117,17 @@ void StageSelect::LoadResources()
 		
 	}
 
-	Player::SetTargetPosition(mapMovePositions);
+	
 }
 
 void StageSelect::Initialize()
 {
 	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
 
-	moveToAnotherStage = false;
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
+	player->SetTargetPosition(mapMovePositions);
+	playerRotateTimer = 0;
 }
 
 void StageSelect::Update()
@@ -131,8 +135,27 @@ void StageSelect::Update()
 	
 	ObjectManager::GetInstance()->Update();
 
+	//ステージセレクト処理
+	int playerTargetNum = player->GetTargetNum();
+	if (playerTargetNum != -1 &&
+		player->GetTargetRotatePlayer())
+	{
 
-	//isEnd = true;
+		if (playerRotateTimer >= playerRotateTime) 
+		{
+			player->SetSelectStage(true);
+			selectStageNum = playerTargetNum;
+			nextFromSelectionTimer++;
+		}
+		if (nextFromSelectionTimer >= nextFromSelectionTime)
+			isEnd = true;
+
+		playerRotateTimer++;
+	}
+	else
+		playerRotateTimer = 0;
+
+	
 
 
 
