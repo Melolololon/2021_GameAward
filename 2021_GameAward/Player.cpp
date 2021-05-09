@@ -75,8 +75,8 @@ void Player::Initialize()
 
 	position = { 0.0f,0.0f,0.0f };
 	velocity = { 1.0f,0.0f,0.0f };
-	//initSpeed = fMap["speed"];
-	initSpeed = 1.0f;
+	initSpeed = fMap["speed"];
+	//initSpeed = 1.0f;
 	speed = initSpeed;
 	stageSelectSpeedMag = 25.0f;
 	selectStage = false;
