@@ -157,7 +157,7 @@ void StageSelect::Update()
 
 	
 
-
+	isEnd = true;
 
 }
 

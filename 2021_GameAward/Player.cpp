@@ -50,10 +50,9 @@ void Player::LoadResource()
 {
 	std::string mtl;
 
-	modelData.LoadModel("Resources/Model/testSnake.obj", true, CREATE_NUMBER, 0);
-	/*Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
-	Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);*/
-	//initialBonePos = Library::getBonePosition(modelData);
+	//modelData.LoadModel("Resources/Model/testSnake.obj", true, CREATE_NUMBER, 0);
+	modelData.LoadModel("Resources/Model/Player/snake.obj", true, CREATE_NUMBER, 0);
+	
 	initialBonePos = modelData.GetBonePosition();
 	boneNum = static_cast<int>(initialBonePos.size());
 }
@@ -98,6 +97,7 @@ void Player::Initialize()
 		scale = { 20,20,20 };
 	}
 	modelData.SetScale(scale, heapNum);
+
 	initialBonePosMulScale = initialBonePos;
 	
 	boneMovePos.resize(boneNum, 0.0f);
@@ -120,7 +120,7 @@ void Player::Initialize()
 
 #pragma region 移動
 	velRot = 0.0f;
-	previousRot = 0.0f;
+	previousRot = velRot;
 	moveRotateAngle.resize(boneNum, 0.0f);
 	boneVelocity.resize(boneNum, 0.0f);
 
@@ -138,10 +138,11 @@ void Player::Initialize()
 	collisionFlag.sphere = true;
 
 	sphereData.resize(boneNum);
-	for (int i = 0; i < boneNum; i++)
+	sphereData[0].r = 1.6f * scale.x;
+	for (int i = 1; i < boneNum; i++)
 	{
 		sphereData[i].position = bonePos[i];
-		sphereData[i].r = 0.4f * scale.x;
+		sphereData[i].r = 1.0f * scale.x;
 	}
 
 #pragma endregion
@@ -150,7 +151,7 @@ void Player::Initialize()
 }
 
 void Player::Update()
-{
+{ 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	//準備前は動かないように
 	if (typeid(*currentScene) == typeid(Play))
@@ -326,6 +327,8 @@ void Player::Update()
 	}
 #pragma endregion
 
+	
+
 #pragma region ひねり処理
 
 	if (!XInputManager::GetPadConnectedFlag(1))
@@ -378,15 +381,21 @@ void Player::Update()
 		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
 
+	modelData.SetPosition({ 0,-5,0 }, heapNum);
 
 #pragma region 弾を発射
 
 	auto shotBullet = [&](const UINT& arrayNum)
 	{
-		Vector3 normalizeForwordVector = Vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
+		Vector3 forwordVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+		Vector3 normalizeForwordVector = Vector3Normalize(forwordVector);
 		Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
 
-		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>(bonePos[arrayNum], Vector3(q.x, 0, q.z)));
+		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
+			(
+				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y , bonePos[arrayNum].z) ,
+				Vector3(q.x, 0, q.z)
+				));
 	};
 
 	//旧ショット(自動)
@@ -407,15 +416,18 @@ void Player::Update()
 	if(DirectInput::KeyTrigger(DIK_Z) && 
 		!rotateFlag)
 	{
-		for (int i = 1; i < boneNum - 1; i++)
+		for (int i = 3; i < boneNum - 7; i++)
 		{
+			if (i % 2 == 0)continue;
 			shotBullet(i);
 		}
 	}
 	
 
-	for (int i = 1; i < boneNum - 1; i++)
+	for (int i = 3; i < boneNum - 7; i++)
 	{
+		if (i % 2 == 0)continue;
+
 		if (twistAngles[i] >= 180 &&
 			twistAngles[i] <= 180 + rotateSpeed)
 			shotBullet(i);
