@@ -35,7 +35,11 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 	//プレイヤーとの衝突判定
 	if (typeid(*object) == typeid(Player))
 	{
-
+		if (attackAfterTimer >= 60 * 2)
+		{
+			attackAfterTimer--;
+			//ここにプレイヤーの体力を減らす処理
+		}
 	}
 
 	//プレイヤーの弾との衝突判定
@@ -43,9 +47,12 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 	{
 		hp--;
 		if (hp <= 0)
-			eraseManager = true;
-	}
+		{
+			//ここにスコアを与える処理
 
+			eraseManager = true;
+		}
+	}
 }
 
 void Enemy::loadModel()

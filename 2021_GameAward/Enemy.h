@@ -25,6 +25,8 @@ protected:
 	int hp = 3;
 	static const float OBJSIZE;
 
+	int attackAfterTimer = 60 * 2;
+
 #pragma endregion
 
 	//初期化と更新は各クラスでオーバーライド

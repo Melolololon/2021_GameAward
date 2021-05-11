@@ -1,4 +1,7 @@
 #include "FleeEnemy.h"
+#include "Block.h"
+#include "Player.h"
+#include "PlayerBullet.h"
 
 PrimitiveModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
@@ -42,7 +45,18 @@ void FleeEnemy::Update()
 		//“¦‚°‚é
 		if (escapeTimer < 300 - 60 * 2)
 		{
-			position = position - velocity * moveSpeed * 2;
+			if (attackAfterTimer == 60 * 2)
+			{
+				//À•WXV
+				position = position + velocity * moveSpeed;
+				setPosition(position);
+			}
+			else
+			{
+				attackAfterTimer--;
+				if (attackAfterTimer < 0)
+					attackAfterTimer = 60 * 2;
+			}
 		}
 		//‚Æ‚Ü‚é
 		else
@@ -55,7 +69,6 @@ void FleeEnemy::Update()
 	}
 	if (escapeTimer < 0) escapeTimer = 300;
 
-	setPosition(position);
 
 }
 
@@ -65,10 +78,6 @@ void FleeEnemy::Draw()
 	Library::drawGraphic(modelData, heapNum);*/
 	modelData.Draw(heapNum);
 
-}
-
-void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
-{
 }
 
 void FleeEnemy::LoadResource()

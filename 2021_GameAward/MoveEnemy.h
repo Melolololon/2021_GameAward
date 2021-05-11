@@ -9,7 +9,6 @@ private:
 	static const int CREATE_NUMBER;
 
 #pragma region ’Ç‰Áƒpƒ‰ƒ[ƒ^
-
 #pragma endregion
 
 public:

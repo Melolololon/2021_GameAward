@@ -52,7 +52,7 @@ void SimEnemy::LoadResource()
 //	modelData.key = "Simenemy";
 //	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
 //	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
-	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
+	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 161,203,116,255 }, CREATE_NUMBER);
 }
 
 void SimEnemy::setHeapNum()
