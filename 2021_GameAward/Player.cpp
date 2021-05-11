@@ -138,7 +138,7 @@ void Player::Initialize()
 	collisionFlag.sphere = true;
 
 	sphereData.resize(boneNum);
-	sphereData[0].r = 1.6f * scale.x;
+	sphereData[0].r = 0.6f * scale.x;
 	for (int i = 1; i < boneNum; i++)
 	{
 		sphereData[i].position = bonePos[i];
@@ -294,11 +294,12 @@ void Player::Update()
 		}
 		else
 		{
-			//前のボーンへのベクトル
+			////前のボーンへのベクトル
 			Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
+			////移動によるY軸基準の回転角度を代入
+			//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
+			moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
 
-			//移動によるY軸基準の回転角度を代入
-			moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
 	
 			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1]  , bonePos[i]);
 			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1],initialBonePosMulScale[i]);
@@ -488,6 +489,35 @@ void Player::Hit
 	if (typeid(*object) == typeid(Block) ||
 		typeid(*object) == typeid(TargetObject))
 	{
+
+		auto MoveBone = [&]()
+		{
+			float bonePosDistance = LibMath::CalcDistance3D(bonePos[arrayNum - 1], bonePos[arrayNum]);
+			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[arrayNum - 1], initialBonePosMulScale[arrayNum]);
+
+			//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動
+			if (bonePosDistance >= defaultBoneDistance)
+			{
+				//差を求める
+				float disDifference = bonePosDistance - defaultBoneDistance;
+
+				boneVelocity[arrayNum] = Vector3Normalize(bonePos[arrayNum - 1] - bonePos[arrayNum]);
+
+				//距離の差だけ移動させる
+				//これにより近づきすぎを防げる
+				boneMovePos[arrayNum] = LibMath::FloatDistanceMoveVector3
+				(
+					boneMovePos[arrayNum],
+					boneVelocity[arrayNum],
+					disDifference
+				);
+
+				//セット
+				modelData.SetBoneMoveVector(boneMovePos[arrayNum], arrayNum, heapNum);
+				bonePos[arrayNum] = initialBonePosMulScale[arrayNum] + boneMovePos[arrayNum] + position;
+			}
+		};
+
 		switch (sphereData[arrayNum].boxHitDistance)
 		{
 		case BOX_HIT_DIRECTION_RIGHT:
@@ -509,10 +539,12 @@ void Player::Hit
 			if (arrayNum != 0)
 			{
 
-				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+				/*Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 				previousBoneVector.x = 0;
 				previousBoneVector = Vector3Normalize(previousBoneVector);
-				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
+				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;*/
+
+				MoveBone();
 			}
 
 			break;
@@ -524,12 +556,7 @@ void Player::Hit
 
 
 			if (arrayNum != 0)
-			{
-				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
-				previousBoneVector.x = 0;
-				previousBoneVector = Vector3Normalize(previousBoneVector);
-				boneMovePos[arrayNum].z += previousBoneVector.z * speed.z;
-			}
+				MoveBone();
 
 			break;
 		case BOX_HIT_DIRECTION_FRONT:
@@ -540,13 +567,7 @@ void Player::Hit
 
 
 			if (arrayNum != 0)
-			{
-
-				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
-				previousBoneVector.z = 0;
-				previousBoneVector = Vector3Normalize(previousBoneVector);
-				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
-			}
+				MoveBone();
 
 			break;
 		case BOX_HIT_DIRECTION_BACK:
@@ -557,12 +578,7 @@ void Player::Hit
 
 
 			if (arrayNum != 0)
-			{
-				Vector3 previousBoneVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
-				previousBoneVector.z = 0;
-				previousBoneVector = Vector3Normalize(previousBoneVector);
-				boneMovePos[arrayNum].x += previousBoneVector.x * speed.x;
-			}
+				MoveBone();
 			break;
 		}
 
