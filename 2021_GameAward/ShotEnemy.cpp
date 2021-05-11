@@ -1,6 +1,9 @@
 #include "ShotEnemy.h"
 #include "EnemyBullet.h"
 #include "ObjectManager.h"
+#include "Block.h"
+#include "Player.h"
+#include "PlayerBullet.h"
 
 PrimitiveModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
@@ -35,7 +38,17 @@ void ShotEnemy::Update()
 		(pPlayer->GetHeadPosition().y - position.y) * (pPlayer->GetHeadPosition().y - position.y) +
 		(pPlayer->GetHeadPosition().z - position.z) * (pPlayer->GetHeadPosition().z - position.z)) >= 20 && shotWaitTimer == 60)
 	{
-		position = position + velocity * moveSpeed;
+		if (attackAfterTimer == 60 * 2)
+		{
+			position = position + velocity * moveSpeed;
+			setPosition(position);
+		}
+		else
+		{
+			attackAfterTimer--;
+			if (attackAfterTimer < 0)
+				attackAfterTimer = 60 * 2;
+		}
 	}
 	//‹——£‚ªˆê’è–¢–ž‚¾‚Á‚½‚ç’âŽ~E’e‚ðŒ‚‚Â
 	else
@@ -46,9 +59,16 @@ void ShotEnemy::Update()
 
 		shotWaitTimer--;
 
+		if (attackAfterTimer != 60 * 2)
+		{
+			attackAfterTimer--;
+			if (attackAfterTimer < 0)
+				attackAfterTimer = 60 * 2;
+		}
+
 	}
+
 	if (shotWaitTimer < 0) shotWaitTimer = 60;
-	setPosition(position);
 
 }
 
@@ -58,10 +78,6 @@ void ShotEnemy::Draw()
 	//Library::drawGraphic(modelData, heapNum);
 	modelData.Draw(heapNum);
 
-}
-
-void ShotEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
-{
 }
 
 void ShotEnemy::LoadResource()

@@ -1,5 +1,7 @@
 #include "MoveEnemy.h"
+#include "Block.h"
 #include "Player.h"
+#include "PlayerBullet.h"
 
 PrimitiveModel MoveEnemy::modelData;
 int MoveEnemy::createCount;
@@ -30,9 +32,19 @@ void MoveEnemy::Update()
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
-	//座標更新
-	position = position + velocity * moveSpeed;
-	setPosition(position);
+	if (attackAfterTimer == 60 * 2)
+	{
+		//座標更新
+		position = position + velocity * moveSpeed;
+		setPosition(position);
+	}
+	else
+	{
+		attackAfterTimer--;
+		if (attackAfterTimer < 0)
+			attackAfterTimer = 60 * 2;
+	}
+
 }
 
 void MoveEnemy::Draw()

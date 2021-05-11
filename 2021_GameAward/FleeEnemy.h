@@ -19,12 +19,6 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
-	void Hit
-	(
-		const Object* const  object,
-		const CollisionType& collisionType,
-		const int& arrayNum
-	)override;
 
 	/// <summary>
 /// 変数heapNum関係。initialize時に必ず呼び出す。

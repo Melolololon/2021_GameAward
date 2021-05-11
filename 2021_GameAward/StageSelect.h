@@ -7,7 +7,7 @@ class StageSelect :public Scene
 {
 private:
 	static int selectStageNum;
-	static int maxStageNum;;
+	static int maxStageNum;
 
 	//シーン切り替え手も消えないようにするためにstatic
 	//[ステージ][ブロック]
