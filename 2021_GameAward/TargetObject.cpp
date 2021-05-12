@@ -6,6 +6,7 @@
 ObjModel TargetObject::modelData;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
+
 std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
 std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
@@ -25,11 +26,20 @@ TargetObject::~TargetObject()
 void TargetObject::LoadResource()
 {
 	modelData.LoadModel("Resources/Model/TargetObject/Shrine.obj", true, CREATE_NUMBER, 0);
+
+	const float freamSprSize = 0.5f * 2;
+	for(int i = 0; i < CREATE_NUMBER;i++)
+	{
+		lifeGaugeSprite[i].CreateSprite({ 2,2 });
+		lifeGaugeFreamSprite[i].CreateSprite({ 2 ,2 });
+		lifeGaugeFreamSprite[i].CreateSprite({ 2 + freamSprSize,2 + freamSprSize });
+	}
 }
 
 
 void TargetObject::Initialize()
 {
+
 	heapNum = heapIndexManager.GetHeapIndex();
 
 	collisionFlag.box = true;

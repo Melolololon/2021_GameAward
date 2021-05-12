@@ -178,6 +178,7 @@
     <ClCompile Include="SimEnemy.cpp" />
     <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="TargetObject.cpp" />
+    <ClCompile Include="Title.cpp" />
     <ClCompile Include="ValueLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +197,7 @@
     <ClInclude Include="SimEnemy.h" />
     <ClInclude Include="StageSelect.h" />
     <ClInclude Include="TargetObject.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="ValueLoader.h" />
   </ItemGroup>
   <ItemGroup>
