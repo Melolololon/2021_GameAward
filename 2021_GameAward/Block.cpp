@@ -108,7 +108,8 @@ void Block::Hit
 	if (typeid(*object) == typeid(PlayerBullet))
 	{
 		//ステージを回ってたら入る
-		if(pPlayer->GetTargetRotatePlayer())
+		if(pPlayer->GetTargetRotatePlayer() 
+			&& hitStageNum != -1)
 			hitStageNum = stageNum;
 	}
 }
