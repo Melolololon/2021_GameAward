@@ -603,3 +603,9 @@ void Player::Hit
 
 	}
 }
+
+void Player::DamageFromEnemy()
+{
+	hp--;
+	isMuteki = true;
+}

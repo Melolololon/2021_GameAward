@@ -5,7 +5,7 @@
 
 PrimitiveModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
-const int FleeEnemy::CREATE_NUMBER = 1;
+const int FleeEnemy::CREATE_NUMBER = 50;
 
 FleeEnemy::FleeEnemy()
 {
