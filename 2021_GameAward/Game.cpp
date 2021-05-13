@@ -85,7 +85,7 @@ void Game::Initialize()
 	f.box = true;
 	ObjectManager::GetInstance()->SetCollisionFlag3D(f);
 
-	SceneManager::GetInstace()->SetStartScene(new StageSelect());
+	SceneManager::GetInstace()->SetStartScene(new Title());
 #pragma endregion
 
 }
