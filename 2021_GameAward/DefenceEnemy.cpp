@@ -4,20 +4,24 @@
 PrimitiveModel DefenceEnemy::modelData;
 int DefenceEnemy::createCount;
 const int DefenceEnemy::CREATE_NUMBER = 50;
+HeapIndexManager DefenceEnemy::heapIndexManager(CREATE_NUMBER);
 
 DefenceEnemy::DefenceEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(1);
+}
+
+DefenceEnemy::~DefenceEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void DefenceEnemy::Initialize()
 {
-	setHeapNum();
 	hp = 2;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 }

@@ -6,20 +6,24 @@
 PrimitiveModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
 const int FleeEnemy::CREATE_NUMBER = 50;
+HeapIndexManager FleeEnemy::heapIndexManager(CREATE_NUMBER);
 
 FleeEnemy::FleeEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(1);
+}
+
+FleeEnemy::~FleeEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void FleeEnemy::Initialize()
 {
-	setHeapNum();
 	hp = 1;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 

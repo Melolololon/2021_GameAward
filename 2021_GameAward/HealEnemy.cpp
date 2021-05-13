@@ -5,20 +5,24 @@
 PrimitiveModel HealEnemy::modelData;
 int HealEnemy::createCount;
 const int HealEnemy::CREATE_NUMBER = 50;
+HeapIndexManager HealEnemy::heapIndexManager(CREATE_NUMBER);
 
 HealEnemy::HealEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(1);
+}
+
+HealEnemy::~HealEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void HealEnemy::Initialize()
 {
-	setHeapNum();
 	hp = 2;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 }

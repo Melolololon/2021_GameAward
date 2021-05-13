@@ -31,7 +31,6 @@ public:
 
 private:
 	std::shared_ptr<Player> player;
-	std::vector<std::shared_ptr<Enemy>> enemies;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
 	const int ENEMY_COUNT = 5;
 

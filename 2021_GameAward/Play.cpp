@@ -62,22 +62,22 @@ void Play::Initialize()
 			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
 			enemy->setPPlayer(player.get());
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
-			enemies.push_back(enemy);
 		}
 		else if (enemyType == EnemyType::ET_ShotEnemy) {
 			std::shared_ptr<ShotEnemy> enemy = std::make_shared<ShotEnemy>();
 			enemy->setPPlayer(player.get());
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
-			enemies.push_back(enemy);
 		}
 		else if (enemyType == EnemyType::ET_FleeEnemy) {
 			std::shared_ptr<FleeEnemy> enemy = std::make_shared<FleeEnemy>();
 			enemy->setPPlayer(player.get());
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
-			enemies.push_back(enemy);
 		}
 		else if (enemyType == EnemyType::ET_SimEnemy) {
 			std::shared_ptr<SimEnemy> enemy[3];
@@ -88,6 +88,7 @@ void Play::Initialize()
 				enemy[j] = std::make_shared<SimEnemy>();
 				enemy[j]->setPPlayer(player.get());
 				enemy[j]->setPosition(initPos);
+				enemy[j]->Initialize();
 
 				enemy[j]->SetID(j);
 			}
@@ -104,9 +105,7 @@ void Play::Initialize()
 
 				enemy[j]->SetOther(1, enemy[setNum]);
 
-
 				ObjectManager::GetInstance()->AddObject(enemy[j]);
-				enemies.push_back(enemy[j]);
 			}
 		}
 		/*

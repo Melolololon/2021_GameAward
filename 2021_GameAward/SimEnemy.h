@@ -6,6 +6,7 @@ class SimEnemy :
 private:
 	static PrimitiveModel modelData;
 	static int createCount;
+	static HeapIndexManager heapIndexManager;
 	static const int CREATE_NUMBER;
 
 #pragma region 追加パラメータ
@@ -22,6 +23,7 @@ private:
 
 public:
 	SimEnemy();
+	~SimEnemy();
 	static void LoadResource();
 	void Initialize()override;
 	void Update()override;
@@ -40,6 +42,6 @@ public:
 /// 変数heapNum関係。initialize時に必ず呼び出す。
 /// </summary>
 	void setHeapNum()override;
-	void setPosition(Vector3 pos)override;
+	void setPosition(Vector3 pos);
 
 };
