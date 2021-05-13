@@ -109,7 +109,7 @@ void Block::Hit
 	{
 		//ステージを回ってたら入る
 		if(pPlayer->GetTargetRotatePlayer() 
-			&& hitStageNum != -1)
+			&& hitStageNum == -1)
 			hitStageNum = stageNum;
 	}
 }
