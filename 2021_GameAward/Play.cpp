@@ -56,7 +56,7 @@ void Play::Initialize()
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
 
-		Play::EnemyType enemyType = (Play::EnemyType)2;// Library::GetRandomNumber(4);
+		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(4);
 		if (enemyType == Play::EnemyType::ET_MoveEnemy){
 
 			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
