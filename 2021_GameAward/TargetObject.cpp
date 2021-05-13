@@ -3,9 +3,10 @@
 #include"Player.h"
 #include"Block.h"
 #include"PlayerBullet.h"
-PrimitiveModel TargetObject::modelData;
+ObjModel TargetObject::modelData;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
+
 std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
 std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
@@ -24,23 +25,21 @@ TargetObject::~TargetObject()
 
 void TargetObject::LoadResource()
 {
-	std::string mtl;
+	modelData.LoadModel("Resources/Model/TargetObject/Shrine.obj", true, CREATE_NUMBER, 0);
 
-	/*modelData.key = "tergetObject";
-	Library::create3DBox({ 2,5,2 }, modelData);
-	Library::createHeapData2({ 120,200,120,255 }, CREATE_NUMBER, modelData);*/
-	modelData.CreateBox({ 2,5,2 }, { 120,200,120,255 }, CREATE_NUMBER);
-
-	/*for (int i = 0; i < CREATE_NUMBER; i++)
+	const float freamSprSize = 0.5f * 2;
+	for(int i = 0; i < CREATE_NUMBER;i++)
 	{
-		Library::createSprite(&lifeGaugeSprite[i]);
-		Library::createSprite(&lifeGaugeFreamSprite[i]);
-	}*/
+		lifeGaugeSprite[i].CreateSprite({ 2,2 });
+		lifeGaugeFreamSprite[i].CreateSprite({ 2 ,2 });
+		lifeGaugeFreamSprite[i].CreateSprite({ 2 + freamSprSize,2 + freamSprSize });
+	}
 }
 
 
 void TargetObject::Initialize()
 {
+
 	heapNum = heapIndexManager.GetHeapIndex();
 
 	collisionFlag.box = true;
@@ -55,7 +54,7 @@ void TargetObject::Initialize()
 	//Library::setPosition(position, modelData, heapNum);
 	modelData.SetPosition(position, heapNum);
 
-	hp = 20;
+	hp = 30;
 	setEnd = false;
 }
 
@@ -66,7 +65,6 @@ void TargetObject::Update()
 
 
 	boxData[0].position = position;
-	//Library::setPosition(position, modelData, heapNum);
 	modelData.SetPosition(position, heapNum);
 
 	if (hp <= 0)
@@ -76,7 +74,6 @@ void TargetObject::Update()
 void TargetObject::Draw()
 {
 	modelData.Draw(heapNum);
-	//Library::drawGraphic(modelData, heapNum);
 
 
 }
@@ -111,7 +108,6 @@ bool TargetObject::getCreateHitObject() { return createHitObject; }
 void TargetObject::setPosition(const Vector3& pos)
 {
 	position = pos;
-	//Library::setPosition(position, modelData, heapNum);
 	modelData.SetPosition(position, heapNum);
 	boxData[0].position = position;
 }

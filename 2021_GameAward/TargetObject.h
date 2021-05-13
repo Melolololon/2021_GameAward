@@ -10,7 +10,7 @@ class TargetObject :public Object
 private:
 	static const int CREATE_NUMBER;
 	int heapNum;
-	static PrimitiveModel modelData;
+	static ObjModel modelData;
 	static std::vector<Sprite3D> lifeGaugeSprite;
 	static std::vector<Sprite3D> lifeGaugeFreamSprite;
 

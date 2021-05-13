@@ -7,7 +7,7 @@ private:
 
 #pragma region ƒ‚ƒfƒ‹ŠÖŒW
 
-	static PrimitiveModel modelData;
+	static ObjModel modelData;
 	static const int CREATE_NUMBER;
 	int heapNum;
 

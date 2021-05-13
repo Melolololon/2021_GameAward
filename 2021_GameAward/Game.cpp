@@ -5,6 +5,7 @@
 
 #pragma region シーン
 
+#include"Title.h"
 #include"StageSelect.h"
 #include"Play.h"
 #pragma endregion
@@ -59,7 +60,6 @@ void Game::Initialize()
 	Library::SetFramesPerSecond60(true);
 #pragma endregion
 
-
 #pragma region リソース読み込み
 	Player::LoadResource();
 	TargetObject::LoadResource();
@@ -87,18 +87,11 @@ void Game::Initialize()
 	SceneManager::GetInstace()->SetStartScene(new StageSelect());
 #pragma endregion
 
-
-
 }
 
 
 void Game::Finitialize()
 {
-#pragma region マネージャー終了
-	ObjectManager::GetInstance()->Finitialize();
-	SceneManager::GetInstace()->Finitialize();
-#pragma endregion
-
 
 	Library::Finalize();//絶対に最後に書く
 }

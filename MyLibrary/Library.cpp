@@ -5,6 +5,7 @@
 
 #pragma comment(lib,"winmm.lib")//timeGetTimeと
 #include"ObjectManager.h"
+#include"SceneManager.h"
 #include"LibWinAPI.h"
 
 std::unique_ptr<Audio> Library::audio;
@@ -230,9 +231,13 @@ bool Library::GetIsEnd()
 
 void Library::Finalize()
 {
-	dx12->Finalize();
 
-	DirectInput::Release();
+#pragma region マネージャー終了
+	ObjectManager::GetInstance()->Finitialize();
+	SceneManager::GetInstace()->Finitialize();
+#pragma endregion
+
+	dx12->Finalize();
 
 	if (!isDestroy)
 	{

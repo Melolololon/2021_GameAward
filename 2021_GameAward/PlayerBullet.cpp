@@ -10,11 +10,13 @@
 #include "DefenceEnemy.h"
 #include "HealEnemy.h"
 
+#include"LibMath.h"
+
 #include"Scene.h"
 #include"SceneManager.h"
 #include"StageSelect.h"
 
-PrimitiveModel PlayerBullet::modelData;
+ObjModel PlayerBullet::modelData;
 const int PlayerBullet::CREATE_NUMBER = 1000;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
@@ -36,6 +38,9 @@ PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 	Initialize();
 	position = pos;
 	velocity = vel;
+
+	float velAngle = LibMath::Vecto2ToAngle({ vel.x,vel.z }, true);
+	modelData.SetAngle({ 0,-velAngle ,0 }, heapNum);
 }
 
 PlayerBullet::~PlayerBullet()
@@ -46,10 +51,7 @@ PlayerBullet::~PlayerBullet()
 
 void PlayerBullet::LoadResource()
 {
-	/*modelData.key = "pBullet";
-	Library::create3DBox({ 0.5,0.5,0.5 }, modelData);
-	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);*/
-	modelData.CreateBox({ 0.5,0.5,0.5 }, { 255,255,0,255 }, CREATE_NUMBER);
+	modelData.LoadModel("Resources/Model/PlayerBullet/bullet.obj", true, CREATE_NUMBER, 0);
 }
 
 void PlayerBullet::Initialize()
@@ -65,7 +67,7 @@ void PlayerBullet::Initialize()
 	collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].position = position;
-	sphereData[0].r = 0.25f;
+	sphereData[0].r = 0.5f;
 
 	scale = 1.0f;
 

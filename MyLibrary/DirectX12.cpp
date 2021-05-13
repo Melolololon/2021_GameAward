@@ -1180,6 +1180,8 @@ void DirectX12::Finalize()
 	delete CreatePipelineState;
 	delete mainCamera;
 
+
+	DirectInput::Release();
 	FbxLoader::GetInstance()->Finalize();
 }
 
