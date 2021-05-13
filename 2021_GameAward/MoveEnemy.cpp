@@ -5,7 +5,7 @@
 
 PrimitiveModel MoveEnemy::modelData;
 int MoveEnemy::createCount;
-const int MoveEnemy::CREATE_NUMBER = 1;
+const int MoveEnemy::CREATE_NUMBER = 50;
 
 MoveEnemy::MoveEnemy()
 {

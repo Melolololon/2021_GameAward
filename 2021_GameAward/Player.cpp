@@ -582,3 +582,9 @@ void* Player::GetPtr()
 {
 	return this;
 }
+
+void Player::DamageFromEnemy()
+{
+	hp--;
+	isMuteki = true;
+}

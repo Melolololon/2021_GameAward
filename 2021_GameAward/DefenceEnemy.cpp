@@ -3,7 +3,7 @@
 
 PrimitiveModel DefenceEnemy::modelData;
 int DefenceEnemy::createCount;
-const int DefenceEnemy::CREATE_NUMBER = 1;
+const int DefenceEnemy::CREATE_NUMBER = 50;
 
 DefenceEnemy::DefenceEnemy()
 {

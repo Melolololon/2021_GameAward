@@ -4,7 +4,7 @@
 
 PrimitiveModel HealEnemy::modelData;
 int HealEnemy::createCount;
-const int HealEnemy::CREATE_NUMBER = 1;
+const int HealEnemy::CREATE_NUMBER = 50;
 
 HealEnemy::HealEnemy()
 {

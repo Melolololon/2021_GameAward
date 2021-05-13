@@ -7,7 +7,7 @@
 
 PrimitiveModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
-const int ShotEnemy::CREATE_NUMBER = 1;
+const int ShotEnemy::CREATE_NUMBER = 50;
 
 ShotEnemy::ShotEnemy()
 {

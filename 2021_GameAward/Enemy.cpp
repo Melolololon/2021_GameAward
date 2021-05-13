@@ -39,6 +39,7 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 		{
 			attackAfterTimer--;
 			//‚±‚±‚ÉƒvƒŒƒCƒ„[‚Ì‘Ì—Í‚ðŒ¸‚ç‚·ˆ—
+			pPlayer->DamageFromEnemy();
 		}
 	}
 

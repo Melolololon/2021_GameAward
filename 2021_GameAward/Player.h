@@ -112,6 +112,7 @@ public:
 
 	void* GetPtr()override;
 	
+	void DamageFromEnemy();
 
 	/// <summary>
 	/// ƒ‚ƒfƒ‹“Ç‚İ‚İ

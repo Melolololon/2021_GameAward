@@ -55,21 +55,61 @@ void Play::Initialize()
 	//“G’Ç‰Á
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
-		std::shared_ptr<Enemy> enemy;
-		Play::EnemyType enemyType = (Play::EnemyType)1;// (Play::EnemyType)Library::GetRandomNumber(1);
+
+		Play::EnemyType enemyType = (Play::EnemyType)3;// (Play::EnemyType)Library::GetRandomNumber(4);
 		if (enemyType == Play::EnemyType::ET_MoveEnemy){
-			enemy = std::make_shared<MoveEnemy>();
+
+			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			ObjectManager::GetInstance()->AddObject(enemy);
+			enemies.push_back(enemy);
 		}
 		else if (enemyType == EnemyType::ET_ShotEnemy) {
-			enemy = std::make_shared<ShotEnemy>();
+			std::shared_ptr<ShotEnemy> enemy = std::make_shared<ShotEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			ObjectManager::GetInstance()->AddObject(enemy);
+			enemies.push_back(enemy);
 		}
 		else if (enemyType == EnemyType::ET_FleeEnemy) {
-			enemy = std::make_shared<FleeEnemy>();
+			std::shared_ptr<FleeEnemy> enemy = std::make_shared<FleeEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
+			ObjectManager::GetInstance()->AddObject(enemy);
+			enemies.push_back(enemy);
+		}
+		else if (enemyType == EnemyType::ET_SimEnemy) {
+			std::shared_ptr<SimEnemy> enemy[3];
+			Vector3 initPos = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
+
+			for (int j = 0; j < 3; j++)
+			{
+				enemy[j] = std::make_shared<SimEnemy>();
+				enemy[j]->setPPlayer(player.get());
+				enemy[j]->setPosition(initPos);
+
+				enemy[j]->SetID(j);
+			}
+
+			for (int j = 0; j < 3; j++)
+			{
+				int setNum = j - 1;
+				if (setNum < 0) setNum = 2;
+
+				enemy[j]->SetOther(0, enemy[setNum]);
+
+				setNum = j + 1;
+				if (setNum > 2) setNum = 0;
+
+				enemy[j]->SetOther(1, enemy[setNum]);
+
+
+				ObjectManager::GetInstance()->AddObject(enemy[j]);
+				enemies.push_back(enemy[j]);
+			}
 		}
 		/*
-		else if (enemyType == EnemyType::ET_SimEnemy) {
-			enemy = std::make_shared<SimEnemy>();
-		}
 		else if (enemyType == EnemyType::ET_DefenceEnemy) {
 			enemy = std::make_shared<DefenceEnemy>();
 		}
@@ -77,11 +117,6 @@ void Play::Initialize()
 			enemy = std::make_shared<HealEnemy>();
 		}*/
 
-		enemy->setPPlayer(player.get());
-		//enemy->setPosition(Vector3(Library::GetRandomNumber(100) - 50, 0, Library::GetRandomNumber(100) - 50));
-		enemy->setPosition(Vector3(50,0,20));
-		ObjectManager::GetInstance()->AddObject(enemy);
-		enemies.push_back(enemy);
 	}
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
