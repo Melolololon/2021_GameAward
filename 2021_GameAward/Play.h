@@ -6,6 +6,7 @@
 #include"Block.h"
 #include"TargetObject.h"
 #include<vector>
+#include "FreamTimer.h"
 class Play :
 	public Scene
 {
@@ -31,7 +32,6 @@ public:
 
 private:
 	std::shared_ptr<Player> player;
-	std::vector<std::shared_ptr<Enemy>> enemies;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
 	const int ENEMY_COUNT = 5;
 
@@ -68,6 +68,8 @@ private:
 	static std::vector<Vector3>blockScales;
 #pragma endregion
 
+	//ŽžŠÔ
+	FreamTimer gameTime;
 
 public:
 	Play();

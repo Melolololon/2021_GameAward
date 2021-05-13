@@ -11,7 +11,9 @@ HeapIndexManager MoveEnemy::heapIndexManager(CREATE_NUMBER);
 
 MoveEnemy::MoveEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(1);
 }
 
 MoveEnemy::~MoveEnemy()
@@ -22,13 +24,9 @@ MoveEnemy::~MoveEnemy()
 void MoveEnemy::Initialize()
 {
 	//setHeapNum();
-	heapNum = heapIndexManager.GetHeapIndex();
 
 	hp = 3;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 

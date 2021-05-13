@@ -8,20 +8,25 @@
 PrimitiveModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
 const int ShotEnemy::CREATE_NUMBER = 50;
+HeapIndexManager ShotEnemy::heapIndexManager(CREATE_NUMBER);
+
 
 ShotEnemy::ShotEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(1);
+}
+
+ShotEnemy::~ShotEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void ShotEnemy::Initialize()
 {
-	setHeapNum();
 	hp = 2;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 }

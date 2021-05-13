@@ -482,6 +482,7 @@ void Player::Draw()
 {
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
+	if (isMuteki == false || (isMuteki == true && mutekiTimer % 2 == 0))
 	modelData.Draw(heapNum);
 }
 
@@ -596,12 +597,13 @@ void Player::Hit
 
 	}
 
-	if (isMuteki)return;
-	//if (typeid(*object) == typeid(Enemy))
-	{
-		isMuteki = true;
 
-	}
+	//if (isMuteki)return;
+	////if (typeid(*object) == typeid(Enemy))
+	//{
+	//	isMuteki = true;
+
+	//}
 }
 
 void Player::DamageFromEnemy()

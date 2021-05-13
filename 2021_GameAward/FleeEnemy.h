@@ -6,6 +6,7 @@ class FleeEnemy :
 private:
 	static PrimitiveModel modelData;
 	static int createCount;
+	static HeapIndexManager heapIndexManager;
 	static const int CREATE_NUMBER;
 
 #pragma region ’Ç‰Áƒpƒ‰ƒ[ƒ^
@@ -15,6 +16,7 @@ private:
 
 public:
 	FleeEnemy();
+	~FleeEnemy();
 	static void LoadResource();
 	void Initialize()override;
 	void Update()override;

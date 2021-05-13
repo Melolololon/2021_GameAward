@@ -7,20 +7,24 @@
 PrimitiveModel SimEnemy::modelData;
 int SimEnemy::createCount;
 const int SimEnemy::CREATE_NUMBER = 50*3;
+HeapIndexManager SimEnemy::heapIndexManager(CREATE_NUMBER);
 
 SimEnemy::SimEnemy()
 {
-	Initialize();
+	heapNum = heapIndexManager.GetHeapIndex();
+	collisionFlag.sphere = true;
+	sphereData.resize(4);
+}
+
+SimEnemy::~SimEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
 }
 
 void SimEnemy::Initialize()
 {
-	setHeapNum();
 	hp = 1;
 
-	collisionFlag.sphere = true;
-
-	sphereData.resize(4);
 
 	float mag = 1.5f;
 	//各ID用
@@ -115,6 +119,10 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 	}
 	else
 	{
+
+		if (hp <= 0)
+			return;
+
 		//プレイヤーとの衝突判定
 		if (typeid(*object) == typeid(Player))
 		{			
