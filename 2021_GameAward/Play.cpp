@@ -294,9 +294,10 @@ void Play::Update()
 		player->SetTargetPosition(targetObjectPos);
 
 		//I—¹ˆ—
-		/*if(deadCount == targetObjects.size())
+		if(deadCount == targetObjects.size())
 		{
-		}*/
+			isEnd = true;
+		}
 	}
 
 #pragma endregion

@@ -92,7 +92,7 @@ void StageSelect::LoadResources()
 			blockScales[i][j] = blockScale;
 
 			blocks[i][j] = std::make_shared<Block>(blockPos, blockScale);
-			ObjectManager::GetInstance()->AddObject(blocks[i][j]);
+			
 		}
 
 		openFile.close();
@@ -122,6 +122,11 @@ void StageSelect::LoadResources()
 
 void StageSelect::Initialize()
 {
+	for (const auto& b1 : blocks)
+	{
+		for(const auto& b2 : b1)
+		ObjectManager::GetInstance()->AddObject(b2);
+	}
 	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
 
 	player = std::make_shared<Player>();
@@ -195,6 +200,7 @@ void StageSelect::Finitialize()
 
 	ObjectManager::GetInstance()->AllEraseObject();
 
+	Block::ResetHitStageNum();
 }
 
 Scene* StageSelect::GetNextScene()
