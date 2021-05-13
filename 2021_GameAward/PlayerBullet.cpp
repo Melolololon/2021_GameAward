@@ -30,7 +30,7 @@ bool PlayerBullet::IsEnemy(const Object* p)
 
 	return false;
 
-		
+
 }
 
 PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
@@ -72,19 +72,19 @@ void PlayerBullet::Initialize()
 	scale = 1.0f;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
-	if (typeid(*currentScene) == typeid(StageSelect)) 
+	if (typeid(*currentScene) == typeid(StageSelect))
 	{
 		scale = 15.0f;
-		speed *= 25.0f;	
+		speed *= 25.0f;
 		sphereData[0].r *= scale.x;
 	}
 	if (heapNum != -1)
-	modelData.SetScale(scale, heapNum);
+		modelData.SetScale(scale, heapNum);
 }
 
 void PlayerBullet::Update()
 {
-	if(heapNum == -1)
+	if (heapNum == -1)
 	{
 		eraseManager = true;
 		return;

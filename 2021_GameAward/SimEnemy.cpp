@@ -47,11 +47,11 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 
 void SimEnemy::LoadResource()
 {
-//	std::string mtl;
-//
-//	modelData.key = "Simenemy";
-//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+	//	std::string mtl;
+	//
+	//	modelData.key = "Simenemy";
+	//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+	//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
 	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 161,203,116,255 }, CREATE_NUMBER);
 }
 

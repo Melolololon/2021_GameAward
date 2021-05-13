@@ -3,7 +3,10 @@
 
 HeapIndexManager::HeapIndexManager(const int maxModelNum)
 {
-	createNum = maxModelNum;
+	if(maxModelNum <= 0)
+		createNum = 1;
+	else
+		createNum = maxModelNum;
 	drawCheckVector.resize(maxModelNum,false);
 }
 
@@ -28,7 +31,7 @@ int HeapIndexManager::GetHeapIndex()
 
 void HeapIndexManager::DrawEndCallFunction(const int heapIndex)
 {
-	if (heapIndex >= 0 && heapIndex < createNum)
-		drawCheckVector[heapIndex] = false;
+	if(heapIndex >= 0 && heapIndex < createNum)
+	drawCheckVector[heapIndex] = false; 
 }
 

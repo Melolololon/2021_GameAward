@@ -48,11 +48,11 @@ void HealEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 
 void HealEnemy::LoadResource()
 {
-//	std::string mtl;
-//
-//	modelData.key = "Healenemy";
-//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+	//	std::string mtl;
+	//
+	//	modelData.key = "Healenemy";
+	//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+	//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
 	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
 }
 

@@ -22,8 +22,8 @@ std::vector<Vector3>StageSelect::leftUpPositions;
 std::vector<Vector3>StageSelect::rightDownPositions; 
 std::vector<Vector3>StageSelect::mapMovePositions;
 
-const UINT StageSelect::playerRotateTime = 60 * 2;
-const UINT StageSelect::nextFromSelectionTime = 60 * 2;
+//const UINT StageSelect::playerRotateTime = 60 * 2;
+//const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
 StageSelect::StageSelect()
 {
@@ -127,7 +127,11 @@ void StageSelect::Initialize()
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	player->SetTargetPosition(mapMovePositions);
-	playerRotateTimer = 0;
+	//playerRotateTimer = 0;
+
+	nextSceneTimer.SetMaxTime(60 * 2);
+
+	Block::SetPPlayer(player.get());
 }
 
 void StageSelect::Update()
@@ -136,7 +140,8 @@ void StageSelect::Update()
 	ObjectManager::GetInstance()->Update();
 
 	//ステージセレクト処理
-	int playerTargetNum = player->GetTargetNum();
+	//旧
+	/*int playerTargetNum = player->GetTargetNum();
 	if (playerTargetNum != -1 &&
 		player->GetTargetRotatePlayer())
 	{
@@ -153,10 +158,19 @@ void StageSelect::Update()
 		playerRotateTimer++;
 	}
 	else
-		playerRotateTimer = 0;
+		playerRotateTimer = 0;*/
 
 	
+	//新
+	int hitStageNum = Block::GetHitStageNum();
+	if(hitStageNum != -1)
+	{
+		selectStageNum = hitStageNum;
+		nextSceneTimer.SetStopFlag(false);
+	}
 
+	if (nextSceneTimer.GetSameAsMaximumFlag())
+		isEnd = true;
 
 }
 

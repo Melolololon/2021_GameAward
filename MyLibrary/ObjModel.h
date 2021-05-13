@@ -36,7 +36,7 @@
 
 //ˆê’U©ì’¸“_•Û—¯‚·‚é?
 
-class ObjModel :public Model
+class ObjModel:public Model
 {
 private:
 

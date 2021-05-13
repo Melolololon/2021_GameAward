@@ -3,7 +3,7 @@
 class Title:public Scene
 {
 private:
-
+	
 public:
 	Title();
 	~Title();

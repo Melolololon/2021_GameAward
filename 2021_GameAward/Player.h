@@ -56,7 +56,7 @@ private:
 
 #pragma region ステージセレクト時
 	float stageSelectSpeedMag;
-	bool selectStage;//ステージ選択したかどうか
+	//bool selectStage;//ステージ選択したかどうか
 #pragma endregion
 
 
@@ -110,7 +110,6 @@ public:
 		const int& arrayNum
 	)override;
 
-	void* GetPtr()override;
 	
 
 	/// <summary>
@@ -130,7 +129,7 @@ public:
 	//囲むための配列を渡す関数
 	void SetTargetPosition(const std::vector<Vector3>& pos) { targetPos = pos; }
 
-	void SetSelectStage(const bool flag) { selectStage = flag; }
+	//void SetSelectStage(const bool flag) { selectStage = flag; }
 #pragma endregion
 
 

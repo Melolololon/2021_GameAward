@@ -16,14 +16,14 @@ struct Color
 	unsigned char g = 0;
 	unsigned char b = 0;
 	unsigned char a = 255;
-
+	
 	Color operator+(const Color& color);
 	Color operator-(const Color& color);
 	Color operator*(const Color& color);
 	Color operator/(const Color& color);
 
-	static unsigned char ToPar(const float par) { return (unsigned char)(par / 100 * 255); }
+	static unsigned char ToPar(const float par){ return (unsigned char)(par / 100 * 255); }
 private:
-
+	
 
 };

@@ -28,7 +28,7 @@ void TargetObject::LoadResource()
 	modelData.LoadModel("Resources/Model/TargetObject/Shrine.obj", true, CREATE_NUMBER, 0);
 
 	const float freamSprSize = 0.5f * 2;
-	for(int i = 0; i < CREATE_NUMBER;i++)
+	for (int i = 0; i < CREATE_NUMBER; i++)
 	{
 		lifeGaugeSprite[i].CreateSprite({ 2,2 });
 		lifeGaugeFreamSprite[i].CreateSprite({ 2 ,2 });

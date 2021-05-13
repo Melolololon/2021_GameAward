@@ -29,6 +29,6 @@ public:
 	void ChengeScene(Scene* nextScene);
 
 
-	 Scene* GetCurrentScene();
+	Scene* GetCurrentScene();
 };
 

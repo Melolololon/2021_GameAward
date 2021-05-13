@@ -123,6 +123,7 @@ public:
 	/// <returns></returns>
 	static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
 
+
 	/// <summary>
 	/// 座標を指定したベクトル方向にdistance分移動させたVector3型の値を返します。
 	/// </summary>
@@ -130,7 +131,7 @@ public:
 	/// <param name="vector"></param>
 	/// <param name="distance"></param>
 	/// <returns></returns>
-	static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance);
+	static Vector3 FloatDistanceMoveVector3(const Vector3& pos,const Vector3& vector, const float distance);
 #pragma endregion
 
 

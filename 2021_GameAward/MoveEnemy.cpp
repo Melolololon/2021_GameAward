@@ -2,19 +2,28 @@
 #include "Block.h"
 #include "Player.h"
 #include "PlayerBullet.h"
+#include"LibMath.h"
 
-PrimitiveModel MoveEnemy::modelData;
 int MoveEnemy::createCount;
-const int MoveEnemy::CREATE_NUMBER = 1;
+const int MoveEnemy::CREATE_NUMBER = 30;
+ObjModel MoveEnemy::modelData;
+HeapIndexManager MoveEnemy::heapIndexManager(CREATE_NUMBER);
 
 MoveEnemy::MoveEnemy()
 {
 	Initialize();
 }
 
+MoveEnemy::~MoveEnemy()
+{
+	heapIndexManager.DrawEndCallFunction(heapNum);
+}
+
 void MoveEnemy::Initialize()
 {
-	setHeapNum();
+	//setHeapNum();
+	heapNum = heapIndexManager.GetHeapIndex();
+
 	hp = 3;
 
 	collisionFlag.sphere = true;
@@ -22,13 +31,17 @@ void MoveEnemy::Initialize()
 	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
-	
+
+	modelData.SetScale({ 0.5,0.5,0.5 }, heapNum);
+
+	moveAnimationTimer.SetMaxTime(60 * 2);
+	moveAnimationTimer.SetStopFlag(false);
 }
 
 void MoveEnemy::Update()
 {
 	//プレイヤーへの方向ベクトルを求める
-	velocity = {pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
+	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
@@ -45,6 +58,13 @@ void MoveEnemy::Update()
 			attackAfterTimer = 60 * 2;
 	}
 
+
+	//プレイヤーの方を向かせる処理
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+
+	//アニメーション
+
 }
 
 void MoveEnemy::Draw()
@@ -57,12 +77,16 @@ void MoveEnemy::Draw()
 
 void MoveEnemy::LoadResource()
 {
-	//std::string mtl;
 
-	//modelData.key = "moveenemy";
-	//Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	//Library::createHeapData2({ 180,153,108,255 }, CREATE_NUMBER, modelData);
-	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 180,153,108,255 }, CREATE_NUMBER);
+	//modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 180,153,108,255 }, CREATE_NUMBER);
+
+	modelData.LoadModel
+	(
+		"Resources/Model/MoveEnemy/MoveEnemy.obj",
+		true,
+		CREATE_NUMBER,
+		0
+	);
 }
 
 void MoveEnemy::setHeapNum()

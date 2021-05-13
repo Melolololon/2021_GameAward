@@ -45,8 +45,7 @@ CollisionFlag Object::GetCollisionFlag()
 	return collisionFlag;
 }
 
-
-void* Object::GetPtr()
+const void* Object::GetPtr()const
 {
 	return this;
 }

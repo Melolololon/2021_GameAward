@@ -58,7 +58,7 @@ public:
 		const int& arrayNum
 	);
 
-	virtual void* GetPtr();
+	virtual const void* GetPtr()const;
 
 	//オブジェクトマネージャーから削除するかどうかのフラグを返す
 	bool GetEraseManager();
@@ -69,7 +69,7 @@ public:
 	//再追加したときに初期化したいからこのままでいい
 	void ObjectInitialize();
 	
-	Vector3 GetPosition() const { return position; };
+	Vector3 GetPosition()const { return position; };
 
 	//判定用関数
 	CollisionFlag GetCollisionFlag();

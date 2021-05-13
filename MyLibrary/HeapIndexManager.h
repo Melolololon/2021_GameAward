@@ -27,5 +27,6 @@ public:
 	/// </summary>
 	/// <param name="heapIndex"></param>
 	void DrawEndCallFunction(const int heapIndex);
+
 };
 

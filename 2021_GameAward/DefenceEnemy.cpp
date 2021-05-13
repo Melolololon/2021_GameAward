@@ -47,11 +47,11 @@ void DefenceEnemy::Hit(const Object* const object, const CollisionType& collisio
 
 void DefenceEnemy::LoadResource()
 {
-//	std::string mtl;
-//
-//	modelData.key = "shotenemy";
-//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
+	//	std::string mtl;
+	//
+	//	modelData.key = "shotenemy";
+	//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
+	//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
 	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
 }
 

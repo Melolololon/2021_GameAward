@@ -3,6 +3,8 @@
 #include"Block.h"
 #include"Player.h"
 #include<memory>
+
+#include"FreamTimer.h"
 class StageSelect :public Scene
 {
 private:
@@ -22,10 +24,12 @@ private:
 	static std::vector<Vector3>mapMovePositions;
 
 	std::shared_ptr<Player>player;
-	UINT playerRotateTimer;
-	static const UINT playerRotateTime;
-	UINT nextFromSelectionTimer;//選択から次のシーンまでの時間
-	static const UINT nextFromSelectionTime;
+	//UINT playerRotateTimer;
+	//static const UINT playerRotateTime;
+	//UINT nextFromSelectionTimer;//選択から次のシーンまでの時間
+	//static const UINT nextFromSelectionTime;
+
+	FreamTimer nextSceneTimer;
 public:
 	StageSelect();
 	~StageSelect();

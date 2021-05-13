@@ -3,6 +3,8 @@
 #include"Player.h"
 #include<string>
 
+#include"FreamTimer.h"
+
 class Enemy : public Object
 {
 protected:
@@ -16,6 +18,10 @@ protected:
 	/// 変数heapNum関係。initialize時に必ず呼び出す。
 	/// </summary>
 	virtual void setHeapNum() = 0;
+
+
+	//歩行アニメーション用
+	FreamTimer moveAnimationTimer;
 #pragma endregion
 
 #pragma region 共通パラメータ

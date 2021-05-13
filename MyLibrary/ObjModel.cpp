@@ -7,7 +7,7 @@ ObjModel::ObjModel()
 {
 }
 
-ObjModel::~ObjModel() {}
+ObjModel::~ObjModel(){}
 
 
 void ObjModel::LoadModelVertices
@@ -37,7 +37,7 @@ void ObjModel::LoadModelVertices
 	);
 	boneNum = objBonePositions.size();
 
-	if (boneNum == 0)
+	if(boneNum == 0)
 	{
 		//ボーンがなかったら0にしとく
 		for (int i = 0; i < modelObjectNum; i++)
@@ -60,7 +60,7 @@ void ObjModel::LoadModelVertices
 #pragma region テクスチャ反転
 
 
-	for (auto& v : vertices)
+	for (auto& v:vertices)
 	{
 		for (auto& v2 : v)
 			v2.uv.y = (v2.uv.y - 1) * -1;
@@ -128,7 +128,7 @@ void ObjModel::LoadModelVertices
 		verticesNum[i] = vertices[i].size();
 
 	size_t vertSize = 0;
-	if (vertexSize == 0 ||
+	if (vertexSize == 0||
 		typeid(this) == typeid(ObjModel))
 		vertSize = sizeof(ObjAnimationVertex);
 	else
@@ -158,7 +158,7 @@ void ObjModel::LoadModelVertices
 		);
 
 		auto vertexNum = vertices[i].size();
-		for (int j = 0; j < vertexNum; j++)
+		for (int j = 0; j < vertexNum; j++) 
 			vertex[j] = vertices[i][j];
 
 		UnmapVertexBuffer(i);
@@ -188,7 +188,7 @@ void ObjModel::LoadModelMaterial
 (
 	const std::string& directryPath,
 	const int createNum,
-	const size_t constDataSize
+	const size_t constDataSize 
 )
 {
 
@@ -202,17 +202,17 @@ void ObjModel::LoadModelMaterial
 		materials,
 		&loadObjectNum
 	);
-
+	
 	//テクスチャ読み込み
 	textures.resize(loadObjectNum);
 	std::vector<Texture*> pTexture(loadObjectNum);
-	for (int i = 0; i < loadObjectNum; i++)
+	for(int i = 0; i < loadObjectNum;i++)
 	{
 		textures[i] = std::make_unique<Texture>();
 		textures[i]->LoadModelTexture(materials[i].textureName);
 		pTexture[i] = textures[i].get();
 	}
-
+	
 	CreateModelHeapResourcesSetTexture
 	(
 		pTexture,
@@ -274,10 +274,10 @@ void ObjModel::LoadModel
 #pragma endregion
 
 
-	LoadModelMaterial(directoryPath, modelNum, constDataSize);
+	LoadModelMaterial(directoryPath,modelNum, constDataSize);
 }
 
-bool ObjModel::Initialize()
+bool ObjModel::Initialize() 
 {
 	PipelineData pipelineData;
 	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
@@ -307,13 +307,13 @@ bool ObjModel::Initialize()
 		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" }, 
 		PipelineType::PIPELINE_TYPE_MODEL,
 		&layoutData,
 		typeid(ObjModel).name()
 	);
 
-	if (!result)
+	if(!result)
 	{
 		OutputDebugString(L"ObjModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
 		return false;
@@ -393,9 +393,9 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 			//割って増減を抑えている
 			boneMat *= DirectX::XMMatrixTranslation
 			(
-				boneMoveVector.x / modelConstDatas[i][0].scale.x, 
+				boneMoveVector.x / modelConstDatas[i][0].scale.x,
 				boneMoveVector.y / modelConstDatas[i][0].scale.y,
-				boneMoveVector.z / modelConstDatas[i][0].scale.z 
+				boneMoveVector.z / modelConstDatas[i][0].scale.z
 			);
 
 			//回転させたら戻す
@@ -506,13 +506,14 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
 				mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
 
+
 				//親はまとめて掛けているので、モデルと自分の拡縮だけ掛ければいい
 				//modelConstDatas[i][0].scale に boneScale掛ける必要あるか要確認
 				mulMat *= DirectX::XMMatrixTranslation
 				(
 					pMoveVector.x / (modelConstDatas[i][0].scale.x * boneScale.x),
-					pMoveVector.y /  (modelConstDatas[i][0].scale.y * boneScale.y),
-					pMoveVector.z /  (modelConstDatas[i][0].scale.z * boneScale.z)
+					pMoveVector.y / (modelConstDatas[i][0].scale.y * boneScale.y),
+					pMoveVector.z / (modelConstDatas[i][0].scale.z * boneScale.z)
 				);
 
 				//回転させたら戻す
@@ -527,7 +528,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 		}
 
 
-
+		
 		constBuffer[modelNum][i][0]->Unmap(0, nullptr);
 #pragma endregion
 	}

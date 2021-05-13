@@ -1,18 +1,21 @@
 #pragma once
 #include "Enemy.h"
 class MoveEnemy :
-    public Enemy
+	public Enemy
 {
 private:
-	static PrimitiveModel modelData;
+	static ObjModel modelData;
+	static HeapIndexManager heapIndexManager;
 	static int createCount;
 	static const int CREATE_NUMBER;
+
 
 #pragma region ’Ç‰Áƒpƒ‰ƒ[ƒ^
 #pragma endregion
 
 public:
 	MoveEnemy();
+	~MoveEnemy();
 	static void LoadResource();
 	void Initialize()override;
 	void Update()override;

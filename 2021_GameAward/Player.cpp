@@ -37,7 +37,7 @@ Player::Player(const Vector3& pos)
 	Initialize();
 
 	position = pos;
-	modelData.SetPosition(position,heapNum);
+	modelData.SetPosition(position, heapNum);
 
 }
 
@@ -52,7 +52,7 @@ void Player::LoadResource()
 
 	//modelData.LoadModel("Resources/Model/testSnake.obj", true, CREATE_NUMBER, 0);
 	modelData.LoadModel("Resources/Model/Player/snake.obj", true, CREATE_NUMBER, 0);
-	
+
 	initialBonePos = modelData.GetBonePosition();
 	boneNum = static_cast<int>(initialBonePos.size());
 }
@@ -78,7 +78,7 @@ void Player::Initialize()
 	//initSpeed = 1.0f;
 	speed = initSpeed;
 	stageSelectSpeedMag = 25.0f;
-	selectStage = false;
+	//selectStage = false;
 #pragma region パラメーター
 
 
@@ -88,7 +88,7 @@ void Player::Initialize()
 	mutekiTime = 60 * 3;
 #pragma endregion
 
-	scale = { 1,1,1 };	
+	scale = { 1,1,1 };
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))
@@ -99,14 +99,14 @@ void Player::Initialize()
 	modelData.SetScale(scale, heapNum);
 
 	initialBonePosMulScale = initialBonePos;
-	
+
 	boneMovePos.resize(boneNum, 0.0f);
 	bonePos.resize(boneNum);
-	for (int i = 0; i < boneNum; i++) 
+	for (int i = 0; i < boneNum; i++)
 	{
 		//スケールを掛ける
 		initialBonePosMulScale[i] *= scale;
-		
+
 		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
 	}
 #pragma region ひねり
@@ -151,7 +151,7 @@ void Player::Initialize()
 }
 
 void Player::Update()
-{ 
+{
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	//準備前は動かないように
 	if (typeid(*currentScene) == typeid(Play))
@@ -167,10 +167,14 @@ void Player::Update()
 
 	previousRot = velRot;
 
-
-	//回転
-	if (DirectInput::KeyState(DIK_X) ||
-		selectStage)
+	bool padObjectRot =
+		XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON,1);
+	
+		//回転
+	if (DirectInput::KeyState(DIK_X) 
+		/*|| selectStage*/
+		|| padObjectRot)
 	{
 		//近いオブジェクトの距離を求める
 		float nearTergetDis = 9999999.0f;
@@ -178,7 +182,7 @@ void Player::Update()
 		Vector3 nearTergetPosition = 0;
 
 		auto targetPosSize = targetPos.size();
-		for (int i = 0; i < targetPosSize;i++)
+		for (int i = 0; i < targetPosSize; i++)
 		{
 			targetDistance = LibMath::CalcDistance3D
 			(
@@ -195,13 +199,13 @@ void Player::Update()
 		Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 		float maxDistance = 40.0f;
 		if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
-		if (nearTergetDis <= maxDistance) 
+		if (nearTergetDis <= maxDistance)
 		{
 			//祠に近づく処理
 			float minDistance = 7.0f;
 			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
 
-			if (nearTergetDis >= minDistance 
+			if (nearTergetDis >= minDistance
 				&& !targetRotatePlayer)
 			{
 				targetRotatePlayer = false;
@@ -218,36 +222,36 @@ void Player::Update()
 			//回る処理
 			else
 			{
-				if(!targetRotatePlayer)
+				if (!targetRotatePlayer)
 				{
 					targetRotatePlayer = true;
 					//ここで、ターゲットからプレイヤーへのベクトルの角度を求め、velRotに入れる
 					Vector3 targetToPlayerToNera = bonePos[0] - nearTergetPosition;
 					float targetToPlayerToNeraAngle = LibMath::Vecto2ToAngle
 					(
-						{ targetToPlayerToNera .x,targetToPlayerToNera .z},
+						{ targetToPlayerToNera.x,targetToPlayerToNera.z },
 						true
 					);
 					velRot = targetToPlayerToNeraAngle - 90.0f;
 				}
-				if (typeid(*currentScene) == typeid(StageSelect)) 
+				if (typeid(*currentScene) == typeid(StageSelect))
 				{
-					if (selectStage)
+					/*if (selectStage)
 					{
 						float subRotNum = 2.5f;
 						velRot -= subRotNum;
 						speed = initSpeed * stageSelectSpeedMag * subRotNum;
 					}
-					else
+					else*/
 						velRot -= 1.0f;
 				}
 				else
-				velRot -= 1.5f;
+					velRot -= 1.5f;
 			}
 		}
 	}
 	//移動
-	else 
+	else
 	{
 		targetRotatePlayer = false;
 
@@ -262,9 +266,9 @@ void Player::Update()
 		else
 			velRot = DirectInput::ArrowKeyAngle();
 	}
-	
 
-	
+
+
 
 	if (velRot != -1)
 	{
@@ -300,10 +304,10 @@ void Player::Update()
 			//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
 			moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
 
-	
-			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1]  , bonePos[i]);
-			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1],initialBonePosMulScale[i]);
-		
+
+			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1], bonePos[i]);
+			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1], initialBonePosMulScale[i]);
+
 			//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動
 			if (bonePosDistance >= defaultBoneDistance)
 			{
@@ -311,11 +315,11 @@ void Player::Update()
 				float disDifference = bonePosDistance - defaultBoneDistance;
 
 				boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
-				
+
 				//距離の差だけ移動させる
 				//これにより近づきすぎを防げる
 				boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
-				
+
 				//セット
 				modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 				bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
@@ -323,12 +327,12 @@ void Player::Update()
 
 		}
 
-		
+
 
 	}
 #pragma endregion
 
-	
+
 
 #pragma region ひねり処理
 
@@ -394,7 +398,7 @@ void Player::Update()
 
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
-				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y , bonePos[arrayNum].z) ,
+				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y, bonePos[arrayNum].z),
 				Vector3(q.x, 0, q.z)
 				));
 	};
@@ -414,8 +418,14 @@ void Player::Update()
 	}*/
 
 	//新ショット(手動)
-	if(DirectInput::KeyTrigger(DIK_Z) && 
-		!rotateFlag)
+	bool keyShot = DirectInput::KeyTrigger(DIK_Z)
+		&& !rotateFlag;
+	
+	bool padShot = XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1) 
+		&& !rotateFlag;
+
+	if (keyShot || padShot )
 	{
 		for (int i = 3; i < boneNum - 7; i++)
 		{
@@ -423,7 +433,7 @@ void Player::Update()
 			shotBullet(i);
 		}
 	}
-	
+
 
 	for (int i = 3; i < boneNum - 7; i++)
 	{
@@ -592,9 +602,4 @@ void Player::Hit
 		isMuteki = true;
 
 	}
-}
-
-void* Player::GetPtr()
-{
-	return this;
 }
