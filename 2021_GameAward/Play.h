@@ -6,6 +6,7 @@
 #include"Block.h"
 #include"TargetObject.h"
 #include<vector>
+#include "FreamTimer.h"
 class Play :
 	public Scene
 {
@@ -67,6 +68,8 @@ private:
 	static std::vector<Vector3>blockScales;
 #pragma endregion
 
+	//ŽžŠÔ
+	FreamTimer gameTime;
 
 public:
 	Play();

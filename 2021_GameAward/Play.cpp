@@ -160,7 +160,9 @@ void Play::Initialize()
 	drawArrow = false;
 #pragma endregion
 
-
+	//タイマー初期化
+	gameTime.SetMaxTime(INT_MAX);
+	gameTime.SetStopFlag(true);
 }
 
 void Play::Update()
