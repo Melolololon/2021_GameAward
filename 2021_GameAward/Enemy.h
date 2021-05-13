@@ -54,5 +54,7 @@ public:
 
 	void setPPlayer(Player* p) { pPlayer = p; };
 	virtual void setPosition(Vector3 pos) = 0;
+
+	static bool isGameStart();
 };
 

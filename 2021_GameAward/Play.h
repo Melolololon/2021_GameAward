@@ -14,7 +14,7 @@ public:
 	enum PlaySceneState
 	{
 		PLAY_SCENE_SET_TARGET,//ターゲット設置中
-		PLAY_SCENE_START_PREBIOUS,//ゲーム開始前
+		PLAY_SCENE_START_PREVIOUS,//ゲーム開始前
 		PLAY_SCENE_PLAY,//ゲーム中
 		PLAY_SCENE_GAMEOVER,//ゲームオーバー
 		PLAY_SCENE_GAMECREAL,//ゲームクリア

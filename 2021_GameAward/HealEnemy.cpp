@@ -29,6 +29,12 @@ void HealEnemy::Initialize()
 
 void HealEnemy::Update()
 {
+	if (isGameStart() == false)
+	{
+		setPosition(position);
+		return;
+	}
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化

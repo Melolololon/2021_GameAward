@@ -107,8 +107,14 @@ void Player::Initialize()
 		//スケールを掛ける
 		initialBonePosMulScale[i] *= scale;
 
+		//セット
+		modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
 	}
+
+
+	
+
 #pragma region ひねり
 	rotateFlag = false;
 	twistAngles.resize(boneNum);
@@ -148,6 +154,12 @@ void Player::Initialize()
 #pragma endregion
 
 
+	//角度セット
+	for (int i = 0; i < boneNum; i++)
+		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
+		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+
+	modelData.SetPosition({ 0,-5,0 }, heapNum);
 }
 
 void Player::Update()
@@ -156,8 +168,13 @@ void Player::Update()
 	//準備前は動かないように
 	if (typeid(*currentScene) == typeid(Play))
 	{
-		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET ||
-			Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREBIOUS)return;
+		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)return;
+		else if (Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREVIOUS)
+		{
+			//**ここにゲーム開始前のプレイヤー停止処理を書く**//
+
+			return;
+		}
 	}
 
 	targetNum = -1;

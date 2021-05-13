@@ -1,6 +1,8 @@
 #include "Enemy.h"
 #include "Block.h"
 #include "PlayerBullet.h"
+#include "SceneManager.h"
+#include "Play.h"
 
 const float Enemy::OBJSIZE = 1.0f;
 
@@ -62,4 +64,20 @@ void Enemy::loadModel()
 
 void Enemy::setPosition(Vector3 pos)
 {
+}
+
+bool Enemy::isGameStart()
+{
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	//€”õ‘O‚Í“®‚©‚È‚¢‚æ‚¤‚É
+	if (typeid(*currentScene) == typeid(Play))
+	{
+		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET ||
+			Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREVIOUS)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

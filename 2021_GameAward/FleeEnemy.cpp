@@ -31,6 +31,12 @@ void FleeEnemy::Initialize()
 
 void FleeEnemy::Update()
 {
+	if (isGameStart() == false)
+	{
+		setPosition(position);
+		return;
+	}
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
@@ -42,17 +48,19 @@ void FleeEnemy::Update()
 		(pPlayer->GetHeadPosition().z - position.z) * (pPlayer->GetHeadPosition().z - position.z)) >= 20 && escapeTimer == 300)
 	{
 		position = position + velocity * moveSpeed;
+		setPosition(position);
 	}
-	//距離が一定未満だったら停止・弾を撃つ
+	//距離が一定未満だったら
 	else
 	{
+		
 		//逃げる
 		if (escapeTimer < 300 - 60 * 2)
 		{
 			if (attackAfterTimer == 60 * 2)
 			{
 				//座標更新
-				position = position + velocity * moveSpeed;
+				position = position - velocity * moveSpeed * 3;
 				setPosition(position);
 			}
 			else
@@ -69,7 +77,7 @@ void FleeEnemy::Update()
 		}
 
 		escapeTimer--;
-
+		
 	}
 	if (escapeTimer < 0) escapeTimer = 300;
 

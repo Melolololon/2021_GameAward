@@ -37,10 +37,18 @@ void SimEnemy::Initialize()
 	//中心　壁避け用
 	sphereData[3].position = position;
 	sphereData[3].r = OBJSIZE / 2 * 1.5f;
+
+	setPosition(position);
 }
 
 void SimEnemy::Update()
 {
+	if (isGameStart() == false)
+	{
+		setPosition(position);
+		return;
+	}
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化

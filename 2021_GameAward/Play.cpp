@@ -56,7 +56,7 @@ void Play::Initialize()
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
 
-		Play::EnemyType enemyType = (Play::EnemyType)3;// (Play::EnemyType)Library::GetRandomNumber(4);
+		Play::EnemyType enemyType = (Play::EnemyType)2;// Library::GetRandomNumber(4);
 		if (enemyType == Play::EnemyType::ET_MoveEnemy){
 
 			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
@@ -162,7 +162,8 @@ void Play::Initialize()
 
 	//タイマー初期化
 	gameTime.SetMaxTime(INT_MAX);
-	gameTime.SetStopFlag(true);
+	gameTime.SetNowTime(-60 * 4);
+	gameTime.SetStopFlag(false);
 }
 
 void Play::Update()
@@ -261,6 +262,13 @@ void Play::Update()
 		if (createMissCount == 0)
 		{
 			//仮にこうしてる
+			playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
+		}
+	}
+	else if (playSceneState == PlaySceneState::PLAY_SCENE_START_PREVIOUS)
+	{
+		if (gameTime.GetTime() >= 0)
+		{
 			playSceneState = PlaySceneState::PLAY_SCENE_PLAY;
 		}
 	}
