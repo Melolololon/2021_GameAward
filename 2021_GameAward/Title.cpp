@@ -32,26 +32,68 @@ void Title::LoadResources()
 void Title::Initialize()
 {
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
-	for(int i = 0; i < _countof(titleSpritePosition);i++)
-		titleSpritePosition[i] = { 1280 + i * titleTextureSize * 3 ,100 };
+	for (int i = 0; i < _countof(titleSpritePosition); i++)
+	{
+		titleSlowMove[i] = false;
+		titleSpritePosition[i] = { 1280 + i * titleTextureSize * 3 ,0 };
+	}
 }
+
 void Title::Update()
 {
-	
 	
 
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
 	float titleSpeed = 10.0f;
 	for (int i = 0; i < _countof(titleSprite); i++) 
 	{
-		/*titleSpritePosition[i].x -= titleSpeed;
-		if (titleSpritePosition[i].x <= 1280)
-			titleFreamTimer[i].SetStopFlag(false);
-		if(titleSpritePosition[i] <= )
-			titleFreamTimer[i].SetStopFlag(true);*/
 
-		float sinY = sin(titleFreamTimer[i].GetTime() * i/ 10.0f) * 100.0f;
-		titleSprite[i]->SetPosition({ -200 * titleTextureSize * 3, + sinY });
+		float sinY = 0.0f;
+		//sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
+
+		float titleHoseiPosY = 100;
+		float stopPosX = -200 + titleTextureSize * 3 * i;
+		if (titleSpritePosition[i].x <= 1280 && 
+			titleSpritePosition[i].x >= stopPosX)
+		{
+			sinY = sin(titleFreamTimer[i].GetTime() * 0.1f) * 60.0f;
+			titleFreamTimer[i].SetStopFlag(false);
+		}
+		if (titleSpritePosition[i].x > stopPosX)
+			titleSpritePosition[i].x -= titleSpeed;
+		 
+
+		if (titleSpritePosition[i].y >= -titleSpeed + titleHoseiPosY
+			&& titleSpritePosition[i].y <= titleSpeed + titleHoseiPosY
+			&& !titleSlowMove[i]
+			&& titleSpritePosition[i].x <= stopPosX)
+		{
+			//titleSpritePosition[i].y = titleHoseiPosY;
+			//titleFreamTimer[i].SetStopFlag(true);
+			if (i == 0) 
+			{
+				
+				titleSlowMove[i] = true;
+				titleFreamTimer[i].ResetTime();
+			}
+			else
+			{
+				if (titleSlowMove[i - 1]
+					&& !titleSlowMove[i])
+				{
+					titleSlowMove[i] = true;
+					titleFreamTimer[i].ResetTime();
+				}
+			}
+		}
+
+		
+
+		if(titleSlowMove[i])
+	    	sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
+
+		titleSpritePosition[i].y = titleHoseiPosY + sinY;
+		titleSprite[i]->SetPosition(titleSpritePosition[i]);
 
 	}
 	pushButtonSprite->SetPosition({ 500,400 });

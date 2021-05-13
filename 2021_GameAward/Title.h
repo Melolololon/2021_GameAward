@@ -13,7 +13,7 @@ private:
 	static std::unique_ptr<Texture>pushButtonTexture;
 	static FreamTimer titleFreamTimer[7];
 	static Vector2 titleSpritePosition[7];
-
+	bool titleSlowMove[7];
 public:
 	Title();
 	~Title();
