@@ -170,7 +170,7 @@ void StageSelect::Update()
 
 	bool padSelect = XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1);
-	if (DirectInput::KeyTrigger(DIK_SPACE)
+	if (DirectInput::KeyTrigger(DIK_Z)
 		|| padSelect) 
 	{
 		nextSceneTimer.SetStopFlag(false);

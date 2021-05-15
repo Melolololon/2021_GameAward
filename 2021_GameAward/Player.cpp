@@ -279,9 +279,9 @@ void Player::StageSelectMove()
 	float velRotAngle = 1.0f;
 	if (StageSelect::GetStageSelectState() == StageSelect::STAGE_SELECT_STATE_SELECT_END)
 	{
-	 	/*const float mulAngleNum = 5.0f;
+	 	const float mulAngleNum = 3.0f;
 		velRotAngle *= mulAngleNum;
-		speed *= mulAngleNum;*/
+		speed = initSpeed * stageSelectSpeedMag * mulAngleNum;
 	}
 
 	velRot -= velRotAngle;

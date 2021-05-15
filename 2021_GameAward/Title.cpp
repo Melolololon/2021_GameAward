@@ -100,7 +100,7 @@ void Title::Update()
 
 	bool padStart = XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& XInputManager::GetPadConnectedFlag(1);
-	if(DirectInput::KeyTrigger(DIK_SPACE)
+	if(DirectInput::KeyTrigger(DIK_Z)
 		|| padStart)
 		isEnd = true;
 
