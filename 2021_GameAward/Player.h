@@ -125,7 +125,7 @@ public:
 	static void LoadResource();
 
 #pragma region ÉQÉbÉ^Å[
-	Vector3 GetHeadPosition() { return initialBonePos[0] + boneMovePos[0] + position; }
+	Vector3 GetHeadPosition() { return initialBonePos[0] + boneMovePos[0] + modelMoveVector; }
 	int GetHp() { return hp; }
 
 	bool GetTargetRotatePlayer() { return targetRotatePlayer; }
