@@ -154,11 +154,16 @@ void StageSelect::Initialize()
 void StageSelect::Update()
 {
 	//ステージセレクト
-	float stickAngle = XInputManager::LeftStickAngle(1);
+	float inputAngle;
+	if (XInputManager::GetPadConnectedFlag(1))
+		inputAngle = XInputManager::LeftStickAngle(1);
+	else
+		inputAngle = DirectInput::ArrowKeyAngle();
+
 	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
 	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
 	{
-		if(LibMath::AngleDifference(stickAngle, worldCenterToStageVectorAngle[i],20.0f))
+		if(LibMath::AngleDifference(inputAngle, worldCenterToStageVectorAngle[i],20.0f))
 		{
 			selectStageNum = i;
 		
@@ -184,7 +189,7 @@ void StageSelect::Update()
 	ObjectManager::GetInstance()->Update();
 	
 	//デバッグ用
-	isEnd = true;
+	//isEnd = true;
 }
 
 void StageSelect::Draw()
