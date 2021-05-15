@@ -22,6 +22,12 @@ private:
 	Vector3 scale;
 #pragma endregion
 
+#pragma region スプライト関係
+	static Sprite3D targetLockSprite;
+	static Texture targetLockTexture;
+#pragma endregion
+
+
 #pragma region 移動
 	//モデル自体のベクトル
 	Vector3 modelMoveVector = 0;
@@ -55,6 +61,7 @@ private:
 #pragma region 祠の周りを回転するときのターゲット情報
 	std::vector<Vector3>targetPos;
 	int targetNum;
+	bool targetLock = false;
 #pragma endregion
 
 #pragma region ステージセレクト時

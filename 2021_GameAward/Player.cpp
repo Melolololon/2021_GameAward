@@ -24,7 +24,8 @@ std::vector<Vector3> Player::initialBonePos;
 std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
-
+Sprite3D Player::targetLockSprite;
+Texture Player::targetLockTexture;
 
 Player::Player()
 {
@@ -55,13 +56,18 @@ Player::~Player()
 
 void Player::LoadResource()
 {
-	std::string mtl;
-
-	//modelData.LoadModel("Resources/Model/testSnake.obj", true, CREATE_NUMBER, 0);
+	//モデル
 	modelData.LoadModel("Resources/Model/Player/snake.obj", true, CREATE_NUMBER, 0);
 
 	initialBonePos = modelData.GetBonePosition();
 	boneNum = static_cast<int>(initialBonePos.size());
+
+
+	//スプライト
+	targetLockSprite.CreateSprite({10,10});
+	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
+	targetLockSprite.SetBillboardFlag(true,true,true);
+	//targetLockSprite.SetAngle({90,0,0});
 }
 
 
@@ -174,6 +180,7 @@ void Player::PlayMove()
 		XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON, 1);
 
+	targetLock = false;
 
 	//回転
 	if (DirectInput::KeyState(DIK_X)
@@ -205,6 +212,8 @@ void Player::PlayMove()
 		if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
 		if (nearTergetDis <= maxDistance)
 		{
+			targetLock = true;
+
 			//祠に近づく処理
 			float minDistance = 7.0f;
 			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
@@ -330,63 +339,57 @@ void Player::Update()
 		velRot = previousRot;
 
 
-
-	if (!DirectInput::KeyState(DIK_A) )
+	for (int i = 0; i < boneNum; i++)
 	{
-		for (int i = 0; i < boneNum; i++)
+		if (i == 0)
 		{
-			if (i == 0)
+			//回転角度
+			moveRotateAngle[i] = velRot;
+			boneMovePos[i] += velocity * speed;
+
+			//初期位置からどのくらい動いているかをセット
+			//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+			modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
+			boneVelocity[i] = velocity;
+
+			//座標を代入
+			bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
+		}
+		else
+		{
+			////前のボーンへのベクトル
+			Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
+			////移動によるY軸基準の回転角度を代入
+			//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
+			moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
+
+
+			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1], bonePos[i]);
+			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1], initialBonePosMulScale[i]);
+
+			//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動bonePos[i] = initialBonePosMulScale[i] 
+			if (bonePosDistance >= defaultBoneDistance)
 			{
-				//回転角度
-				moveRotateAngle[i] = velRot;
-					boneMovePos[i] += velocity * speed;
+				//差を求める
+				float disDifference = bonePosDistance - defaultBoneDistance;
 
-					//初期位置からどのくらい動いているかをセット
-					//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
-					modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-				boneVelocity[i] = velocity;
+				boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
 
-				//座標を代入
+				//距離の差だけ移動させる
+				//これにより近づきすぎを防げる
+				boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
+
+				//セット
+				modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
 				bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
 			}
-			else
-			{
-				////前のボーンへのベクトル
-				Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
-				////移動によるY軸基準の回転角度を代入
-				//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
-				moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
-
-
-				float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1], bonePos[i]);
-				float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1], initialBonePosMulScale[i]);
-
-				//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動bonePos[i] = initialBonePosMulScale[i] 
-				if (bonePosDistance >= defaultBoneDistance)
-				{
-					//差を求める
-					float disDifference = bonePosDistance - defaultBoneDistance;
-
-					boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
-
-					//距離の差だけ移動させる
-					//これにより近づきすぎを防げる
-					boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
-
-					//セット
-					modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-					bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
-				}
-
-			}
-
-
 
 		}
+
+
+
 	}
 #pragma endregion
-
-
 
 #pragma region ひねり処理
 
@@ -400,7 +403,7 @@ void Player::Update()
 			rotateFlag = true;
 
 
-	if (rotateFlag)
+	if (rotateFlag && typeid(*currentScene) == typeid(Play))
 	{
 		for (int i = 0; i < boneNum; i++)
 		{
@@ -474,11 +477,12 @@ void Player::Update()
 
 	//新ショット(手動)
 	bool keyShot = DirectInput::KeyTrigger(DIK_Z)
-		&& !rotateFlag;
+		&& !rotateFlag
+		&& typeid(*currentScene) == typeid(Play);
 	
 	bool padShot = XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1) 
-		&& !rotateFlag;
+		&& typeid(*currentScene) == typeid(Play);
 
 	if (keyShot || padShot )
 	{
@@ -529,16 +533,21 @@ void Player::Update()
 
 #pragma endregion
 
-
-
+	//スプライト座標
+	if (targetLock)
+		targetLockSprite.SetPosition(targetPos[targetNum]);
 }
 
 void Player::Draw()
 {
-	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	//Library::drawGraphic(modelData, heapNum);
 	if (isMuteki == false || (isMuteki == true && mutekiTimer % 2 == 0))
 	modelData.Draw(heapNum);
+
+	if (targetLock)
+		targetLockSprite.Draw(&targetLockTexture);
+
+	
+
 }
 
 void Player::Hit
