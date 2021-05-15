@@ -13,17 +13,42 @@ float LibMath::AngleConversion(int paterrn, float angle)
 
 }
 
-bool LibMath::Difference(const float& num1, const float& num2, const float& Difference)
+bool LibMath::Difference(const float num1, const float num2, const float difference)
 {
 	float sum = num1 - num2;
 	float diff = abs(sum);//差を求める
 
 		//差が指定した値以内だったらtrue
-	if (Difference >= diff)
+	if (difference >= diff)
 		return true;
 
 	return false;
 
+}
+bool LibMath::AngleDifference(const float angle1, const float angle2, const float difference)
+{
+	if (angle1 < 0
+		|| angle1 > 360
+		|| angle2 < 0
+		|| angle2 > 360)return false;
+
+	float sum = angle2 - angle1;
+	float diff = abs(sum);//差を求める
+
+	//通常の判定
+	bool flag1 = difference >= diff;
+
+	//小さいほうを入れる
+	int smallNum = min(angle1, angle2);
+	int bigNum = max(angle1, angle2);
+	sum = bigNum - (smallNum + 360.0f);
+	diff = abs(sum);
+	bool flag2 = difference >= diff;
+
+	if (flag1 || flag2)
+		return true;
+
+	return false;
 }
 
 
@@ -55,7 +80,7 @@ char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
-	float f = Vector2Dot(v1, Vector2Normalize( v2));
+	float f = Vector2Dot(v1, Vector2Normalize(v2));
 	f = std::acos(f);
 	f = AngleConversion(1, f);
 
@@ -120,8 +145,8 @@ Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const
 
 Vector3 LibMath::FloatDistanceMoveVector3
 (
-	const Vector3& pos, 
-	const Vector3& vector, 
+	const Vector3& pos,
+	const Vector3& vector,
 	const float distance
 )
 {
@@ -421,7 +446,7 @@ bool LibMath::SphereAndBoxCollision
 	if (spherePos.z > maxPos.z)
 		dir2 += (spherePos.z - maxPos.z) * (spherePos.z - maxPos.z);
 
-	bool flag = dir2 < r * r;
+	bool flag = dir2 < r* r;
 
 	//ボックスのどこに当たったかを返す
 	if (direction)
@@ -530,16 +555,16 @@ bool LibMath::BoxAndBoxCollision
 
 		}
 	}
-		
+
 	if (direction1 || direction2)
 	{
 
 		if (!isHit)
 		{
-			if(direction1)
-			*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
-			if(direction2)
-			*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			if (direction1)
+				*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			if (direction2)
+				*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
 			return isHit;
 		}
 
@@ -575,7 +600,7 @@ bool LibMath::BoxAndBoxCollision
 				if (direction2)
 					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
 			}
-			else 
+			else
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
@@ -592,7 +617,7 @@ bool LibMath::BoxAndBoxCollision
 				if (direction2)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
 			}
-			else 
+			else
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
@@ -602,14 +627,14 @@ bool LibMath::BoxAndBoxCollision
 		}
 		if (top == 3)
 		{
-			if (targetToVector.z >= 0) 
+			if (targetToVector.z >= 0)
 			{
-				if(direction1)
+				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
 				if (direction2)
 					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
 			}
-			else 
+			else
 			{
 				if (direction1)
 					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;

@@ -8,6 +8,7 @@
 #include"LibMath.h"
 
 #include"Player.h"
+#include"XInputManager.h"
 
 int StageSelect::maxStageNum;
 int StageSelect::selectStageNum;
@@ -21,6 +22,8 @@ std::vector<int>StageSelect::targetNumbers;
 std::vector<Vector3>StageSelect::leftUpPositions;
 std::vector<Vector3>StageSelect::rightDownPositions; 
 std::vector<Vector3>StageSelect::mapMovePositions;
+std::vector<float>StageSelect::worldCenterToStageVectorAngle;
+StageSelect::StageSelectState StageSelect::stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 
 //const UINT StageSelect::playerRotateTime = 60 * 2;
 //const UINT StageSelect::nextFromSelectionTime = 60 * 2;
@@ -103,11 +106,12 @@ void StageSelect::LoadResources()
 	const Vector3 mapMovePos = { 0,0,550 };
 	const float mapRotateAngle = 360.0f / maxStageNum;
 	mapMovePositions.resize(maxStageNum);
+	worldCenterToStageVectorAngle.resize(maxStageNum);
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		auto blockNum = blocks[i].size();
 		Vector3 movePos = mapMovePos;
-		float rotateAngle = mapRotateAngle * i;
+		float rotateAngle = mapRotateAngle * i * -1;
 
 		movePos = LibMath::RotateVector3(movePos, { 0,1,0 }, rotateAngle);
 		for(int j = 0; j < blockNum;j++)
@@ -115,9 +119,15 @@ void StageSelect::LoadResources()
 
 		mapMovePositions[i] = movePos;
 		
+		Vector3 worldCenterToStageVector = LibMath::OtherVector({ 0,0,0 }, mapMovePositions[i]);
+		worldCenterToStageVectorAngle[i] = LibMath::Vecto2ToAngle
+		(
+			Vector2(worldCenterToStageVector.x, worldCenterToStageVector.z),
+			true
+		);
+
 	}
 
-	
 }
 
 void StageSelect::Initialize()
@@ -129,54 +139,52 @@ void StageSelect::Initialize()
 	}
 	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
 
-	player = std::make_shared<Player>();
+	playerMoveVector = Vector3(-250,0, 270);
+	Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[selectStageNum];
+	player = std::make_shared<Player>(playerModelMoveVector);
 	ObjectManager::GetInstance()->AddObject(player);
 	player->SetTargetPosition(mapMovePositions);
 	//playerRotateTimer = 0;
 
+	stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 	nextSceneTimer.SetMaxTime(60 * 2);
 
-	Block::SetPPlayer(player.get());
 }
 
 void StageSelect::Update()
 {
-	
-	ObjectManager::GetInstance()->Update();
-
-	//ステージセレクト処理
-	//旧
-	/*int playerTargetNum = player->GetTargetNum();
-	if (playerTargetNum != -1 &&
-		player->GetTargetRotatePlayer())
+	//ステージセレクト
+	float stickAngle = XInputManager::LeftStickAngle(1);
+	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
+	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
 	{
-
-		if (playerRotateTimer >= playerRotateTime) 
+		if(LibMath::AngleDifference(stickAngle, worldCenterToStageVectorAngle[i],20.0f))
 		{
-			player->SetSelectStage(true);
-			selectStageNum = playerTargetNum;
-			nextFromSelectionTimer++;
+			selectStageNum = i;
+		
+			Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[i];
+			player->SetModelMoveVector(playerModelMoveVector);
+			break;
 		}
-		if (nextFromSelectionTimer >= nextFromSelectionTime)
-			isEnd = true;
-
-		playerRotateTimer++;
 	}
-	else
-		playerRotateTimer = 0;*/
 
-	
-	//新
-	int hitStageNum = Block::GetHitStageNum();
-	if(hitStageNum != -1)
+	bool padSelect = XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1);
+	if (DirectInput::KeyTrigger(DIK_SPACE)
+		|| padSelect) 
 	{
-		selectStageNum = hitStageNum;
 		nextSceneTimer.SetStopFlag(false);
+		stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
 	}
+
 
 	if (nextSceneTimer.GetSameAsMaximumFlag())
 		isEnd = true;
 
+	ObjectManager::GetInstance()->Update();
+	
+	//デバッグ用
+	isEnd = true;
 }
 
 void StageSelect::Draw()
@@ -200,7 +208,6 @@ void StageSelect::Finitialize()
 
 	ObjectManager::GetInstance()->AllEraseObject();
 
-	Block::ResetHitStageNum();
 }
 
 Scene* StageSelect::GetNextScene()

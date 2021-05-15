@@ -7,6 +7,13 @@
 #include"FreamTimer.h"
 class StageSelect :public Scene
 {
+public :
+	enum StageSelectState
+	{
+		STAGE_SELECT_STATE_SELECT,
+		STAGE_SELECT_STATE_SELECT_END,
+	};
+
 private:
 	static int selectStageNum;
 	static int maxStageNum;
@@ -22,14 +29,20 @@ private:
 	static std::vector<Vector3>leftUpPositions;
 	static std::vector<Vector3>rightDownPositions;
 	static std::vector<Vector3>mapMovePositions;
+	static std::vector<float>worldCenterToStageVectorAngle;
 
 	std::shared_ptr<Player>player;
+	Vector3 playerMoveVector = 0;
 	//UINT playerRotateTimer;
 	//static const UINT playerRotateTime;
 	//UINT nextFromSelectionTimer;//ëIëÇ©ÇÁéüÇÃÉVÅ[ÉìÇ‹Ç≈ÇÃéûä‘
 	//static const UINT nextFromSelectionTime;
 
+	//èÛë‘
+	static StageSelectState stageSelectState;
 	FreamTimer nextSceneTimer;
+
+
 public:
 	StageSelect();
 	~StageSelect();
@@ -42,5 +55,6 @@ public:
 	static void LoadResources();
 
 	static int GetSelectStageNum() { return selectStageNum; }
+	static StageSelectState GetStageSelectState() {return stageSelectState;}
 };
 

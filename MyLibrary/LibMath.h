@@ -19,16 +19,25 @@ private:
 
 public:
 
-	
+
 
 	/// <summary>
-	/// num1とnum2の値の差を求め、差 <= 基準の値だったらtrueを返します
+	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
 	/// </summary>
 	/// <param name="num1">値1</param>
 	/// <param name="num2">値2</param>
 	/// <param name="difference">基準の値</param>
 	/// <returns></returns>
-	static bool Difference(const float& num1, const float& num2, const float& Difference);
+	static bool Difference(const float num1, const float num2, const float difference);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="angle1">角度(0から360)</param>
+	/// <param name="angle2">角度(0から360)</param>
+	/// <param name="difference"></param>
+	/// <returns></returns>
+	static bool AngleDifference(const float angle1, const float angle2, const float difference);
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
@@ -77,7 +86,7 @@ public:
 	/// <param name="v"></param>
 	/// <param name="v3">3次元座標系かどうか</param>
 	/// <returns></returns>
-	static float Vecto2ToAngle(const Vector2& v,const bool& v3 );
+	static float Vecto2ToAngle(const Vector2& v, const bool& v3);
 
 	/// <summary>
 	/// 角度をVector2に変換します
@@ -121,7 +130,7 @@ public:
 	/// <param name="vec">軸のベクトル</param>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
+	static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle);
 
 
 	/// <summary>
@@ -131,7 +140,7 @@ public:
 	/// <param name="vector"></param>
 	/// <param name="distance"></param>
 	/// <returns></returns>
-	static Vector3 FloatDistanceMoveVector3(const Vector3& pos,const Vector3& vector, const float distance);
+	static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance);
 #pragma endregion
 
 
@@ -152,7 +161,7 @@ public:
 	static bool RectCollision
 	(
 		const Vector2& pos1,
-		const Vector2& size1, 
+		const Vector2& size1,
 		const Vector2& pos2,
 		const Vector2& size2
 	);

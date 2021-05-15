@@ -34,11 +34,18 @@ Player::Player()
 
 Player::Player(const Vector3& pos)
 {
+	modelMoveVector = pos;
 	Initialize();
 
-	position = pos;
-	modelData.SetPosition(position, heapNum);
-
+	std::reverse(boneMovePos.begin(), boneMovePos.end());
+	//セット
+	for (int i = 0; i < boneNum; i++) 
+	{
+		modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
+		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
+	}
+	position = bonePos[bonePos.size() / 2];
+	modelData.SetPosition(modelMoveVector, heapNum);
 }
 
 Player::~Player()
@@ -109,7 +116,7 @@ void Player::Initialize()
 
 		//セット
 		modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
+		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
 	}
 
 
@@ -154,42 +161,22 @@ void Player::Initialize()
 #pragma endregion
 
 
+	modelData.SetPosition(modelMoveVector, heapNum);
 	//角度セット
-	for (int i = 0; i < boneNum; i++)
-		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
+	for (int i = 0; i < boneNum; i++) 
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
 
-	modelData.SetPosition({ 0,-5,0 }, heapNum);
 }
 
-void Player::Update()
+void Player::PlayMove()
 {
-	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
-	//準備前は動かないように
-	if (typeid(*currentScene) == typeid(Play))
-	{
-		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)return;
-		else if (Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREVIOUS)
-		{
-			//**ここにゲーム開始前のプレイヤー停止処理を書く**//
-
-			return;
-		}
-	}
-
-	targetNum = -1;
-
-
-#pragma region 移動_移動時の回転処理
-
-	previousRot = velRot;
-
 	bool padObjectRot =
 		XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON,1);
-	
-		//回転
-	if (DirectInput::KeyState(DIK_X) 
+		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON, 1);
+
+
+	//回転
+	if (DirectInput::KeyState(DIK_X)
 		/*|| selectStage*/
 		|| padObjectRot)
 	{
@@ -260,7 +247,7 @@ void Player::Update()
 						speed = initSpeed * stageSelectSpeedMag * subRotNum;
 					}
 					else*/
-						velRot -= 1.0f;
+					velRot -= 1.0f;
 				}
 				else
 					velRot -= 1.5f;
@@ -285,6 +272,51 @@ void Player::Update()
 	}
 
 
+}
+
+void Player::StageSelectMove()
+{
+	float velRotAngle = 1.0f;
+	if (StageSelect::GetStageSelectState() == StageSelect::STAGE_SELECT_STATE_SELECT_END)
+	{
+	 	/*const float mulAngleNum = 5.0f;
+		velRotAngle *= mulAngleNum;
+		speed *= mulAngleNum;*/
+	}
+
+	velRot -= velRotAngle;
+	if (velRot >= 360)
+		velRot -= 360;
+	if (velRot <= 0)
+		velRot += 360;
+}
+
+void Player::Update()
+{
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	//準備前は動かないように
+	if (typeid(*currentScene) == typeid(Play))
+	{
+		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)return;
+		else if (Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREVIOUS)
+		{
+			//**ここにゲーム開始前のプレイヤー停止処理を書く**//
+
+			return;
+		}
+	}
+
+	targetNum = -1;
+
+
+#pragma region 移動_移動時の回転処理
+
+	previousRot = velRot;
+
+	if (typeid(*currentScene) == typeid(Play))
+		PlayMove();
+	if (typeid(*currentScene) == typeid(StageSelect))
+		StageSelectMove();
 
 
 	if (velRot != -1)
@@ -297,55 +329,60 @@ void Player::Update()
 	else//入力されてなかったら前フレームの角度を代入
 		velRot = previousRot;
 
-	for (int i = 0; i < boneNum; i++)
+
+
+	if (!DirectInput::KeyState(DIK_A) )
 	{
-		if (i == 0)
+		for (int i = 0; i < boneNum; i++)
 		{
-			//回転角度
-			moveRotateAngle[i] = velRot;
-			boneMovePos[i] += velocity * speed;
-
-			//初期位置からどのくらい動いているかをセット
-			//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
-			modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-			boneVelocity[i] = velocity;
-
-			//座標を代入
-			bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
-		}
-		else
-		{
-			////前のボーンへのベクトル
-			Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
-			////移動によるY軸基準の回転角度を代入
-			//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
-			moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
-
-
-			float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1], bonePos[i]);
-			float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1], initialBonePosMulScale[i]);
-
-			//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動
-			if (bonePosDistance >= defaultBoneDistance)
+			if (i == 0)
 			{
-				//差を求める
-				float disDifference = bonePosDistance - defaultBoneDistance;
+				//回転角度
+				moveRotateAngle[i] = velRot;
+					boneMovePos[i] += velocity * speed;
 
-				boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
+					//初期位置からどのくらい動いているかをセット
+					//Library::setOBJBoneMoveVector(boneMovePos[i], i, modelData, heapNum);
+					modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
+				boneVelocity[i] = velocity;
 
-				//距離の差だけ移動させる
-				//これにより近づきすぎを防げる
-				boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
+				//座標を代入
+				bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
+			}
+			else
+			{
+				////前のボーンへのベクトル
+				Vector3 forwardVector = bonePos[i - 1] - bonePos[i];
+				////移動によるY軸基準の回転角度を代入
+				//moveRotateAngle[i] = LibMath::AngleConversion(1, atan2(forwardVector.z, forwardVector.x));
+				moveRotateAngle[i] = LibMath::Vecto2ToAngle({ forwardVector.x,forwardVector.z }, true);
 
-				//セット
-				modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
-				bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + position;
+
+				float bonePosDistance = LibMath::CalcDistance3D(bonePos[i - 1], bonePos[i]);
+				float defaultBoneDistance = LibMath::CalcDistance3D(initialBonePosMulScale[i - 1], initialBonePosMulScale[i]);
+
+				//デフォルト距離以上の時に、defaultBoneDistanceを超えないように移動bonePos[i] = initialBonePosMulScale[i] 
+				if (bonePosDistance >= defaultBoneDistance)
+				{
+					//差を求める
+					float disDifference = bonePosDistance - defaultBoneDistance;
+
+					boneVelocity[i] = Vector3Normalize(bonePos[i - 1] - bonePos[i]);
+
+					//距離の差だけ移動させる
+					//これにより近づきすぎを防げる
+					boneMovePos[i] = LibMath::FloatDistanceMoveVector3(boneMovePos[i], boneVelocity[i], disDifference);
+
+					//セット
+					modelData.SetBoneMoveVector(boneMovePos[i], i, heapNum);
+					bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
+				}
+
 			}
 
+
+
 		}
-
-
-
 	}
 #pragma endregion
 
@@ -403,7 +440,8 @@ void Player::Update()
 		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
 
-	modelData.SetPosition({ 0,-5,0 }, heapNum);
+	position = bonePos[bonePos.size() / 2];
+	modelData.SetPosition(modelMoveVector, heapNum);
 
 #pragma region 弾を発射
 
@@ -510,8 +548,8 @@ void Player::Hit
 	const int& arrayNum
 )
 {
-	/*Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
-	if (typeid(*currentScene) == typeid(StageSelect))return;*/
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	if (typeid(*currentScene) == typeid(StageSelect))return;
 
 	//結構狭い隙間でも通れちゃうから修正するか、隙間ができないようにする
 	if (typeid(*object) == typeid(Block) ||
@@ -542,7 +580,7 @@ void Player::Hit
 
 				//セット
 				modelData.SetBoneMoveVector(boneMovePos[arrayNum], arrayNum, heapNum);
-				bonePos[arrayNum] = initialBonePosMulScale[arrayNum] + boneMovePos[arrayNum] + position;
+				bonePos[arrayNum] = initialBonePosMulScale[arrayNum] + boneMovePos[arrayNum] + modelMoveVector;
 			}
 		};
 
@@ -610,7 +648,7 @@ void Player::Hit
 			break;
 		}
 
-		bonePos[arrayNum] = initialBonePosMulScale[arrayNum] + boneMovePos[arrayNum] + position;
+		bonePos[arrayNum] = initialBonePosMulScale[arrayNum] + boneMovePos[arrayNum] + modelMoveVector;
 
 	}
 
@@ -623,8 +661,21 @@ void Player::Hit
 	//}
 }
 
+void Player::SetModelMoveVector(const Vector3& vector) 
+{
+	modelMoveVector = vector; 
+	modelData.SetPosition(modelMoveVector,heapNum);
+	for (int i = 0; i < boneNum; i++) 
+	{
+		bonePos[i] = initialBonePosMulScale[i] + boneMovePos[i] + modelMoveVector;
+		sphereData[i].position = bonePos[i];
+	}
+}
+
 void Player::DamageFromEnemy()
 {
 	hp--;
 	isMuteki = true;
 }
+
+

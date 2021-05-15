@@ -8,8 +8,6 @@
 PrimitiveModel Block::modelData;
 const int Block::CREATE_NUMBER = 300;
 HeapIndexManager Block::heapIndexManager(CREATE_NUMBER);
-Player* Block::pPlayer;
-int Block::hitStageNum = -1;
 
 Block::Block(const Vector3& pos, const Vector3& scale)
 {
@@ -21,22 +19,8 @@ Block::Block(const Vector3& pos, const Vector3& scale)
 	Library::setPosition(position, modelData, heapNum);*/
 	modelData.SetScale(scale, heapNum);
 	modelData.SetPosition(position, heapNum);
-	stageNum = 0;
 }
 
-
-Block::Block(const Vector3& pos, const Vector3& scale, const int stageNum)
-{
-	Initialize();
-	position = pos;
-	this->scale = scale;
-
-	/*Library::setScale(scale, modelData, heapNum);
-	Library::setPosition(position, modelData, heapNum);*/
-	modelData.SetScale(scale, heapNum);
-	modelData.SetPosition(position, heapNum);
-	this->stageNum = stageNum;
-}
 
 
 Block::~Block()
@@ -105,13 +89,6 @@ void Block::Hit
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) != typeid(StageSelect))return;
 
-	if (typeid(*object) == typeid(PlayerBullet))
-	{
-		//ステージを回ってたら入る
-		if(pPlayer->GetTargetRotatePlayer() 
-			&& hitStageNum == -1)
-			hitStageNum = stageNum;
-	}
 }
 
 const void* Block::GetPtr()const

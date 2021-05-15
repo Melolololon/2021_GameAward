@@ -21,14 +21,6 @@ private:
 
 #pragma endregion
 
-	static Player* pPlayer;
-
-	//ステージセレクト用変数
-	//何番目のステージのブロックか
-	int stageNum = 0;
-	//プレイヤーに撃たれたブロックのstageNum(ステージ指定用)
-	static int hitStageNum;
-
 
 	Vector3 scale = 0;
 
@@ -36,7 +28,6 @@ private:
 
 
 public:
-	Block(const Vector3& pos, const Vector3& scale,const int stageNum);
 	Block(const Vector3& pos, const Vector3& scale);
 	~Block();
 	void Initialize()override;
@@ -58,10 +49,6 @@ public:
 
 	void MovePosition(const Vector3& vector);
 
-	static void ResetHitStageNum() { hitStageNum = -1; }
 
-	static int GetHitStageNum() {return hitStageNum;}
-
-	static void SetPPlayer(Player* p) { pPlayer = p; }
 };
 

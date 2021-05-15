@@ -23,6 +23,9 @@ private:
 #pragma endregion
 
 #pragma region 移動
+	//モデル自体のベクトル
+	Vector3 modelMoveVector = 0;
+
 	//ボーン座標(initialからどのくらい動いてるか)
 	std::vector<Vector3> boneMovePos;
 	//移動による回転量
@@ -56,6 +59,7 @@ private:
 
 #pragma region ステージセレクト時
 	float stageSelectSpeedMag;
+	int selectStageNum = 0;
 	//bool selectStage;//ステージ選択したかどうか
 #pragma endregion
 
@@ -110,6 +114,8 @@ public:
 		const int& arrayNum
 	)override;
 
+	void PlayMove();
+	void StageSelectMove();
 	
 	void DamageFromEnemy();
 
@@ -129,7 +135,8 @@ public:
 #pragma region セッター
 	//囲むための配列を渡す関数
 	void SetTargetPosition(const std::vector<Vector3>& pos) { targetPos = pos; }
-
+	void SetSelectStageNum(const int num) { selectStageNum = num; }
+	void SetModelMoveVector(const Vector3& vector);
 	//void SetSelectStage(const bool flag) { selectStage = flag; }
 #pragma endregion
 
