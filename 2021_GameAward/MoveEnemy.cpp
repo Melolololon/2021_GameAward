@@ -32,8 +32,6 @@ void MoveEnemy::Initialize()
 
 	modelData.SetScale({ 0.5,0.5,0.5 }, heapNum);
 
-	moveAnimationTimer.SetMaxTime(60 * 2);
-	moveAnimationTimer.SetStopFlag(false);
 }
 
 void MoveEnemy::Update()
@@ -68,7 +66,13 @@ void MoveEnemy::Update()
 	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 
 	//アニメーション
-
+	//アニメーション更新
+	UpdateAnimationData();
+	
+	//ボーンをセット
+	//右足 1 左足 2
+	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
+	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 }
 
 void MoveEnemy::Draw()
@@ -86,7 +90,7 @@ void MoveEnemy::LoadResource()
 
 	modelData.LoadModel
 	(
-		"Resources/Model/MoveEnemy/MoveEnemy.obj",
+		"Resources/Model/MoveEnemy/MoveEnemy_Bone.obj",
 		true,
 		CREATE_NUMBER,
 		0

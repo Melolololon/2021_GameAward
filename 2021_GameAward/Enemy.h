@@ -7,6 +7,7 @@
 
 class Enemy : public Object
 {
+
 protected:
 #pragma region モデル関係
 
@@ -21,7 +22,14 @@ protected:
 
 
 	//歩行アニメーション用
-	FreamTimer moveAnimationTimer;
+	static const int MOVE_ANIMATION_MAX = 60 * 0.7;
+	FreamTimer moveAnimationTime;
+	Vector3 leftFootAngle;
+	Vector3 rightFootAngle;
+	static const float FREAM_MOVE_ANGLE;
+	//EnemyのUpdateで呼び出す
+	void UpdateAnimationData();
+
 #pragma endregion
 
 #pragma region 共通パラメータ
@@ -37,6 +45,9 @@ protected:
 
 	//初期化と更新は各クラスでオーバーライド
 public:
+	
+	Enemy();
+
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
@@ -56,5 +67,6 @@ public:
 	virtual void setPosition(Vector3 pos) = 0;
 
 	static bool isGameStart();
+
 };
 

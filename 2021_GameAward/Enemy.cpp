@@ -5,9 +5,42 @@
 #include "Play.h"
 
 const float Enemy::OBJSIZE = 1.0f;
+const float Enemy::FREAM_MOVE_ANGLE = 10.0f;
+Enemy::Enemy()
+{
+	leftFootAngle.z = FREAM_MOVE_ANGLE;
+	rightFootAngle.z = -FREAM_MOVE_ANGLE;
+	moveAnimationTime.SetMaxTime(MOVE_ANIMATION_MAX);
+	moveAnimationTime.SetStopFlag(false);
+}
 
 void Enemy::setHeapNum()
 {
+}
+
+void Enemy::UpdateAnimationData()
+{
+	if (hp <= 0)return;
+
+	if (moveAnimationTime.GetTime() < MOVE_ANIMATION_MAX / 2)
+	{
+		leftFootAngle.z -= FREAM_MOVE_ANGLE;
+		rightFootAngle.z += FREAM_MOVE_ANGLE;
+
+	}
+	else
+	{
+		leftFootAngle.z += FREAM_MOVE_ANGLE;
+		rightFootAngle.z -= FREAM_MOVE_ANGLE;
+	}
+	
+	const float MAX_ANGLE = FREAM_MOVE_ANGLE * (MOVE_ANIMATION_MAX / 2);
+	const float MIN_ANGLE = -FREAM_MOVE_ANGLE * (MOVE_ANIMATION_MAX / 2);
+	leftFootAngle.z = leftFootAngle.z > MAX_ANGLE ? MAX_ANGLE : leftFootAngle.z;
+	leftFootAngle.z = leftFootAngle.z < MIN_ANGLE ? MIN_ANGLE : leftFootAngle.z;
+	rightFootAngle.z = rightFootAngle.z > MAX_ANGLE ? MAX_ANGLE : rightFootAngle.z;
+	rightFootAngle.z = rightFootAngle.z < MIN_ANGLE ? MIN_ANGLE : rightFootAngle.z;
+
 }
 
 void Enemy::Initialize()
@@ -81,3 +114,5 @@ bool Enemy::isGameStart()
 
 	return true;
 }
+
+
