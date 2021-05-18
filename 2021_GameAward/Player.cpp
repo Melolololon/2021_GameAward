@@ -142,7 +142,7 @@ void Player::Initialize()
 	boneVelocity.resize(boneNum, 0.0f);
 
 	targetRotatePlayer = false;
-	targetNum = -1;
+	lockTargetNum = -1;
 #pragma endregion
 
 #pragma region 弾の発射
@@ -174,92 +174,99 @@ void Player::Initialize()
 
 void Player::PlayMove()
 {
+
+	lockTarget = false;
+
+	//近いオブジェクトの距離を求める
+	float nearTergetDis = 9999999.0f;
+	float targetDistance = 0.0f;
+	Vector3 nearTergetPosition = 0;
+
+	auto targetPosSize = targetPos.size();
+	int nearTargetNum = -1;
+	for (int i = 0; i < targetPosSize; i++)
+	{
+		targetDistance = LibMath::CalcDistance3D
+		(
+			bonePos[0],
+			targetPos[i]
+		);
+		if (nearTergetDis > targetDistance)
+		{
+			nearTergetPosition = targetPos[i];
+			nearTergetDis = targetDistance;
+			nearTargetNum = i;
+		}
+	}
+	float maxDistance = 40.0f;
+	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
+	if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
+
+	//周り回転
+	bool distanceFlag = nearTergetDis <= maxDistance;
+	
 	bool padObjectRot =
 		XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON, 1);
+		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON, 1)
+		&& distanceFlag;
 
-	targetLock = false;
+	bool keyObjectRot = DirectInput::KeyState(DIK_X)
+		&& distanceFlag;
 
-	//回転
-	if (DirectInput::KeyState(DIK_X)
-		/*|| selectStage*/
+	if (keyObjectRot
 		|| padObjectRot)
 	{
-		//近いオブジェクトの距離を求める
-		float nearTergetDis = 9999999.0f;
-		float targetDistance = 0.0f;
-		Vector3 nearTergetPosition = 0;
+		lockTarget = true;
+		lockTargetNum = nearTargetNum;
 
-		auto targetPosSize = targetPos.size();
-		for (int i = 0; i < targetPosSize; i++)
+		//祠に近づく処理
+		float minDistance = 7.0f;
+		if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
+
+		if (nearTergetDis >= minDistance
+			&& !targetRotatePlayer)
 		{
-			targetDistance = LibMath::CalcDistance3D
+			targetRotatePlayer = false;
+
+			Vector3 playerToNeraTarget = nearTergetPosition - bonePos[0];
+			float playerToNeraTargetAngle = LibMath::Vecto2ToAngle
 			(
-				bonePos[0],
-				targetPos[i]
+				{ playerToNeraTarget.x,playerToNeraTarget.z },
+				true
 			);
-			if (nearTergetDis > targetDistance)
-			{
-				nearTergetPosition = targetPos[i];
-				nearTergetDis = targetDistance;
-				targetNum = i;
-			}
+			velRot = playerToNeraTargetAngle;
+
 		}
-		Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
-		float maxDistance = 40.0f;
-		if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
-		if (nearTergetDis <= maxDistance)
+		//回る処理
+		else
 		{
-			targetLock = true;
-
-			//祠に近づく処理
-			float minDistance = 7.0f;
-			if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
-
-			if (nearTergetDis >= minDistance
-				&& !targetRotatePlayer)
+			if (!targetRotatePlayer)
 			{
-				targetRotatePlayer = false;
-
-				Vector3 playerToNeraTarget = nearTergetPosition - bonePos[0];
-				float playerToNeraTargetAngle = LibMath::Vecto2ToAngle
+				targetRotatePlayer = true;
+				//ここで、ターゲットからプレイヤーへのベクトルの角度を求め、velRotに入れる
+				Vector3 targetToPlayerToNera = bonePos[0] - nearTergetPosition;
+				float targetToPlayerToNeraAngle = LibMath::Vecto2ToAngle
 				(
-					{ playerToNeraTarget.x,playerToNeraTarget.z },
+					{ targetToPlayerToNera.x,targetToPlayerToNera.z },
 					true
 				);
-				velRot = playerToNeraTargetAngle;
-
+				velRot = targetToPlayerToNeraAngle - 90.0f;
 			}
-			//回る処理
-			else
+			if (typeid(*currentScene) == typeid(StageSelect))
 			{
-				if (!targetRotatePlayer)
+				/*if (selectStage)
 				{
-					targetRotatePlayer = true;
-					//ここで、ターゲットからプレイヤーへのベクトルの角度を求め、velRotに入れる
-					Vector3 targetToPlayerToNera = bonePos[0] - nearTergetPosition;
-					float targetToPlayerToNeraAngle = LibMath::Vecto2ToAngle
-					(
-						{ targetToPlayerToNera.x,targetToPlayerToNera.z },
-						true
-					);
-					velRot = targetToPlayerToNeraAngle - 90.0f;
+					float subRotNum = 2.5f;
+					velRot -= subRotNum;
+					speed = initSpeed * stageSelectSpeedMag * subRotNum;
 				}
-				if (typeid(*currentScene) == typeid(StageSelect))
-				{
-					/*if (selectStage)
-					{
-						float subRotNum = 2.5f;
-						velRot -= subRotNum;
-						speed = initSpeed * stageSelectSpeedMag * subRotNum;
-					}
-					else*/
-					velRot -= 1.0f;
-				}
-				else
-					velRot -= 1.5f;
+				else*/
+				velRot -= 1.0f;
 			}
+			else
+				velRot -= 1.5f;
 		}
+
 	}
 	//移動
 	else
@@ -313,7 +320,7 @@ void Player::Update()
 		}
 	}
 
-	targetNum = -1;
+	lockTargetNum = -1;
 
 
 #pragma region 移動_移動時の回転処理

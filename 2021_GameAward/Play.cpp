@@ -257,7 +257,7 @@ void Play::Update()
 #pragma endregion
 
 #pragma region ターゲット
-	int playerTargetNum = player->GetTargetNum();
+	int playerTargetNum = player->GetLockTargetNum();
 	if (playerTargetNum != -1) 
 	{
 		Vector3 lockPos = targetObjects[playerTargetNum]->GetPosition() 
@@ -416,8 +416,8 @@ void Play::Draw()
 
 
 
-	int playerTargetNum = player->GetTargetNum();
-	if (playerTargetNum != -1)
+	int playerLockTargetNum = player->GetLockTargetNum();
+	if (playerLockTargetNum != -1)
 		targetLockSprite.Draw(&targetLockTexture);
 
 	if (drawArrow)

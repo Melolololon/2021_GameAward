@@ -55,8 +55,8 @@ private:
 
 #pragma region 祠の周りを回転するときのターゲット情報
 	std::vector<Vector3>targetPos;
-	int targetNum;
-	bool targetLock = false;
+	int lockTargetNum;
+	bool lockTarget = false;
 #pragma endregion
 
 #pragma region ステージセレクト時
@@ -131,7 +131,7 @@ public:
 	int GetHp() { return hp; }
 
 	bool GetTargetRotatePlayer() { return targetRotatePlayer; }
-	int GetTargetNum() { return targetNum; }
+	int GetLockTargetNum() { return lockTargetNum; }
 
 #pragma endregion
 
