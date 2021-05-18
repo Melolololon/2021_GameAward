@@ -9,6 +9,9 @@ bool TargetObject::hitSegment;
 
 std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
 std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
+Texture TargetObject::lifeGaugeTexture;
+Texture TargetObject::lifeGaugeFreamTexture;
+
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
 
 TargetObject::TargetObject(const Vector3& pos)
@@ -27,13 +30,14 @@ void TargetObject::LoadResource()
 {
 	modelData.LoadModel("Resources/Model/TargetObject/Shrine.obj", true, CREATE_NUMBER, 0);
 
-	const float freamSprSize = 0.5f * 2;
 	for (int i = 0; i < CREATE_NUMBER; i++)
 	{
-		lifeGaugeSprite[i].CreateSprite({ 2,2 });
-		lifeGaugeFreamSprite[i].CreateSprite({ 2 ,2 });
-		lifeGaugeFreamSprite[i].CreateSprite({ 2 + freamSprSize,2 + freamSprSize });
+		Vector2 lifeSize = { 10,2 };
+		lifeGaugeSprite[i].CreateSprite(lifeSize);
+		lifeGaugeFreamSprite[i].CreateSprite({ lifeSize.x,lifeSize.y });
 	}
+	lifeGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
+	lifeGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
 }
 
 
@@ -46,12 +50,8 @@ void TargetObject::Initialize()
 	boxData.resize(1);
 	boxData[0].position = position;
 	boxData[0].size = { 2,5,2 };
-	//collisionFlag.sphere = true;
-	//sphereData.resize(1);
-	//sphereData[0].position = position;
-	//sphereData[0].r = 1.0f;
 
-	//Library::setPosition(position, modelData, heapNum);
+
 	modelData.SetPosition(position, heapNum);
 
 	hp = 30;
@@ -69,13 +69,23 @@ void TargetObject::Update()
 
 	if (hp <= 0)
 		eraseManager = true;
+
+
+	Vector3 lifePos = position;
+	lifePos.y += 2.4f;
+	lifePos.z -= 8.0f;
+	lifeGaugeSprite[heapNum].SetPosition(lifePos);
+	lifeGaugeFreamSprite[heapNum].SetPosition(lifePos);
+	lifeGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
+	lifeGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
 }
 
 void TargetObject::Draw()
 {
+	
 	modelData.Draw(heapNum);
-
-
+	lifeGaugeSprite[heapNum].Draw(&lifeGaugeTexture);
+	lifeGaugeFreamSprite[heapNum].Draw(&lifeGaugeFreamTexture);
 }
 
 

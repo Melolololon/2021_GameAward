@@ -13,6 +13,8 @@ private:
 	static ObjModel modelData;
 	static std::vector<Sprite3D> lifeGaugeSprite;
 	static std::vector<Sprite3D> lifeGaugeFreamSprite;
+	static Texture lifeGaugeTexture;
+	static Texture lifeGaugeFreamTexture;
 
 	static HeapIndexManager heapIndexManager;
 

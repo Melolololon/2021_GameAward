@@ -22,11 +22,6 @@ private:
 	Vector3 scale;
 #pragma endregion
 
-#pragma region スプライト関係
-	static Sprite3D targetLockSprite;
-	static Texture targetLockTexture;
-#pragma endregion
-
 
 #pragma region 移動
 	//モデル自体のベクトル
@@ -137,6 +132,7 @@ public:
 
 	bool GetTargetRotatePlayer() { return targetRotatePlayer; }
 	int GetTargetNum() { return targetNum; }
+
 #pragma endregion
 
 #pragma region セッター

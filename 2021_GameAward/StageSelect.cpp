@@ -169,10 +169,11 @@ void StageSelect::Update()
 	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
 	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
 	{
-		if(LibMath::AngleDifference(inputAngle, worldCenterToStageVectorAngle[i],20.0f))
+		if(LibMath::AngleDifference(inputAngle, worldCenterToStageVectorAngle[i],20.0f)
+			&& stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END)
 		{
+
 			selectStageNum = i;
-		
 			Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[i];
 			player->SetModelMoveVector(playerModelMoveVector);
 			break;
@@ -184,8 +185,11 @@ void StageSelect::Update()
 	if (DirectInput::KeyTrigger(DIK_Z)
 		|| padSelect) 
 	{
-		nextSceneTimer.SetStopFlag(false);
-		stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
+		if (stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END) 
+		{
+			nextSceneTimer.SetStopFlag(false);
+			stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
+		}
 	}
 
 

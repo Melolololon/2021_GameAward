@@ -24,8 +24,6 @@ std::vector<Vector3> Player::initialBonePos;
 std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
-Sprite3D Player::targetLockSprite;
-Texture Player::targetLockTexture;
 
 Player::Player()
 {
@@ -63,10 +61,10 @@ void Player::LoadResource()
 	boneNum = static_cast<int>(initialBonePos.size());
 
 
-	//スプライト
-	targetLockSprite.CreateSprite({10,10});
-	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
-	targetLockSprite.SetBillboardFlag(true,true,true);
+	////スプライト
+	//targetLockSprite.CreateSprite({10,10});
+	//targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
+	//targetLockSprite.SetBillboardFlag(true,true,true);
 	//targetLockSprite.SetAngle({90,0,0});
 }
 
@@ -456,7 +454,7 @@ void Player::Update()
 
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
-				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y, bonePos[arrayNum].z),
+				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
 				Vector3(q.x, 0, q.z)
 				));
 	};
@@ -479,12 +477,13 @@ void Player::Update()
 	bool keyShot = DirectInput::KeyTrigger(DIK_Z)
 		&& !rotateFlag
 		&& typeid(*currentScene) == typeid(Play);
-	
+
 	bool padShot = XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1) 
+		&& !rotateFlag
 		&& typeid(*currentScene) == typeid(Play);
 
-	if (keyShot || padShot )
+	if (keyShot || padShot)
 	{
 		for (int i = 3; i < boneNum - 7; i++)
 		{
@@ -534,8 +533,11 @@ void Player::Update()
 #pragma endregion
 
 	//スプライト座標
-	if (targetLock)
-		targetLockSprite.SetPosition(targetPos[targetNum]);
+	/*if (targetLock) 
+	{
+		Vector3 targetSprPos = targetPos[targetNum];
+		targetLockSprite.SetPosition(targetSprPos);
+	}*/
 }
 
 void Player::Draw()
@@ -543,8 +545,8 @@ void Player::Draw()
 	if (isMuteki == false || (isMuteki == true && mutekiTimer % 2 == 0))
 	modelData.Draw(heapNum);
 
-	if (targetLock)
-		targetLockSprite.Draw(&targetLockTexture);
+	/*if (targetLock)
+		targetLockSprite.Draw(&targetLockTexture);*/
 
 	
 

@@ -27,6 +27,8 @@ Vector3 Play::leftUpPosition;
 Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
+Sprite3D Play::targetLockSprite;
+Texture Play::targetLockTexture;
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -43,6 +45,12 @@ void Play::LoadResources()
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
 	arrowSprite.CreateSprite();
 	arrowTexture.LoadSpriteTexture("Resources/Texture/arrow.png");
+
+
+	//スプライト
+	targetLockSprite.CreateSprite({ 10,10 });
+	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
+	targetLockSprite.SetBillboardFlag(true, true, true);
 }
 
 
@@ -170,6 +178,97 @@ void Play::Update()
 {
 
 	ObjectManager::GetInstance()->Update();
+
+#pragma region カメラ移動
+	Vector3 pHeapPos = player->GetHeadPosition();
+	cameraPosition = pHeapPos;
+	cameraPosition += addCameraPosition;
+	cameraTarget = pHeapPos;
+
+	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
+	upVector = LibMath::RotateVector3(upVector, { 1,0,0 }, 90);
+	Library::SetCamera(cameraPosition, cameraTarget, upVector);
+
+#pragma endregion
+
+#pragma region スプライト
+
+
+#pragma region 祠を示す矢印
+	//一番近い祠を求める
+	float minDistance = 9999999.0f;
+	Vector3 playerHeadPos = player->GetHeadPosition();
+	Vector3 nearTargetPos = 0;
+	for (auto& t : targetObjects)
+	{
+		if (!t->GetEraseManager())
+		{
+			float dis = LibMath::CalcDistance3D
+			(
+				playerHeadPos,
+				t->GetPosition()
+			);
+			if (dis < minDistance)
+			{
+				minDistance = dis;
+				nearTargetPos = t->GetPosition();
+			}
+		}
+	}
+	//祠あったら計算
+	if (minDistance < 9999999.0f)
+	{
+		//Vector2 arrowTexSize = Library::GetTextureSize(arrowTexture);
+		Vector2 arrowTexSize = arrowTexture.GetTextureSize();
+
+		//プレイヤーから一番近いターゲットのベクトルを正規化したもの
+		Vector3 playerToTargetVector = nearTargetPos - playerHeadPos;
+		Vector3 playerToTargetNVector = Vector3Normalize(playerToTargetVector);
+
+		//クォータニオンで回す?
+		//座標
+		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x / 2, 720.0f / 2.0f - arrowTexSize.y / 2 };
+		//祠の方に移動させる
+		arrowPosition.x += playerToTargetNVector.x * (1280 / 2);
+		arrowPosition.y -= playerToTargetNVector.z * (720 / 2);
+
+		//画面内に収まるようにする
+		if (arrowPosition.x >= 1280 - arrowTexSize.x)
+			arrowPosition.x = 1280 - arrowTexSize.x;
+		if (arrowPosition.x <= 0)
+			arrowPosition.x = 0;
+		if (arrowPosition.y >= 720 - arrowTexSize.y)
+			arrowPosition.y = 720 - arrowTexSize.y;
+		if (arrowPosition.y <= 0)
+			arrowPosition.y = 0;
+
+		//角度
+		arrowAngle = LibMath::Vecto2ToAngle({ playerToTargetNVector.x,playerToTargetNVector.z }, false);
+
+		//描画するかどうか
+		drawArrow = false;
+		if (abs(playerToTargetVector.x) >= 50.0f ||
+			abs(playerToTargetVector.z) >= 30.0f)
+			drawArrow = true;
+	}
+
+	arrowSprite.SetAngle(arrowAngle);
+	arrowSprite.SetPosition(arrowPosition);
+#pragma endregion
+
+#pragma region ターゲット
+	int playerTargetNum = player->GetTargetNum();
+	if (playerTargetNum != -1) 
+	{
+		Vector3 lockPos = targetObjects[playerTargetNum]->GetPosition() 
+			+ Vector3(0, 2.5, -1.5);
+		targetLockSprite.SetPosition(lockPos);
+	}
+#pragma endregion
+
+
+#pragma endregion
+
 #pragma region 祠処理
 
 	//	//祠セット
@@ -274,27 +373,33 @@ void Play::Update()
 	}
 	else//祠生き残り確認(クリア判定用)
 	{
-		int deadCount = 0;
-		for (auto& t : targetObjects)
+		auto targetObjectsSize = targetObjects.size();
+
+		std::vector<Vector3>targetObjectPos;
+		targetObjectPos.reserve(targetObjectsSize);
+		for (int i = 0; i < targetObjectsSize; i++)
 		{
-			//やられてオブジェクトマネージャーから削除されてたらカウント
-			if (t->GetEraseManager())
-				deadCount++;
+			//trueだったら消す
+			if (targetObjects[i]->GetEraseManager())
+			{
+				//デバッグ用
+				if (i == targetObjectsSize - 1)
+					int z = 0;
+
+				targetObjects.erase(targetObjects.begin() + i);
+				targetObjectsSize--;
+				i--;
+				int a = 0;
+			}
+			else//falseだったら追加
+				targetObjectPos.push_back(targetObjects[i]->GetPosition());
 		}
 
 		//ターゲットの座標をプレイヤーに渡す
-		auto targetObjectsSize = targetObjects.size();
-		std::vector<Vector3>targetObjectPos;
-		targetObjectPos.reserve(30);
-		for (int i = 0; i < targetObjectsSize; i++)
-		{
-			if (!targetObjects[i]->GetEraseManager())
-				targetObjectPos.push_back(targetObjects[i]->GetPosition());
-		}
 		player->SetTargetPosition(targetObjectPos);
 
 		//終了処理
-		if(deadCount == targetObjects.size())
+		if (targetObjects.size() == 0)
 		{
 			isEnd = true;
 		}
@@ -302,77 +407,6 @@ void Play::Update()
 
 #pragma endregion
 
-#pragma region カメラ移動
-	Vector3 pHeapPos = player->GetHeadPosition();
-	cameraPosition = pHeapPos;
-	cameraPosition += addCameraPosition;
-	cameraTarget = pHeapPos;
-
-	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
-	upVector = LibMath::RotateVector3(upVector, { 1,0,0 }, 90);
-	Library::SetCamera(cameraPosition, cameraTarget, upVector);
-
-#pragma endregion
-
-
-#pragma region 祠を示す矢印
-	//一番近い祠を求める
-	float minDistance = 9999999.0f;
-	Vector3 playerHeadPos = player->GetHeadPosition();
-	Vector3 nearTargetPos = 0;
-	for (auto& t : targetObjects)
-	{
-		if (!t->GetEraseManager())
-		{
-			float dis = LibMath::CalcDistance3D
-			(
-				playerHeadPos,
-				t->GetPosition()
-			);
-			if (dis < minDistance)
-			{
-				minDistance = dis;
-				nearTargetPos = t->GetPosition();
-			}
-		}
-	}
-	//祠あったら計算
-	if (minDistance < 9999999.0f)
-	{
-		//Vector2 arrowTexSize = Library::GetTextureSize(arrowTexture);
-		Vector2 arrowTexSize = arrowTexture.GetTextureSize();
-
-		//プレイヤーから一番近いターゲットのベクトルを正規化したもの
-		Vector3 playerToTargetVector = nearTargetPos - playerHeadPos;
-		Vector3 playerToTargetNVector = Vector3Normalize(playerToTargetVector);
-
-		//クォータニオンで回す?
-		//座標
-		arrowPosition = { 1280.0f / 2.0f - arrowTexSize.x / 2, 720.0f / 2.0f - arrowTexSize.y / 2 };
-		//祠の方に移動させる
-		arrowPosition.x += playerToTargetNVector.x * (1280 / 2);
-		arrowPosition.y -= playerToTargetNVector.z * (720 / 2);
-
-		//画面内に収まるようにする
-		if (arrowPosition.x >= 1280 - arrowTexSize.x)
-			arrowPosition.x = 1280 - arrowTexSize.x;
-		if (arrowPosition.x <= 0)
-			arrowPosition.x = 0;
-		if (arrowPosition.y >= 720 - arrowTexSize.y)
-			arrowPosition.y = 720 - arrowTexSize.y;
-		if (arrowPosition.y <= 0)
-			arrowPosition.y = 0;
-
-		//角度
-		arrowAngle = LibMath::Vecto2ToAngle({ playerToTargetNVector.x,playerToTargetNVector.z }, false);
-
-		//描画するかどうか
-		drawArrow = false;
-		if (abs(playerToTargetVector.x) >= 50.0f ||
-			abs(playerToTargetVector.z) >= 30.0f)
-			drawArrow = true;
-	}
-#pragma endregion
 }
 
 void Play::Draw()
@@ -380,12 +414,16 @@ void Play::Draw()
 	ObjectManager::GetInstance()->Draw();
 
 
-	//Library::setSpriteAngle(arrowAngle, arrowSprite);
-	arrowSprite.SetAngle(arrowAngle);
-	arrowSprite.SetPosition(arrowPosition);
+
+
+	int playerTargetNum = player->GetTargetNum();
+	if (playerTargetNum != -1)
+		targetLockSprite.Draw(&targetLockTexture);
+
 	if (drawArrow)
-		//Library::drawSprite(arrowPosition, arrowSprite, arrowTexture);
 		arrowSprite.Draw(&arrowTexture);
+
+
 }
 
 void Play::Finitialize()

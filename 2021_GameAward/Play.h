@@ -68,6 +68,13 @@ private:
 	static std::vector<Vector3>blockScales;
 #pragma endregion
 
+#pragma region スプライト関係
+	static Sprite3D targetLockSprite;
+	static Texture targetLockTexture;
+#pragma endregion
+
+
+
 	//時間
 	FreamTimer gameTime;
 
