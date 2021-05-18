@@ -33,8 +33,8 @@ void TargetObject::LoadResource()
 	for (int i = 0; i < CREATE_NUMBER; i++)
 	{
 		Vector2 lifeSize = { 10,2 };
-		lifeGaugeSprite[i].CreateSprite(lifeSize);
-		lifeGaugeFreamSprite[i].CreateSprite({ lifeSize.x,lifeSize.y });
+		lifeGaugeSprite[i].CreateSprite({ lifeSize.x,lifeSize.y });
+		lifeGaugeFreamSprite[i].CreateSprite({ lifeSize.x + 0.1f,lifeSize.y +0.1f});
 	}
 	lifeGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
 	lifeGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
@@ -71,11 +71,9 @@ void TargetObject::Update()
 		eraseManager = true;
 
 
-	Vector3 lifePos = position;
-	lifePos.y += 2.4f;
-	lifePos.z -= 8.0f;
+	Vector3 lifePos = position + Vector3(0, 2.5f, -7.0f);
 	lifeGaugeSprite[heapNum].SetPosition(lifePos);
-	lifeGaugeFreamSprite[heapNum].SetPosition(lifePos);
+	lifeGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.1, 0));
 	lifeGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
 	lifeGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
 }
