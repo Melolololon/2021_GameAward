@@ -137,7 +137,13 @@ void StageSelect::Initialize()
 		for(const auto& b2 : b1)
 		ObjectManager::GetInstance()->AddObject(b2);
 	}
-	Library::SetCamera({ 0,1400,0 }, { 0 ,0,  2 }, { 0,0,1 });
+
+	Vector3 cameraPosition = { 0,1400,-400 };
+	Vector3 cameraTarget = { 0 ,0, 0 };
+
+	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
+	upVector = LibMath::RotateVector3(upVector, { 1,0,0 }, 90);
+	Library::SetCamera(cameraPosition, cameraTarget, upVector);
 
 	playerMoveVector = Vector3(-250,0, 270);
 	Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[selectStageNum];

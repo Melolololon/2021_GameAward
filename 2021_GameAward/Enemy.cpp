@@ -5,7 +5,7 @@
 #include "Play.h"
 
 const float Enemy::OBJSIZE = 1.0f;
-const float Enemy::FREAM_MOVE_ANGLE = 10.0f;
+const float Enemy::FREAM_MOVE_ANGLE = 3.0f;
 Enemy::Enemy()
 {
 	leftFootAngle.z = FREAM_MOVE_ANGLE;

@@ -121,7 +121,7 @@ void Play::Initialize()
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
 #pragma region ÉJÉÅÉâ
-	addCameraPosition = { 0,50,-2 };
+	addCameraPosition = { 0,50,-20 };
 	cameraPosition = addCameraPosition;
 	cameraTarget = { 0,0,0 };
 #pragma endregion
@@ -307,7 +307,10 @@ void Play::Update()
 	cameraPosition = pHeapPos;
 	cameraPosition += addCameraPosition;
 	cameraTarget = pHeapPos;
-	Library::SetCamera(cameraPosition, cameraTarget, { 0,0,1 });
+
+	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
+	upVector = LibMath::RotateVector3(upVector, { 1,0,0 }, 90);
+	Library::SetCamera(cameraPosition, cameraTarget, upVector);
 
 #pragma endregion
 
