@@ -7,10 +7,13 @@ ObjModel TargetObject::modelData;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
 
-std::vector<Sprite3D> TargetObject::lifeGaugeSprite(CREATE_NUMBER);
-std::vector<Sprite3D> TargetObject::lifeGaugeFreamSprite(CREATE_NUMBER);
+std::vector<Sprite3D> TargetObject::hpGaugeSprite(CREATE_NUMBER);
+std::vector<Sprite3D> TargetObject::hpGaugeFreamSprite(CREATE_NUMBER);
 Texture TargetObject::lifeGaugeTexture;
-Texture TargetObject::lifeGaugeFreamTexture;
+Texture TargetObject::hpGaugeFreamTexture;
+
+int TargetObject::maxHp;
+float TargetObject::hpGaugeOneSizeX;
 
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
 
@@ -30,14 +33,17 @@ void TargetObject::LoadResource()
 {
 	modelData.LoadModel("Resources/Model/TargetObject/Shrine.obj", true, CREATE_NUMBER, 0);
 
+	Vector2 hpSize = { 10,2 };
 	for (int i = 0; i < CREATE_NUMBER; i++)
 	{
-		Vector2 lifeSize = { 10,2 };
-		lifeGaugeSprite[i].CreateSprite({ lifeSize.x,lifeSize.y });
-		lifeGaugeFreamSprite[i].CreateSprite({ lifeSize.x + 0.1f,lifeSize.y +0.1f});
+		hpGaugeSprite[i].CreateSprite({ hpSize.x,hpSize.y });
+		hpGaugeFreamSprite[i].CreateSprite({ hpSize.x + 0.1f,hpSize.y +0.1f});
 	}
 	lifeGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
-	lifeGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
+	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
+
+	maxHp = 30;
+	hpGaugeOneSizeX = hpSize.x / 30;
 }
 
 
@@ -54,7 +60,7 @@ void TargetObject::Initialize()
 
 	modelData.SetPosition(position, heapNum);
 
-	hp = 30;
+	hp = maxHp;
 	setEnd = false;
 }
 
@@ -72,18 +78,23 @@ void TargetObject::Update()
 
 
 	Vector3 lifePos = position + Vector3(0, 2.5f, -7.0f);
-	lifeGaugeSprite[heapNum].SetPosition(lifePos);
-	lifeGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.1, 0));
-	lifeGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
-	lifeGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
+	hpGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.1, 0));
+	hpGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
+
+	float hpGaugeOneNumScaleX = 1.0f / (float)maxHp;
+	hpGaugeSprite[heapNum].SetScale(Vector2(hpGaugeOneNumScaleX * hp, 1.0f));
+	lifePos.x -= hpGaugeOneSizeX * (maxHp - hp) / 2;
+	hpGaugeSprite[heapNum].SetPosition(lifePos);
+	hpGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
 }
 
 void TargetObject::Draw()
 {
 	
 	modelData.Draw(heapNum);
-	lifeGaugeSprite[heapNum].Draw(&lifeGaugeTexture);
-	lifeGaugeFreamSprite[heapNum].Draw(&lifeGaugeFreamTexture);
+	
+	hpGaugeSprite[heapNum].Draw(&lifeGaugeTexture);
+	hpGaugeFreamSprite[heapNum].Draw(&hpGaugeFreamTexture);
 }
 
 

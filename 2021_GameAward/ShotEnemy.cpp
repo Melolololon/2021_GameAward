@@ -5,7 +5,9 @@
 #include "Player.h"
 #include "PlayerBullet.h"
 
-PrimitiveModel ShotEnemy::modelData;
+#include"LibMath.h"
+
+ObjModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
 const int ShotEnemy::CREATE_NUMBER = 50;
 HeapIndexManager ShotEnemy::heapIndexManager(CREATE_NUMBER);
@@ -29,6 +31,8 @@ void ShotEnemy::Initialize()
 
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
+
+	modelData.SetScale(0.5f, heapNum);
 }
 
 void ShotEnemy::Update()
@@ -80,6 +84,11 @@ void ShotEnemy::Update()
 	}
 
 	if (shotWaitTimer < 0) shotWaitTimer = 60;
+	
+
+	//ƒvƒŒƒCƒ„[‚Ì•û‚ðŒü‚©‚¹‚éˆ—
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 
 }
 
@@ -93,17 +102,20 @@ void ShotEnemy::Draw()
 
 void ShotEnemy::LoadResource()
 {
-	//	std::string mtl;
-	//
-	//	modelData.key = "shotenemy";
-	//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
-	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
+	//modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 200,112,28,255 }, CREATE_NUMBER);
+
+	modelData.LoadModel
+	(
+		"Resources/Model/ShotEnemy/ShotEnemy_Bone.obj",
+		true,
+		CREATE_NUMBER,
+		0
+	);
 }
 
 void ShotEnemy::setHeapNum()
 {
-	heapNum = createCount;
+	heapNum = createCount; 
 	createCount++;
 	createCount = createCount >= CREATE_NUMBER ? 0 : createCount;
 }

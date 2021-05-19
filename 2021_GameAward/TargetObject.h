@@ -11,15 +11,17 @@ private:
 	static const int CREATE_NUMBER;
 	int heapNum;
 	static ObjModel modelData;
-	static std::vector<Sprite3D> lifeGaugeSprite;
-	static std::vector<Sprite3D> lifeGaugeFreamSprite;
+	static std::vector<Sprite3D> hpGaugeSprite;
+	static std::vector<Sprite3D> hpGaugeFreamSprite;
 	static Texture lifeGaugeTexture;
-	static Texture lifeGaugeFreamTexture;
+	static Texture hpGaugeFreamTexture;
 
 	static HeapIndexManager heapIndexManager;
 
 	//‘Ì—Í
 	int hp;
+	static int maxHp;
+	static float hpGaugeOneSizeX;
 
 	//ƒZƒbƒgŠ®—¹‚µ‚½‚©‚Ç‚¤‚©
 	bool setEnd;
