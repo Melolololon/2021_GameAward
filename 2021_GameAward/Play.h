@@ -78,6 +78,8 @@ private:
 	//ŽžŠÔ
 	FreamTimer gameTime;
 
+	FreamTimer sceneEndTimer;
+	static const int SCENE_END_TIME = 60 * 3;
 public:
 	Play();
 	~Play();

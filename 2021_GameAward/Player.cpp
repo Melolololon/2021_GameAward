@@ -521,7 +521,8 @@ void Player::Update()
 #pragma region パラメーター処理
 
 #pragma region ライフ
-
+	if (hp <= 0)
+		isDead = true;
 #pragma endregion
 
 #pragma region 無敵処理
@@ -679,6 +680,8 @@ void Player::Hit
 	//}
 }
 
+
+
 void Player::SetModelMoveVector(const Vector3& vector) 
 {
 	modelMoveVector = vector; 
@@ -689,6 +692,7 @@ void Player::SetModelMoveVector(const Vector3& vector)
 		sphereData[i].position = bonePos[i];
 	}
 }
+
 
 void Player::DamageFromEnemy()
 {

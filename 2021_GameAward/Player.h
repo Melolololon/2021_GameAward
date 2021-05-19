@@ -92,6 +92,7 @@ private:
 
 #pragma region パラメーター
 	int hp;
+	bool isDead = false;
 
 	bool isMuteki;
 	int mutekiTimer;
@@ -133,6 +134,11 @@ public:
 	bool GetTargetRotatePlayer() { return targetRotatePlayer; }
 	int GetLockTargetNum() { return lockTargetNum; }
 
+	/// <summary>
+	/// プレイヤーの体力が0以下になったかどうか
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsDead() { return isDead; }
 #pragma endregion
 
 #pragma region セッター

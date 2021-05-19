@@ -172,6 +172,8 @@ void Play::Initialize()
 	gameTime.SetMaxTime(INT_MAX);
 	gameTime.SetNowTime(-60 * 4);
 	gameTime.SetStopFlag(false);
+
+	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 }
 
 void Play::Update()
@@ -398,14 +400,18 @@ void Play::Update()
 		//ターゲットの座標をプレイヤーに渡す
 		player->SetTargetPosition(targetObjectPos);
 
-		//終了処理
-		if (targetObjects.size() == 0)
-		{
-			isEnd = true;
-		}
 	}
 
 #pragma endregion
+
+
+	//終了処理
+	if (targetObjects.size() == 0)
+	{
+		sceneEndTimer.SetStopFlag(false);
+		playSceneState = PlaySceneState::PLAY_SCENE_GAMECREAL;
+	}
+	if(sceneEndTimer.GetSameAsMaximumFlag())
 
 }
 
