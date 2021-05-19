@@ -202,25 +202,25 @@ void Player::PlayMove()
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
 
-	//Žü‚è‰ñ“]
+	//Žü‚è‰ñ“]ƒtƒ‰ƒO
 	bool distanceFlag = nearTergetDis <= maxDistance;
 	
-	bool padObjectRot =
+	bool padTargetObjectRot =
 		XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonState(XInputManager::XInputButton::XINPUT_LB_BUTTON, 1)
 		&& distanceFlag;
 
-	bool keyObjectRot = DirectInput::KeyState(DIK_X)
+	bool keyTargetObjectRot = DirectInput::KeyState(DIK_X)
 		&& distanceFlag;
 
-	if (keyObjectRot
-		|| padObjectRot)
+	if (keyTargetObjectRot
+		|| padTargetObjectRot)
 	{
 		lockTarget = true;
 		lockTargetNum = nearTargetNum;
 
 		//âK‚É‹ß‚Ã‚­ˆ—
-		float minDistance = 7.0f;
+		float minDistance = 10.0f;
 		if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
 
 		if (nearTergetDis >= minDistance
@@ -261,10 +261,10 @@ void Player::PlayMove()
 					speed = initSpeed * stageSelectSpeedMag * subRotNum;
 				}
 				else*/
-				velRot -= 1.0f;
+				velRot -= initSpeed * 5;
 			}
 			else
-				velRot -= 1.5f;
+				velRot -= initSpeed * 6;
 		}
 
 	}
@@ -290,7 +290,7 @@ void Player::PlayMove()
 
 void Player::StageSelectMove()
 {
-	float velRotAngle = 1.0f;
+	float velRotAngle = initSpeed * 5;
 	if (StageSelect::GetStageSelectState() == StageSelect::STAGE_SELECT_STATE_SELECT_END)
 	{
 	 	const float mulAngleNum = 6.0f;
@@ -505,7 +505,7 @@ void Player::Update()
 		if (i % 2 == 0)continue;
 
 		if (twistAngles[i] >= 180 &&
-			twistAngles[i] <= 180 + rotateSpeed)
+			twistAngles[i] < 180 + rotateSpeed)
 			shotBullet(i);
 	}
 

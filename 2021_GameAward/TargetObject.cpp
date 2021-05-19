@@ -37,7 +37,7 @@ void TargetObject::LoadResource()
 	for (int i = 0; i < CREATE_NUMBER; i++)
 	{
 		hpGaugeSprite[i].CreateSprite({ hpSize.x,hpSize.y });
-		hpGaugeFreamSprite[i].CreateSprite({ hpSize.x + 0.1f,hpSize.y +0.1f});
+		hpGaugeFreamSprite[i].CreateSprite({ hpSize.x + 0.3f,hpSize.y +0.3f});
 	}
 	lifeGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
 	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
@@ -78,7 +78,7 @@ void TargetObject::Update()
 
 
 	Vector3 lifePos = position + Vector3(0, 2.5f, -7.0f);
-	hpGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.1, 0));
+	hpGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.2, 0));
 	hpGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
 
 	float hpGaugeOneNumScaleX = 1.0f / (float)maxHp;
