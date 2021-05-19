@@ -411,8 +411,8 @@ void Play::Update()
 		sceneEndTimer.SetStopFlag(false);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMECREAL;
 	}
-	if(sceneEndTimer.GetSameAsMaximumFlag())
-
+	if (sceneEndTimer.GetSameAsMaximumFlag())
+		isEnd = true;
 }
 
 void Play::Draw()
