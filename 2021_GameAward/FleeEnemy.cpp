@@ -2,8 +2,9 @@
 #include "Block.h"
 #include "Player.h"
 #include "PlayerBullet.h"
+#include"LibMath.h"
 
-PrimitiveModel FleeEnemy::modelData;
+ObjModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
 const int FleeEnemy::CREATE_NUMBER = 50;
 HeapIndexManager FleeEnemy::heapIndexManager(CREATE_NUMBER);
@@ -27,6 +28,7 @@ void FleeEnemy::Initialize()
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 
+	modelData.SetScale(0.5f, heapNum);
 }
 
 void FleeEnemy::Update()
@@ -41,6 +43,11 @@ void FleeEnemy::Update()
 	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
 	velocity = Vector3Normalize(velocity);
+
+
+	//プレイヤーの方を向かせる処理
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 
 	//一定間隔以上なら座標更新
 	if (sqrt((pPlayer->GetHeadPosition().x - position.x) * (pPlayer->GetHeadPosition().x - position.x) +
@@ -62,6 +69,9 @@ void FleeEnemy::Update()
 				//座標更新
 				position = position - velocity * moveSpeed * 3;
 				setPosition(position);
+
+				angleY = LibMath::Vecto2ToAngle({ -velocity.x,-velocity.z }, true);
+				modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 			}
 			else
 			{
@@ -73,7 +83,7 @@ void FleeEnemy::Update()
 		//とまる
 		else
 		{
-
+			velocity = 0;
 		}
 
 		escapeTimer--;
@@ -82,6 +92,15 @@ void FleeEnemy::Update()
 	if (escapeTimer < 0) escapeTimer = 300;
 
 
+
+	//アニメーション
+	//アニメーション更新
+	UpdateAnimationData(velocity);
+
+	//ボーンをセット
+	//右足 1 左足 2
+	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
+	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 }
 
 void FleeEnemy::Draw()
@@ -94,12 +113,14 @@ void FleeEnemy::Draw()
 
 void FleeEnemy::LoadResource()
 {
-	std::string mtl;
-
-	//modelData.key = "fleeenemy";
-	//Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	//Library::createHeapData2({ 220,144,201,255 }, CREATE_NUMBER, modelData);
-	modelData.CreateBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, { 220,144,201,255 }, CREATE_NUMBER);
+	//modelData.CreateBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, { 220,144,201,255 }, CREATE_NUMBER);
+	modelData.LoadModel
+	(
+		"Resources/Model/FleeEnemy/FleeEnemy_Bone.obj",
+		true,
+		CREATE_NUMBER,
+		0
+	);
 }
 
 void FleeEnemy::setHeapNum()

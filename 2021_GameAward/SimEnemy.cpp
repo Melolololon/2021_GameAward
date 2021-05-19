@@ -4,7 +4,7 @@
 #include "Block.h"
 #include "PlayerBullet.h"
 
-PrimitiveModel SimEnemy::modelData;
+ObjModel SimEnemy::modelData;
 int SimEnemy::createCount;
 const int SimEnemy::CREATE_NUMBER = 50*3;
 HeapIndexManager SimEnemy::heapIndexManager(CREATE_NUMBER);
@@ -39,6 +39,9 @@ void SimEnemy::Initialize()
 	sphereData[3].r = OBJSIZE / 2 * 1.5f;
 
 	setPosition(position);
+
+
+	modelData.SetScale(0.5f, heapNum);
 }
 
 void SimEnemy::Update()
@@ -54,6 +57,10 @@ void SimEnemy::Update()
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
+	//プレイヤーの方を向かせる処理
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+
 	if (attackAfterTimer == 60 * 2)
 	{
 		//座標更新
@@ -65,6 +72,9 @@ void SimEnemy::Update()
 		attackAfterTimer--;
 		if (attackAfterTimer < 0)
 			attackAfterTimer = 60 * 2;
+
+
+		velocity = 0;
 	}
 
 	if (partDeadTimer < 60 * 0.5)
@@ -84,6 +94,15 @@ void SimEnemy::Update()
 		other0->eraseManager = true;
 		other1->eraseManager = true;
 	}
+
+	//アニメーション
+	//アニメーション更新
+	UpdateAnimationData(velocity);
+
+	//ボーンをセット
+	//右足 1 左足 2
+	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
+	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 }
 
 void SimEnemy::Draw()
@@ -179,12 +198,15 @@ void SimEnemy::SetOther(int num, std::shared_ptr<SimEnemy> p)
 
 void SimEnemy::LoadResource()
 {
-	//	std::string mtl;
-	//
-	//	modelData.key = "Simenemy";
-	//	Library::create3DBox(Vector3{ OBJSIZE,OBJSIZE,OBJSIZE }, modelData);
-	//	Library::createHeapData2({ 200,112,28,255 }, CREATE_NUMBER, modelData);
-	modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 161,203,116,255 }, CREATE_NUMBER);
+	
+	//modelData.CreateBox({ OBJSIZE,OBJSIZE,OBJSIZE }, { 161,203,116,255 }, CREATE_NUMBER);
+	modelData.LoadModel
+	(
+		"Resources/Model/SimEnemy/SimEnemy_Bone.obj",
+		true,
+		CREATE_NUMBER,
+		0
+	);
 }
 
 void SimEnemy::setHeapNum()

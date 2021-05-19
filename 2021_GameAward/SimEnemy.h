@@ -4,7 +4,7 @@ class SimEnemy :
 	public Enemy
 {
 private:
-	static PrimitiveModel modelData;
+	static ObjModel modelData;
 	static int createCount;
 	static HeapIndexManager heapIndexManager;
 	static const int CREATE_NUMBER;
