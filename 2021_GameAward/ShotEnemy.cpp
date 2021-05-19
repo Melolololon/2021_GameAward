@@ -48,6 +48,10 @@ void ShotEnemy::Update()
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
+	//プレイヤーの方を向かせる処理
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+
 	//一定間隔以上なら座標更新
 	if (sqrt((pPlayer->GetHeadPosition().x - position.x) * (pPlayer->GetHeadPosition().x - position.x) +
 		(pPlayer->GetHeadPosition().y - position.y) * (pPlayer->GetHeadPosition().y - position.y) +
@@ -81,15 +85,23 @@ void ShotEnemy::Update()
 				attackAfterTimer = 60 * 2;
 		}
 
+		//アニメーションのために0代入
+		velocity = 0;
+
 	}
 
 	if (shotWaitTimer < 0) shotWaitTimer = 60;
 	
 
-	//プレイヤーの方を向かせる処理
-	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
-	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 
+	//アニメーション
+	//アニメーション更新
+	UpdateAnimationData(velocity);
+
+	//ボーンをセット
+	//右足 1 左足 2
+	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
+	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 }
 
 void ShotEnemy::Draw()

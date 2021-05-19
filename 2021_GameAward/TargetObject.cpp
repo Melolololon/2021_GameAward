@@ -13,7 +13,7 @@ Texture TargetObject::lifeGaugeTexture;
 Texture TargetObject::hpGaugeFreamTexture;
 
 int TargetObject::maxHp;
-float TargetObject::hpGaugeOneSizeX;
+float TargetObject::hpGaugeOneNumSizeX;
 
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
 
@@ -43,7 +43,7 @@ void TargetObject::LoadResource()
 	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
 
 	maxHp = 30;
-	hpGaugeOneSizeX = hpSize.x / 30;
+	hpGaugeOneNumSizeX = hpSize.x / 30;
 }
 
 
@@ -83,7 +83,7 @@ void TargetObject::Update()
 
 	float hpGaugeOneNumScaleX = 1.0f / (float)maxHp;
 	hpGaugeSprite[heapNum].SetScale(Vector2(hpGaugeOneNumScaleX * hp, 1.0f));
-	lifePos.x -= hpGaugeOneSizeX * (maxHp - hp) / 2;
+	lifePos.x -= hpGaugeOneNumSizeX * (maxHp - hp) / 2;
 	hpGaugeSprite[heapNum].SetPosition(lifePos);
 	hpGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
 }

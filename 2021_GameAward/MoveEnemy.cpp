@@ -47,6 +47,11 @@ void MoveEnemy::Update()
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
+
+	//プレイヤーの方を向かせる処理
+	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+
 	if (attackAfterTimer == 60 * 2)
 	{
 		//座標更新
@@ -58,16 +63,14 @@ void MoveEnemy::Update()
 		attackAfterTimer--;
 		if (attackAfterTimer < 0)
 			attackAfterTimer = 60 * 2;
+
+		//アニメーション用
+		velocity = 0;
 	}
-
-
-	//プレイヤーの方を向かせる処理
-	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
-	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
 
 	//アニメーション
 	//アニメーション更新
-	UpdateAnimationData();
+	UpdateAnimationData(velocity);
 	
 	//ボーンをセット
 	//右足 1 左足 2

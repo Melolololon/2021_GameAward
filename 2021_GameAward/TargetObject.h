@@ -21,7 +21,7 @@ private:
 	//‘Ì—Í
 	int hp;
 	static int maxHp;
-	static float hpGaugeOneSizeX;
+	static float hpGaugeOneNumSizeX;
 
 	//ƒZƒbƒgŠ®—¹‚µ‚½‚©‚Ç‚¤‚©
 	bool setEnd;

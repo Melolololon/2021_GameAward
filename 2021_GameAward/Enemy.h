@@ -27,8 +27,12 @@ protected:
 	Vector3 leftFootAngle;
 	Vector3 rightFootAngle;
 	static const float FREAM_MOVE_ANGLE;
+	static const float MAX_ANGLE;
+	static const float MIN_ANGLE;
+	bool isMoveAnimation = false;
+
 	//EnemyÇÃUpdateÇ≈åƒÇ—èoÇ∑
-	void UpdateAnimationData();
+	void UpdateAnimationData(const Vector3& vel);
 
 #pragma endregion
 
