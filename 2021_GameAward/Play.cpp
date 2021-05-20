@@ -438,13 +438,13 @@ void Play::Draw()
 
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
-	for (int i = 0; i < std::to_string(gameTime.GetTime() / 60).size(); i++)
+	int keta = std::to_string(gameTime.GetTime() / 60).size();
+	for (int i = 0; i < keta; i++)
 	{
 		int n = drawNum % 10;
-		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 - 40 + (_countof(timerSprite) - i) * 40, 0);
-		timerSprite[i].SetPosition(0);
+		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40 * (i + 1), 0);
+		timerSprite[i].SetPosition(pos);
 		timerSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &timerTexture);
-		timerSprite[i].SelectDrawAreaDraw(Vector2(0,0), Vector2(80,80),&timerTexture);
 		drawNum /= 10;
 	}
 #pragma endregion
