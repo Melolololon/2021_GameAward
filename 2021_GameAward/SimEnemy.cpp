@@ -58,8 +58,22 @@ void SimEnemy::Update()
 	velocity = Vector3Normalize(velocity);
 
 	//ƒvƒŒƒCƒ„[‚Ì•û‚ğŒü‚©‚¹‚éˆ—
-	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
-	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+	if (id == 0)
+	{
+		float angleY = LibMath::Vecto2ToAngle({ 1,0 }, true);
+		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+	}
+	else if (id == 1)
+	{
+		float angleY = LibMath::Vecto2ToAngle({ -0.5,0.5 }, true);
+		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+	}
+	else
+	{
+		float angleY = LibMath::Vecto2ToAngle({ 0,-1 }, true);
+		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+	}
+
 
 	if (attackAfterTimer == 60 * 2)
 	{

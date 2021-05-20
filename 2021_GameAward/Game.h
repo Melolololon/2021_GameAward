@@ -15,6 +15,8 @@ public:
 	Game& operator=(const Game& g) = delete;
 
 	static Game* GetInstance();
+	static const int WIN_WIDTH = 1280;
+	static const int WIN_HEIGHT = 720;
 	void Run();
 };
 

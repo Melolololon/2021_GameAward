@@ -5,6 +5,7 @@
 #include "SimEnemy.h"
 #include "DefenceEnemy.h"
 #include "HealEnemy.h"
+#include "Game.h"
 
 #include"ObjectManager.h"
 #include"XInputManager.h"
@@ -29,6 +30,8 @@ std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
 Sprite3D Play::targetLockSprite;
 Texture Play::targetLockTexture;
+Sprite2D Play::timerSprite[6];
+Texture Play::timerTexture;
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -51,6 +54,12 @@ void Play::LoadResources()
 	targetLockSprite.CreateSprite({ 10,10 });
 	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
 	targetLockSprite.SetBillboardFlag(true, true, true);
+
+	for (int i = 0; i < _countof(timerSprite); i++)
+	{
+		timerSprite[i].CreateSprite();
+	}
+	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 }
 
 
@@ -260,13 +269,14 @@ void Play::Update()
 
 #pragma region ターゲット
 	int playerTargetNum = player->GetLockTargetNum();
-	if (playerTargetNum != -1) 
+	if (playerTargetNum != -1)
 	{
-		Vector3 lockPos = targetObjects[playerTargetNum]->GetPosition() 
+		Vector3 lockPos = targetObjects[playerTargetNum]->GetPosition()
 			+ Vector3(0, 2.5, -1.5);
 		targetLockSprite.SetPosition(lockPos);
 	}
 #pragma endregion
+
 
 
 #pragma endregion
@@ -409,7 +419,7 @@ void Play::Update()
 	if (targetObjects.size() == 0)
 	{
 		sceneEndTimer.SetStopFlag(false);
-		playSceneState = PlaySceneState::PLAY_SCENE_GAMECREAL;
+		playSceneState = PlaySceneState::PLAY_SCENE_GAMECLEAR;
 	}
 	if (sceneEndTimer.GetSameAsMaximumFlag())
 		isEnd = true;
@@ -425,6 +435,19 @@ void Play::Draw()
 	int playerLockTargetNum = player->GetLockTargetNum();
 	if (playerLockTargetNum != -1)
 		targetLockSprite.Draw(&targetLockTexture);
+
+#pragma region ゲームタイマー
+	int drawNum = gameTime.GetTime() / 60;
+	for (int i = 0; i < std::to_string(gameTime.GetTime() / 60).size(); i++)
+	{
+		int n = drawNum % 10;
+		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 - 40 + (_countof(timerSprite) - i) * 40, 0);
+		timerSprite[i].SetPosition(0);
+		timerSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &timerTexture);
+		timerSprite[i].SelectDrawAreaDraw(Vector2(0,0), Vector2(80,80),&timerTexture);
+		drawNum /= 10;
+	}
+#pragma endregion
 
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);

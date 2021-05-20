@@ -17,7 +17,7 @@ public:
 		PLAY_SCENE_START_PREVIOUS,//ゲーム開始前
 		PLAY_SCENE_PLAY,//ゲーム中
 		PLAY_SCENE_GAMEOVER,//ゲームオーバー
-		PLAY_SCENE_GAMECREAL,//ゲームクリア
+		PLAY_SCENE_GAMECLEAR,//ゲームクリア
 	};
 
 	enum EnemyType
@@ -71,6 +71,9 @@ private:
 #pragma region スプライト関係
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
+	static Sprite2D timerSprite[6];
+	static Texture timerTexture;
+
 #pragma endregion
 
 
