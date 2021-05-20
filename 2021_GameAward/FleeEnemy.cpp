@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "PlayerBullet.h"
 #include"LibMath.h"
+#include "Random.h"
 
 ObjModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
@@ -40,7 +41,7 @@ void FleeEnemy::Update()
 	}
 
 	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->GetHeadPosition().x - position.x, pPlayer->GetHeadPosition().y - position.y, pPlayer->GetHeadPosition().z - position.z };
+	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
 	velocity = Vector3Normalize(velocity);
 
@@ -84,6 +85,8 @@ void FleeEnemy::Update()
 		else
 		{
 			velocity = 0;
+			position = position + Vector3(Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100 , 0, Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100);
+			setPosition(position);
 		}
 
 		escapeTimer--;
