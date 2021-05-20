@@ -492,7 +492,7 @@ void Player::Update()
 
 	if (keyShot || padShot)
 	{
-		for (int i = 3; i < boneNum - 7; i++)
+		for (int i = 3; i < boneNum - 3; i++)
 		{
 			if (i % 2 == 0)continue;
 			shotBullet(i);
@@ -500,7 +500,7 @@ void Player::Update()
 	}
 
 
-	for (int i = 3; i < boneNum - 7; i++)
+	for (int i = 3; i < boneNum - 3; i++)
 	{
 		if (i % 2 == 0)continue;
 
