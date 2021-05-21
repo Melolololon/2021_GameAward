@@ -159,7 +159,11 @@ void Player::Initialize()
 	for (int i = 1; i < boneNum; i++)
 	{
 		sphereData[i].position = bonePos[i];
-		sphereData[i].r = 1.0f * scale.x;
+			
+			if(i <= boneNum - 2)
+				sphereData[i].r = 0.5f * scale.x;
+			else
+				sphereData[i].r = 1.0f * scale.x;
 	}
 
 #pragma endregion
@@ -461,7 +465,8 @@ void Player::Update()
 
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
-				Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
+				//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
+				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.5f, q.z * 2.5),
 				Vector3(q.x, 0, q.z)
 				));
 	};

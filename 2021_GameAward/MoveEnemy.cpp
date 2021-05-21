@@ -30,7 +30,7 @@ void MoveEnemy::Initialize()
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 
-	modelData.SetScale({ 0.5,0.5,0.5 }, heapNum);
+	modelData.SetScale(0.7f, heapNum);
 
 }
 

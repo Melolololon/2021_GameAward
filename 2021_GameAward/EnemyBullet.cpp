@@ -48,6 +48,8 @@ void EnemyBullet::Initialize()
 	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = 0.1f;
+
+
 }
 
 void EnemyBullet::Update()

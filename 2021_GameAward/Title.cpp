@@ -52,7 +52,7 @@ void Title::Update()
 		//sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
 
 		float titleHoseiPosY = 100;
-		float stopPosX = -200 + titleTextureSize * 3 * i;
+		float stopPosX = 230 + titleTextureSize * 3 * i;
 		if (titleSpritePosition[i].x <= 1280 && 
 			titleSpritePosition[i].x >= stopPosX)
 		{

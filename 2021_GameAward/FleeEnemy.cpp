@@ -29,7 +29,7 @@ void FleeEnemy::Initialize()
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 
-	modelData.SetScale(0.5f, heapNum);
+	modelData.SetScale(0.7f, heapNum);
 }
 
 void FleeEnemy::Update()

@@ -41,6 +41,7 @@ PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 
 	float velAngle = LibMath::Vecto2ToAngle({ vel.x,vel.z }, true);
 	modelData.SetAngle({ 0,-velAngle ,0 }, heapNum);
+	modelData.SetScale(0.7f, heapNum);
 }
 
 PlayerBullet::~PlayerBullet()
