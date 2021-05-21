@@ -300,8 +300,8 @@ void Play::Update()
 
 		//•`‰æ‚·‚é‚©‚Ç‚¤‚©
 		drawArrow = false;
-		if (abs(playerToTargetVector.x) >= 50.0f ||
-			abs(playerToTargetVector.z) >= 30.0f)
+		if (abs(playerToTargetVector.x) >= 75.0f ||
+			abs(playerToTargetVector.z) >= 55.0f)
 			drawArrow = true;
 	}
 
