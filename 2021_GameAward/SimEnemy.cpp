@@ -46,6 +46,12 @@ void SimEnemy::Initialize()
 
 void SimEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);

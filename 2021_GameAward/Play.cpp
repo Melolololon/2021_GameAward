@@ -28,10 +28,20 @@ Vector3 Play::leftUpPosition;
 Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
+
+#pragma region スプライト
+
 Sprite3D Play::targetLockSprite;
 Texture Play::targetLockTexture;
+
 Sprite2D Play::timerSprite[6];
 Texture Play::timerTexture;
+
+Sprite2D Play::hpAnimationSprite;
+Texture Play::hpAnimationTexture;
+
+#pragma endregion
+
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -60,6 +70,10 @@ void Play::LoadResources()
 		timerSprite[i].CreateSprite();
 	}
 	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
+
+	hpAnimationSprite.CreateSprite();
+	hpAnimationTexture.LoadSpriteTexture("Resources/Texture/hpAnimation.png");
+	hpAnimationSprite.SetPosition(Vector2(0, 0));
 }
 
 
@@ -177,16 +191,34 @@ void Play::Initialize()
 	drawArrow = false;
 #pragma endregion
 
-	//タイマー初期化
+#pragma region タイマー
+
+
 	gameTime.SetMaxTime(INT_MAX);
 	gameTime.SetNowTime(-60 * 4);
 	gameTime.SetStopFlag(false);
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
+
+	hpAnimationTimer.SetMaxTime(ANIMATION_ONE_FREAM_TIME * 8);
+	hpAnimationTimer.SetStopFlag(false);
+#pragma endregion
 }
 
 void Play::Update()
 {
+#pragma region ポーズ
+	if (XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON ,1))
+		isPause = isPause == false ? true : false;
+
+	FreamTimer::SetAllTimerStopFlag(isPause);
+	
+	if (isPause) 
+		return;
+	
+#pragma endregion
+
 
 	ObjectManager::GetInstance()->Update();
 
@@ -429,9 +461,6 @@ void Play::Draw()
 {
 	ObjectManager::GetInstance()->Draw();
 
-
-
-
 	int playerLockTargetNum = player->GetLockTargetNum();
 	if (playerLockTargetNum != -1)
 		targetLockSprite.Draw(&targetLockTexture);
@@ -449,10 +478,26 @@ void Play::Draw()
 	}
 #pragma endregion
 
+
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
+	int playerHP = player->GetHp();
+	if (playerHP > 0) 
+	{
+		if (hpAnimationTimer.GetMultipleTimeFlag(ANIMATION_ONE_FREAM_TIME))
+			hpAnimationNum++;
+		if (hpAnimationTimer.GetSameAsMaximumFlag())
+			hpAnimationNum = 0;
 
+		const Vector2 textureSize = hpAnimationTexture.GetTextureSize();
+		hpAnimationSprite.SelectDrawAreaDraw
+		(
+			Vector2(textureSize.x / 8 * hpAnimationNum, 0),
+			Vector2(textureSize.x / 8 * (hpAnimationNum + 1), textureSize.y),
+			&hpAnimationTexture
+		);
+	}
 }
 
 void Play::Finitialize()

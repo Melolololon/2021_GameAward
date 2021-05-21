@@ -17,7 +17,7 @@
 #include"StageSelect.h"
 
 ObjModel PlayerBullet::modelData;
-const int PlayerBullet::CREATE_NUMBER = 1000;
+const int PlayerBullet::CREATE_NUMBER = 300;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
 bool PlayerBullet::IsEnemy(const Object* p)

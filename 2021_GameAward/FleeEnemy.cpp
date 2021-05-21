@@ -34,6 +34,12 @@ void FleeEnemy::Initialize()
 
 void FleeEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);

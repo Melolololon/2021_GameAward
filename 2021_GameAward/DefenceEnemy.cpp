@@ -28,6 +28,12 @@ void DefenceEnemy::Initialize()
 
 void DefenceEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);

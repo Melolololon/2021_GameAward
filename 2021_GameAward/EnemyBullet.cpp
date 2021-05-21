@@ -54,6 +54,12 @@ void EnemyBullet::Initialize()
 
 void EnemyBullet::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	deadTimer++;
 	if (deadTimer >= deadTime)
 		eraseManager = true;

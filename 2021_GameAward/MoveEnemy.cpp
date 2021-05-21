@@ -36,6 +36,12 @@ void MoveEnemy::Initialize()
 
 void MoveEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);

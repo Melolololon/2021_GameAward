@@ -29,6 +29,12 @@ void HealEnemy::Initialize()
 
 void HealEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);

@@ -10,7 +10,7 @@ private:
 	bool isStop = true;
 	bool timeResetFream = false;
 
-
+	static bool setAllTimerStopFlag;
 	void Update();
 public:
 	friend TimerManager;
@@ -76,5 +76,7 @@ public:
 	/// </summary>
 	/// <param name="num"></param>
 	void SetNowTime(const int num) { time = num; }
+
+	static void SetAllTimerStopFlag(const bool flag) { setAllTimerStopFlag = flag; }
 };
 

@@ -37,6 +37,12 @@ void ShotEnemy::Initialize()
 
 void ShotEnemy::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	if (isGameStart() == false)
 	{
 		setPosition(position);
