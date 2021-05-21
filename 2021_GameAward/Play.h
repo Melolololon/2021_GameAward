@@ -72,12 +72,21 @@ private:
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
 
+
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
 
 	static Sprite2D hpAnimationSprite;
 	static Texture hpAnimationTexture;
 	UINT hpAnimationNum = 0;
+	FreamTimer hpAnimationTimer;
+	static const int HP_ANIMATION_ONE_FREAM_TIME = 60 * 0.1;
+
+	static Sprite2D targetAnimationSprite;
+	static Texture targetAnimationTexture;
+	UINT targetAnimationNum = 0;
+	FreamTimer targetAnimationTimer;
+	static const int TARGET_ANIMATION_ONE_FREAM_TIME = 60 * 0.1;
 #pragma endregion
 
 
@@ -87,9 +96,6 @@ private:
 
 	FreamTimer sceneEndTimer;
 	static const int SCENE_END_TIME = 60 * 3;
-
-	FreamTimer hpAnimationTimer;
-	static const int ANIMATION_ONE_FREAM_TIME = 60 * 0.1;
 
 	bool isPause = false;
 

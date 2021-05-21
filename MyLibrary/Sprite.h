@@ -2,6 +2,7 @@
 #include"DirectXStruct.h"
 #include"Texture.h"
 #include"Vector.h"
+#include"PipelineState.h"
 
 #include<d3d12.h>
 #include<dxgi.h>
@@ -97,6 +98,14 @@ public:
 
 
 
+#pragma region パイプライン
+
+	void SetPipeline(PipelineState* pipelineState);
+
+#pragma endregion
+
 
 };
+
+
 

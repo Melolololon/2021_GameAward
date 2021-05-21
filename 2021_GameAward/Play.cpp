@@ -40,6 +40,9 @@ Texture Play::timerTexture;
 Sprite2D Play::hpAnimationSprite;
 Texture Play::hpAnimationTexture;
 
+Sprite2D Play::targetAnimationSprite;
+Texture Play::targetAnimationTexture;
+
 #pragma endregion
 
 
@@ -74,6 +77,10 @@ void Play::LoadResources()
 	hpAnimationSprite.CreateSprite();
 	hpAnimationTexture.LoadSpriteTexture("Resources/Texture/hpAnimation.png");
 	hpAnimationSprite.SetPosition(Vector2(0, 0));
+
+	targetAnimationSprite.CreateSprite();
+	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
+	targetAnimationSprite.SetPosition(Vector2(0,120));
 }
 
 
@@ -200,8 +207,11 @@ void Play::Initialize()
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 
-	hpAnimationTimer.SetMaxTime(ANIMATION_ONE_FREAM_TIME * 8);
+	hpAnimationTimer.SetMaxTime(HP_ANIMATION_ONE_FREAM_TIME * 8);
 	hpAnimationTimer.SetStopFlag(false);
+
+	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
+	targetAnimationTimer.SetStopFlag(false);
 #pragma endregion
 }
 
@@ -326,10 +336,10 @@ void Play::Update()
 			//nullptrは飛ばす
 			if (!t)continue;
 			//設置完了済は飛ばす
-			if (t->getSetEnd())continue;
+			if (t->GetSetEnd())continue;
 
 			//ブロックとかプレイヤーと重なったたらカウント
-			if (t->getCreateHitObject())
+			if (t->GetCreateHitObject())
 			{
 				createMissCount++;
 				continue;
@@ -375,7 +385,7 @@ void Play::Update()
 
 			//距離の基準を満たしたら設置完了
 			if (distanceCheck)
-				t->trueSetEnd();
+				t->TrueSetEnd();
 
 		}
 
@@ -384,7 +394,7 @@ void Play::Update()
 		for (auto& t : targetObjects)
 		{
 			//設置完了済は飛ばす
-			if (t->getSetEnd())continue;
+			if (t->GetSetEnd())continue;
 
 			//座標セット
 			//ここ範囲乱数作って変える
@@ -395,7 +405,7 @@ void Play::Update()
 				Library::GetRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
 			};
 
-			t->setPosition(targetPos);
+			t->SetPosition(targetPos);
 
 		}
 
@@ -479,25 +489,50 @@ void Play::Draw()
 #pragma endregion
 
 
+	//ターゲットHP
+	for (auto& t : targetObjects)
+		t->DrawHp();
+
+
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
+	//HP
 	int playerHP = player->GetHp();
-	if (playerHP > 0) 
-	{
-		if (hpAnimationTimer.GetMultipleTimeFlag(ANIMATION_ONE_FREAM_TIME))
-			hpAnimationNum++;
-		if (hpAnimationTimer.GetSameAsMaximumFlag())
-			hpAnimationNum = 0;
 
-		const Vector2 textureSize = hpAnimationTexture.GetTextureSize();
-		hpAnimationSprite.SelectDrawAreaDraw
-		(
-			Vector2(textureSize.x / 8 * hpAnimationNum, 0),
-			Vector2(textureSize.x / 8 * (hpAnimationNum + 1), textureSize.y),
-			&hpAnimationTexture
-		);
-	}
+	//HP数字
+
+	//HPアニメーション
+	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME))
+		hpAnimationNum++;
+	if (hpAnimationTimer.GetSameAsMaximumFlag())
+		hpAnimationNum = 0;
+
+	const Vector2 hpAnimationTextureSize = hpAnimationTexture.GetTextureSize();
+	hpAnimationSprite.SelectDrawAreaDraw
+	(
+		Vector2(hpAnimationTextureSize.x / 8 * hpAnimationNum, 0),
+		Vector2(hpAnimationTextureSize.x / 8 * (hpAnimationNum + 1), hpAnimationTextureSize.y),
+		&hpAnimationTexture
+	);
+	
+	//祠
+	
+	//祠アニメーション
+	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME))
+		targetAnimationNum++;
+	if (targetAnimationTimer.GetSameAsMaximumFlag())
+		targetAnimationNum = 0;
+
+	const Vector2 targetAnimationTextureSize = targetAnimationTexture.GetTextureSize();
+	targetAnimationSprite.SelectDrawAreaDraw
+	(
+		Vector2(targetAnimationTextureSize.x / 4 * targetAnimationNum, 0),
+		Vector2(targetAnimationTextureSize.x / 4 * (targetAnimationNum + 1), targetAnimationTextureSize.y),
+		&targetAnimationTexture
+	);
+
+
 }
 
 void Play::Finitialize()
