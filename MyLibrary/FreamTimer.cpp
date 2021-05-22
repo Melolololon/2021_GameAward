@@ -1,5 +1,7 @@
 #include "FreamTimer.h"
 
+bool FreamTimer::setAllTimerStopFlag = false;
+
 FreamTimer::FreamTimer()
 {
 	time = 0;
@@ -23,7 +25,8 @@ FreamTimer::~FreamTimer()
 
 void FreamTimer::Update()
 {
-	if (isStop)return;
+	if (isStop
+		|| setAllTimerStopFlag)return;
 
 	timeResetFream = false;
 	time++;

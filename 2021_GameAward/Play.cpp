@@ -9,9 +9,11 @@
 
 #include"ObjectManager.h"
 #include"XInputManager.h"
+#include"Fade.h"
 
 #include"LibMath.h"
 #include"StageSelect.h"
+
 #pragma region オブジェクト
 #include"Block.h"
 
@@ -21,6 +23,7 @@
 Sprite2D Play::arrowSprite;
 Texture Play::arrowTexture;
 
+
 float Play::targetDistance;
 float Play::playerDistance;
 int Play::targetNumber;
@@ -28,10 +31,24 @@ Vector3 Play::leftUpPosition;
 Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
+
+
+#pragma region スプライト
+
 Sprite3D Play::targetLockSprite;
 Texture Play::targetLockTexture;
+
 Sprite2D Play::timerSprite[6];
 Texture Play::timerTexture;
+
+Sprite2D Play::hpAnimationSprite;
+Texture Play::hpAnimationTexture;
+
+Sprite2D Play::targetAnimationSprite;
+Texture Play::targetAnimationTexture;
+
+#pragma endregion
+
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -43,12 +60,10 @@ Play::~Play() {}
 
 void Play::LoadResources()
 {
-	//リソースの読み込み
 	/*Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
 	arrowSprite.CreateSprite();
 	arrowTexture.LoadSpriteTexture("Resources/Texture/arrow.png");
-
 
 	//スプライト
 	targetLockSprite.CreateSprite({ 10,10 });
@@ -60,6 +75,14 @@ void Play::LoadResources()
 		timerSprite[i].CreateSprite();
 	}
 	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
+
+	hpAnimationSprite.CreateSprite();
+	hpAnimationTexture.LoadSpriteTexture("Resources/Texture/hpAnimation.png");
+	hpAnimationSprite.SetPosition(Vector2(0, 0));
+
+	targetAnimationSprite.CreateSprite();
+	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
+	targetAnimationSprite.SetPosition(Vector2(0,120));
 }
 
 
@@ -67,7 +90,6 @@ void Play::Initialize()
 {
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
-
 
 	//敵追加
 	for (int i = 0; i < ENEMY_COUNT; i++)
@@ -138,7 +160,7 @@ void Play::Initialize()
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
 #pragma region カメラ
-	addCameraPosition = { 0,50,-20 };
+	addCameraPosition = { 0,60,-30 };
 	cameraPosition = addCameraPosition;
 	cameraTarget = { 0,0,0 };
 #pragma endregion
@@ -177,16 +199,42 @@ void Play::Initialize()
 	drawArrow = false;
 #pragma endregion
 
-	//タイマー初期化
+#pragma region タイマー
+
+
 	gameTime.SetMaxTime(INT_MAX);
 	gameTime.SetNowTime(-60 * 3);
 	gameTime.SetStopFlag(false);
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
+
+	hpAnimationTimer.SetMaxTime(HP_ANIMATION_ONE_FREAM_TIME * 8);
+	hpAnimationTimer.SetStopFlag(false);
+
+	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
+	targetAnimationTimer.SetStopFlag(false);
+
+
+#pragma endregion
 }
 
 void Play::Update()
 {
+#pragma region ポーズ
+	if (XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON ,1))
+		isPause = isPause == false ? true : false;
+
+	FreamTimer::SetAllTimerStopFlag(isPause);
+	
+	if (isPause) 
+		return;
+	
+#pragma endregion
+
+	//クリアのスロー
+	if (!slowTimer.GetMultipleTimeFlag(2))
+		return;
 
 	ObjectManager::GetInstance()->Update();
 
@@ -258,8 +306,8 @@ void Play::Update()
 
 		//描画するかどうか
 		drawArrow = false;
-		if (abs(playerToTargetVector.x) >= 50.0f ||
-			abs(playerToTargetVector.z) >= 30.0f)
+		if (abs(playerToTargetVector.x) >= 75.0f ||
+			abs(playerToTargetVector.z) >= 55.0f)
 			drawArrow = true;
 	}
 
@@ -294,10 +342,10 @@ void Play::Update()
 			//nullptrは飛ばす
 			if (!t)continue;
 			//設置完了済は飛ばす
-			if (t->getSetEnd())continue;
+			if (t->GetSetEnd())continue;
 
 			//ブロックとかプレイヤーと重なったたらカウント
-			if (t->getCreateHitObject())
+			if (t->GetCreateHitObject())
 			{
 				createMissCount++;
 				continue;
@@ -343,7 +391,7 @@ void Play::Update()
 
 			//距離の基準を満たしたら設置完了
 			if (distanceCheck)
-				t->trueSetEnd();
+				t->TrueSetEnd();
 
 		}
 
@@ -352,7 +400,7 @@ void Play::Update()
 		for (auto& t : targetObjects)
 		{
 			//設置完了済は飛ばす
-			if (t->getSetEnd())continue;
+			if (t->GetSetEnd())continue;
 
 			//座標セット
 			//ここ範囲乱数作って変える
@@ -363,7 +411,7 @@ void Play::Update()
 				Library::GetRandomNumberRangeSelectFloat(rightDownPosition.z,leftUpPosition.z)
 			};
 
-			t->setPosition(targetPos);
+			t->SetPosition(targetPos);
 
 		}
 
@@ -415,22 +463,37 @@ void Play::Update()
 #pragma endregion
 
 
-	//終了処理
-	if (targetObjects.size() == 0)
+
+#pragma region 終了処理
+
+	//クリア
+	if (targetObjects.size() == 0 
+		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMEOVER)
 	{
 		sceneEndTimer.SetStopFlag(false);
+		slowTimer.SetStopFlag(false);
+		gameTime.SetStopFlag(true);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMECLEAR;
 	}
+
+	//ゲームオーバー
+	if (player->GetIsDead())
+	{
+		sceneEndTimer.SetStopFlag(false);
+		gameTime.SetStopFlag(true);
+		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
+	}
+
 	if (sceneEndTimer.GetSameAsMaximumFlag())
 		isEnd = true;
+#pragma endregion
+
 }
 
 void Play::Draw()
 {
+
 	ObjectManager::GetInstance()->Draw();
-
-
-
 
 	int playerLockTargetNum = player->GetLockTargetNum();
 	if (playerLockTargetNum != -1)
@@ -450,9 +513,49 @@ void Play::Draw()
 	}
 #pragma endregion
 
+
+	//ターゲットHP
+	for (auto& t : targetObjects)
+		t->DrawHp();
+
+
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
+	//プレイヤーHP
+	int playerHP = player->GetHp();
+
+	//HP数字
+
+	//HPアニメーション
+	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME))
+		hpAnimationNum++;
+	if (hpAnimationTimer.GetSameAsMaximumFlag())
+		hpAnimationNum = 0;
+
+	const Vector2 hpAnimationTextureSize = hpAnimationTexture.GetTextureSize();
+	hpAnimationSprite.SelectDrawAreaDraw
+	(
+		Vector2(hpAnimationTextureSize.x / 8 * hpAnimationNum, 0),
+		Vector2(hpAnimationTextureSize.x / 8 * (hpAnimationNum + 1), hpAnimationTextureSize.y),
+		&hpAnimationTexture
+	);
+	
+	//祠
+	
+	//祠アニメーション
+	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME))
+		targetAnimationNum++;
+	if (targetAnimationTimer.GetSameAsMaximumFlag())
+		targetAnimationNum = 0;
+
+	const Vector2 targetAnimationTextureSize = targetAnimationTexture.GetTextureSize();
+	targetAnimationSprite.SelectDrawAreaDraw
+	(
+		Vector2(targetAnimationTextureSize.x / 4 * targetAnimationNum, 0),
+		Vector2(targetAnimationTextureSize.x / 4 * (targetAnimationNum + 1), targetAnimationTextureSize.y),
+		&targetAnimationTexture
+	);
 
 }
 

@@ -2,11 +2,13 @@
 #include"TargetObject.h"
 #include"Block.h"
 #include"Player.h"
+#include"PlayerBullet.h"
 
-PrimitiveModel EnemyBullet::modelData;
+#include"LibMath.h"
+
+ObjModel EnemyBullet::modelData;
 int EnemyBullet::createCount;
 const int EnemyBullet::CREATE_NUMBER = 100;
-
 
 EnemyBullet::EnemyBullet(const Vector3& pos, const Vector3& vel)
 {
@@ -28,10 +30,14 @@ void EnemyBullet::setHeapNum()
 
 void EnemyBullet::LoadResource()
 {
-	/*modelData.key = "eBullet";
-	Library::create3DBox({ 0.2,0.2,0.2 }, modelData);
-	Library::createHeapData2({ 255,255,0,255 }, CREATE_NUMBER, modelData);*/
-	modelData.CreateBox({ 0.2,0.2,0.2 }, { 255,255,0,255 }, CREATE_NUMBER);
+	modelData.LoadModel
+	(
+		"Resources/Model/PlayerBullet/bullet.obj",
+		true,
+		CREATE_NUMBER,
+		0
+	);
+
 }
 
 void EnemyBullet::Initialize()
@@ -48,23 +54,34 @@ void EnemyBullet::Initialize()
 	sphereData.resize(1);
 	sphereData[0].position = position;
 	sphereData[0].r = 0.1f;
+
+	
+	modelData.SetScale(Vector3(0.4f, 0.4f, 0.4f), heapNum);
 }
 
 void EnemyBullet::Update()
 {
+	if (heapNum == -1)
+	{
+		eraseManager = true;
+		return;
+	}
+
 	deadTimer++;
 	if (deadTimer >= deadTime)
 		eraseManager = true;
 
 	position += velocity * speed;
 	sphereData[0].position = position;
-	//Library::setPosition(position, modelData, heapNum);
 	modelData.SetPosition(position, heapNum);
+
+	//ƒvƒŒƒCƒ„[‚Ì•û‚ÉŒü‚­ˆ—
+	float angle = LibMath::Vecto2ToAngle(Vector2(velocity.x, velocity.z), true);
+	modelData.SetAngle(Vector3(0, -angle, 0), heapNum);
 }
 
 void EnemyBullet::Draw()
 {
-	//Library::drawGraphic(modelData, heapNum);
 	modelData.Draw(heapNum);
 }
 
@@ -77,6 +94,8 @@ void EnemyBullet::Hit
 {
 	if (typeid(*object) == typeid(TargetObject) ||
 		typeid(*object) == typeid(Block) ||
-		typeid(*object) == typeid(Player))
+		typeid(*object) == typeid(Player) ||
+		typeid(*object) == typeid(PlayerBullet))
 		eraseManager = true;
+
 }

@@ -1,12 +1,13 @@
 #pragma once
 #include"Object.h"
+#include"Player.h"
 class EnemyBullet :public Object
 {
 private:
 
 #pragma region ƒ‚ƒfƒ‹ŠÖŒW
 
-	static PrimitiveModel modelData;
+	static ObjModel modelData;
 	static int createCount;
 	static const int CREATE_NUMBER;
 	int heapNum;
@@ -36,6 +37,5 @@ public:
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
-
 };
 

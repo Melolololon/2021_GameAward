@@ -207,6 +207,8 @@ void StageSelect::Draw()
 	ObjectManager::GetInstance()->Draw();
 }
 
+
+
 void StageSelect::Finitialize()
 {
 	//î•ñƒZƒbƒg

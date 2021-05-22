@@ -1,6 +1,7 @@
 #include "Title.h"
 #include"StageSelect.h"
 #include"XInputManager.h"
+#include"Fade.h"
 
 std::unique_ptr<Sprite2D>Title::titleSprite[7];
 std::unique_ptr<Texture>Title::titleTexture;
@@ -52,7 +53,7 @@ void Title::Update()
 		//sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
 
 		float titleHoseiPosY = 100;
-		float stopPosX = -200 + titleTextureSize * 3 * i;
+		float stopPosX = 230 + titleTextureSize * 3 * i;
 		if (titleSpritePosition[i].x <= 1280 && 
 			titleSpritePosition[i].x >= stopPosX)
 		{
@@ -100,8 +101,11 @@ void Title::Update()
 
 	bool padStart = XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& XInputManager::GetPadConnectedFlag(1);
-	if(DirectInput::KeyTrigger(DIK_Z)
+	if (DirectInput::KeyTrigger(DIK_Z)
 		|| padStart)
+		Fade::GetInstance()->FadeStart();
+
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
 		isEnd = true;
 
 }

@@ -2,6 +2,7 @@
 #include<Library.h>
 #include"SceneManager.h"
 #include"ObjectManager.h"
+#include"Fade.h"
 
 #pragma region シーン
 
@@ -22,6 +23,7 @@
 #include"SimEnemy.h"
 #include"HealEnemy.h"
 #include"EnemyBullet.h"
+
 #pragma endregion
 
 
@@ -53,9 +55,9 @@ void Game::Run()
 void Game::Initialize()
 {
 #pragma region ライブラリ初期化_設定
-	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 100,100,100,255 }, L"メビウスネーク");
+	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 255,200,255,255 }, L"メビウスネーク");
 	Library::SetCameraNearAndFar(0.1f, 2500.0f);
-	Library::SetLightVector({0,-0.75,0.25});
+	Library::SetLightVector({0.1f,-0.75f,0.15f});
 
 	Library::SetFramesPerSecond60(true);
 #pragma endregion
@@ -76,6 +78,8 @@ void Game::Initialize()
 	Title::LoadResources();
 	StageSelect::LoadResources();
 	Play::LoadResources();
+
+	Fade::GetInstance()->LoadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
@@ -99,12 +103,12 @@ void Game::Finitialize()
 
 void Game::Update()
 {
-
 	SceneManager::GetInstace()->Update();
-
+	Fade::GetInstance()->Update();
 }
 
 void Game::Draw()
 {
 	SceneManager::GetInstace()->Draw();
+	Fade::GetInstance()->Draw();
 }

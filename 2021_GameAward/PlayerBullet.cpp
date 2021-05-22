@@ -9,6 +9,7 @@
 #include "SimEnemy.h"
 #include "DefenceEnemy.h"
 #include "HealEnemy.h"
+#include"EnemyBullet.h"
 
 #include"LibMath.h"
 
@@ -17,13 +18,16 @@
 #include"StageSelect.h"
 
 ObjModel PlayerBullet::modelData;
-const int PlayerBullet::CREATE_NUMBER = 1000;
+const int PlayerBullet::CREATE_NUMBER = 300;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
 bool PlayerBullet::IsEnemy(const Object* p)
 {
 
-	if (typeid(*p) == typeid(MoveEnemy))
+	if (typeid(*p) == typeid(MoveEnemy)
+		|| typeid(*p) == typeid(ShotEnemy)
+		|| typeid(*p) == typeid(FleeEnemy)
+		|| typeid(*p) == typeid(SimEnemy))
 	{
 		return true;
 	}
@@ -41,6 +45,7 @@ PlayerBullet::PlayerBullet(const Vector3& pos, const Vector3& vel)
 
 	float velAngle = LibMath::Vecto2ToAngle({ vel.x,vel.z }, true);
 	modelData.SetAngle({ 0,-velAngle ,0 }, heapNum);
+	modelData.SetScale(0.7f, heapNum);
 }
 
 PlayerBullet::~PlayerBullet()
@@ -114,7 +119,8 @@ void PlayerBullet::Hit
 )
 {
 	if (typeid(*object) == typeid(TargetObject) ||
-		typeid(*object) == typeid(Block))
+		typeid(*object) == typeid(Block)||
+		typeid(*object) == typeid(EnemyBullet))
 		eraseManager = true;
 
 
