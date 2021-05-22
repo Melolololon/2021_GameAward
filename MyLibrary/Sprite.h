@@ -96,7 +96,11 @@ public:
 
 #pragma endregion
 
-
+#pragma region 見た目操作
+	void SetAddColor(const Color& color);
+	void SetSubColor(const Color& color);
+	void SetMulColor(const Color& color);
+#pragma endregion
 
 #pragma region パイプライン
 

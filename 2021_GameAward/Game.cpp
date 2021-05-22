@@ -2,6 +2,7 @@
 #include<Library.h>
 #include"SceneManager.h"
 #include"ObjectManager.h"
+#include"Fade.h"
 
 #pragma region シーン
 
@@ -76,6 +77,8 @@ void Game::Initialize()
 	Title::LoadResources();
 	StageSelect::LoadResources();
 	Play::LoadResources();
+
+	Fade::GetInstance()->LoadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定

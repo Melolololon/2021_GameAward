@@ -9,9 +9,11 @@
 
 #include"ObjectManager.h"
 #include"XInputManager.h"
+#include"Fade.h"
 
 #include"LibMath.h"
 #include"StageSelect.h"
+
 #pragma region オブジェクト
 #include"Block.h"
 
@@ -21,6 +23,7 @@
 Sprite2D Play::arrowSprite;
 Texture Play::arrowTexture;
 
+
 float Play::targetDistance;
 float Play::playerDistance;
 int Play::targetNumber;
@@ -28,6 +31,7 @@ Vector3 Play::leftUpPosition;
 Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
+
 
 #pragma region スプライト
 
@@ -56,12 +60,10 @@ Play::~Play() {}
 
 void Play::LoadResources()
 {
-	//リソースの読み込み
 	/*Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
 	arrowSprite.CreateSprite();
 	arrowTexture.LoadSpriteTexture("Resources/Texture/arrow.png");
-
 
 	//スプライト
 	targetLockSprite.CreateSprite({ 10,10 });
@@ -490,6 +492,7 @@ void Play::Update()
 
 void Play::Draw()
 {
+
 	ObjectManager::GetInstance()->Draw();
 
 	int playerLockTargetNum = player->GetLockTargetNum();
@@ -553,7 +556,8 @@ void Play::Draw()
 		&targetAnimationTexture
 	);
 
-
+	//フェード
+	Fade::GetInstance()->Draw();
 }
 
 void Play::Finitialize()

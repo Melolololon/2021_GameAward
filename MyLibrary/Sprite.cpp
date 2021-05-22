@@ -226,3 +226,40 @@ void Sprite::SetPipeline(PipelineState* pipelineState)
 }
 
 
+
+#pragma region å©ÇΩñ⁄ëÄçÏ
+void Sprite::SetAddColor(const Color& color)
+{
+	constData.addColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+void Sprite::SetSubColor(const Color& color)
+{
+	constData.subColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+void Sprite::SetMulColor(const Color& color)
+{
+	constData.mulColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+#pragma endregion
+
