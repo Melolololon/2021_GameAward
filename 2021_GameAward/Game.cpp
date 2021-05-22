@@ -110,5 +110,4 @@ void Game::Update()
 void Game::Draw()
 {
 	SceneManager::GetInstace()->Draw();
-	Fade::GetInstance()->Draw();
 }

@@ -206,6 +206,8 @@ void StageSelect::Update()
 void StageSelect::Draw()
 {
 	ObjectManager::GetInstance()->Draw();
+
+	Fade::GetInstance()->Draw();
 }
 
 

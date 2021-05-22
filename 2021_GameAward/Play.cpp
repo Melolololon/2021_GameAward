@@ -564,6 +564,7 @@ void Play::Draw()
 		&targetAnimationTexture
 	);
 
+	Fade::GetInstance()->Draw();
 }
 
 

@@ -33,7 +33,7 @@ public:
 	void Update();
 	void Draw();
 
-	void FadeStart() { fadeState = FadeState::FADE_IN; }
+	void FadeStart() { fadeState = FadeState::FADE_OUT; }
 	bool GetSceneChangeTimingFlag();
 	bool GetFadeEndFlag();
 

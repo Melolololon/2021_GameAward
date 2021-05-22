@@ -22,18 +22,18 @@ void Fade::Update()
 	
 	switch (fadeState)
 	{
-	case Fade::FADE_IN:
+	case Fade::FADE_OUT:
 
 		fadeSubAlpha -= FADE_SPEED;
 		if (fadeSubAlpha <= 0.0f) 
 		{
 			fadeSubAlpha = 0.0f;
-			fadeState = FadeState::FADE_OUT;
+			fadeState = FadeState::FADE_IN;
 		}
 
 		break;
 
-	case Fade::FADE_OUT:
+	case Fade::FADE_IN:
 		fadeSubAlpha += FADE_SPEED;
 		if (fadeSubAlpha >= 100.0f) 
 		{

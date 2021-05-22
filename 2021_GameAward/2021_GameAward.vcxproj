@@ -169,6 +169,8 @@
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FleeEnemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameClear.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="HealEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveEnemy.cpp" />
@@ -190,6 +192,8 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FleeEnemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameClear.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="HealEnemy.h" />
     <ClInclude Include="MoveEnemy.h" />
     <ClInclude Include="Play.h" />
