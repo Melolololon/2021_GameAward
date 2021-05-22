@@ -32,7 +32,7 @@ void EnemyBullet::LoadResource()
 {
 	modelData.LoadModel
 	(
-		"Resources/Model/PlayerBullet/bullet.obj",
+		"Resources/Model/EnemyBullet/bullet.obj",
 		true,
 		CREATE_NUMBER,
 		0

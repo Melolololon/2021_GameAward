@@ -36,7 +36,7 @@ void SimEnemy::Initialize()
 	sphereData[2].r = OBJSIZE / 2;
 	//’†S@•Ç”ğ‚¯—p
 	sphereData[3].position = position;
-	sphereData[3].r = OBJSIZE / 2 * 1.5f;
+	sphereData[3].r = OBJSIZE / 2 * 2.0f;
 
 	setPosition(position);
 

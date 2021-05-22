@@ -533,7 +533,8 @@ void Play::Draw()
 	//HP数字
 
 	//HPアニメーション
-	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME))
+	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME) 
+		&& !isPause)
 		hpAnimationNum++;
 	if (hpAnimationTimer.GetSameAsMaximumFlag())
 		hpAnimationNum = 0;
@@ -549,7 +550,8 @@ void Play::Draw()
 	//祠
 	
 	//祠アニメーション
-	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME))
+	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME)
+		&& !isPause)
 		targetAnimationNum++;
 	if (targetAnimationTimer.GetSameAsMaximumFlag())
 		targetAnimationNum = 0;
