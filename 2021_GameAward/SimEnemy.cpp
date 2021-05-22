@@ -58,13 +58,7 @@ void SimEnemy::Update()
 		return;
 	}
 
-	//やられたらアニメーション&return
-	//if (hp <= 0)
-	//{
-	//	UpdateDeadAnimationData();
-	//	modelData.SetAngle(angle, heapNum);
-	//	return;
-	//}
+	
 
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
@@ -123,6 +117,16 @@ void SimEnemy::Update()
 		other1->eraseManager = true;
 	}
 
+	//やられたらアニメーション
+	if (hp <= 0)
+	{
+		DeadAnimation();
+	}
+	else
+	{
+		angle.z = 0.0f;
+	}
+
 	//アニメーション
 	//アニメーション更新
 	UpdateMoveAnimationData(velocity);
@@ -139,7 +143,7 @@ void SimEnemy::Draw()
 {
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
-	if (hp > 0)
+	//if (hp > 0)
 		modelData.Draw(heapNum);
 
 }
@@ -275,4 +279,15 @@ void SimEnemy::setPosition(Vector3 pos)
 	sphereData[3].position = position;
 
 	//Library::setPosition(position, modelData, heapNum);
+}
+
+
+void SimEnemy::DeadAnimation()
+{
+	if (angle.z < 90)
+	{
+		angle.z += 2.0f;
+	}
+	else
+		partDeadTimer--;
 }

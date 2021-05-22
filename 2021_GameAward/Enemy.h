@@ -40,7 +40,7 @@ protected:
 #pragma endregion
 
 #pragma region ‹¤’Êƒpƒ‰ƒ[ƒ^
-	static const int GENERATE_COUNT = 5000;
+	static const int GENERATE_COUNT = 50;
 	Vector3 position;
 	Vector3 velocity;
 	float moveSpeed = 0.15f;

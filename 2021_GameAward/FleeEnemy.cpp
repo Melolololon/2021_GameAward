@@ -173,7 +173,7 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 		{
 			//‚±‚±‚ÉƒXƒRƒA‚ğ—^‚¦‚éˆ—
 
-			eraseManager = true;
+			//eraseManager = true;
 		}
 	}
 }

@@ -14,9 +14,6 @@ Block::Block(const Vector3& pos, const Vector3& scale)
 	Initialize();
 	position = pos;
 	this->scale = scale;
-	this->scale.y *= 5;
-	/*Library::setScale(scale, modelData, heapNum);
-	Library::setPosition(position, modelData, heapNum);*/
 	modelData.SetScale(this->scale, heapNum);
 	modelData.SetPosition(position, heapNum);
 }
