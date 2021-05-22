@@ -85,9 +85,15 @@ void SimEnemy::Update()
 
 	if (attackAfterTimer == 60 * 2)
 	{
-		//座標更新
-		position = position + velocity * moveSpeed;
-		setPosition(position);
+		//全員生きてるときだけ移動
+		if (!GetDeadFlag()
+			&& !other0->GetDeadFlag()
+			&& !other1->GetDeadFlag()) 
+		{
+			//座標更新
+			position = position + velocity * moveSpeed;
+			setPosition(position);
+		}
 	}
 	else
 	{
@@ -291,3 +297,12 @@ void SimEnemy::DeadAnimation()
 	else
 		partDeadTimer--;
 }
+
+
+bool SimEnemy::GetDeadFlag()
+{
+	if (hp <= 0)
+		return true;
+	return false;
+}
+

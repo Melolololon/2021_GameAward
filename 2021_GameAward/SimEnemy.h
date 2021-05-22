@@ -23,6 +23,7 @@ private:
 
 	void DeadAnimation();
 
+	bool GetDeadFlag();
 public:
 	SimEnemy();
 	~SimEnemy();
