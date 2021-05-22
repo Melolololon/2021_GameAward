@@ -9,6 +9,7 @@
 #include "SimEnemy.h"
 #include "DefenceEnemy.h"
 #include "HealEnemy.h"
+#include"EnemyBullet.h"
 
 #include"LibMath.h"
 
@@ -23,7 +24,10 @@ HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 bool PlayerBullet::IsEnemy(const Object* p)
 {
 
-	if (typeid(*p) == typeid(MoveEnemy))
+	if (typeid(*p) == typeid(MoveEnemy)
+		|| typeid(*p) == typeid(ShotEnemy)
+		|| typeid(*p) == typeid(FleeEnemy)
+		|| typeid(*p) == typeid(SimEnemy))
 	{
 		return true;
 	}
@@ -115,7 +119,8 @@ void PlayerBullet::Hit
 )
 {
 	if (typeid(*object) == typeid(TargetObject) ||
-		typeid(*object) == typeid(Block))
+		typeid(*object) == typeid(Block)||
+		typeid(*object) == typeid(EnemyBullet))
 		eraseManager = true;
 
 

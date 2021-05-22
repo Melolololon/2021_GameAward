@@ -97,6 +97,8 @@ private:
 	FreamTimer sceneEndTimer;
 	static const int SCENE_END_TIME = 60 * 3;
 
+	FreamTimer slowTimer;
+
 	bool isPause = false;
 
 public:

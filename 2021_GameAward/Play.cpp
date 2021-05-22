@@ -211,6 +211,8 @@ void Play::Initialize()
 
 	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
 	targetAnimationTimer.SetStopFlag(false);
+
+
 #pragma endregion
 }
 
@@ -228,6 +230,9 @@ void Play::Update()
 	
 #pragma endregion
 
+	//クリアのスロー
+	if (!slowTimer.GetMultipleTimeFlag(2))
+		return;
 
 	ObjectManager::GetInstance()->Update();
 
@@ -456,14 +461,31 @@ void Play::Update()
 #pragma endregion
 
 
-	//終了処理
-	if (targetObjects.size() == 0)
+
+#pragma region 終了処理
+
+	//クリア
+	if (targetObjects.size() == 0 
+		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMEOVER)
 	{
 		sceneEndTimer.SetStopFlag(false);
+		slowTimer.SetStopFlag(false);
+		gameTime.SetStopFlag(true);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMECLEAR;
 	}
+
+	//ゲームオーバー
+	if (player->GetIsDead())
+	{
+		sceneEndTimer.SetStopFlag(false);
+		gameTime.SetStopFlag(true);
+		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
+	}
+
 	if (sceneEndTimer.GetSameAsMaximumFlag())
 		isEnd = true;
+#pragma endregion
+
 }
 
 void Play::Draw()
@@ -496,7 +518,7 @@ void Play::Draw()
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
-	//HP
+	//プレイヤーHP
 	int playerHP = player->GetHp();
 
 	//HP数字

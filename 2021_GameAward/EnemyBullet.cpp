@@ -2,6 +2,7 @@
 #include"TargetObject.h"
 #include"Block.h"
 #include"Player.h"
+#include"PlayerBullet.h"
 
 #include"LibMath.h"
 
@@ -93,7 +94,8 @@ void EnemyBullet::Hit
 {
 	if (typeid(*object) == typeid(TargetObject) ||
 		typeid(*object) == typeid(Block) ||
-		typeid(*object) == typeid(Player))
+		typeid(*object) == typeid(Player) ||
+		typeid(*object) == typeid(PlayerBullet))
 		eraseManager = true;
 
 }
