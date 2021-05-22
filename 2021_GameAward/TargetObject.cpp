@@ -54,7 +54,7 @@ void TargetObject::Initialize()
 
 	heapNum = heapIndexManager.GetHeapIndex();
 
-	const float mulScale = 2.0f;
+	const float mulScale = 1.2f;
 	modelData.SetPosition(position, heapNum);
 	modelData.SetScale(mulScale, heapNum);
 
