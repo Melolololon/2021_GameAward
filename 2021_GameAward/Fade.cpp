@@ -17,6 +17,9 @@ void Fade::LoadResources()
 
 void Fade::Update()
 {
+	if (isStop)
+		return;
+	
 	switch (fadeState)
 	{
 	case Fade::FADE_IN:

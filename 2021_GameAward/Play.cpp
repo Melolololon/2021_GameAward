@@ -204,7 +204,7 @@ void Play::Initialize()
 
 	gameTime.SetMaxTime(INT_MAX);
 	gameTime.SetNowTime(-60 * 3);
-	gameTime.SetStopFlag(false);
+
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 
@@ -216,6 +216,8 @@ void Play::Initialize()
 
 
 #pragma endregion
+
+	Fade::GetInstance()->SetIsStopFlag(true);
 }
 
 void Play::Update()
@@ -250,7 +252,7 @@ void Play::Update()
 
 #pragma endregion
 
-#pragma region スプライト
+#pragma region 矢印
 
 
 #pragma region 祠を示す矢印
@@ -422,6 +424,8 @@ void Play::Update()
 		{
 			//仮にこうしてる
 			playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
+			Fade::GetInstance()->SetIsStopFlag(false);
+			gameTime.SetStopFlag(false);
 		}
 	}
 	else if (playSceneState == PlaySceneState::PLAY_SCENE_START_PREVIOUS)
