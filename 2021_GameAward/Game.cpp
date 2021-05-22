@@ -23,6 +23,7 @@
 #include"SimEnemy.h"
 #include"HealEnemy.h"
 #include"EnemyBullet.h"
+
 #pragma endregion
 
 
@@ -102,12 +103,12 @@ void Game::Finitialize()
 
 void Game::Update()
 {
-
 	SceneManager::GetInstace()->Update();
-
+	Fade::GetInstance()->Update();
 }
 
 void Game::Draw()
 {
 	SceneManager::GetInstace()->Draw();
+	Fade::GetInstance()->Draw();
 }

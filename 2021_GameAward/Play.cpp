@@ -556,8 +556,6 @@ void Play::Draw()
 		&targetAnimationTexture
 	);
 
-	//フェード
-	Fade::GetInstance()->Draw();
 }
 
 void Play::Finitialize()
