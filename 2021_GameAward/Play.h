@@ -33,7 +33,7 @@ public:
 private:
 	std::shared_ptr<Player> player;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
-	const int ENEMY_COUNT = 5;
+	const int ENEMY_COUNT = 20;
 
 	//ƒQ[ƒ€ó‘Ô
 	static PlaySceneState playSceneState;

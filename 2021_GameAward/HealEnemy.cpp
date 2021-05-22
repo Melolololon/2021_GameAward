@@ -4,7 +4,7 @@
 
 PrimitiveModel HealEnemy::modelData;
 int HealEnemy::createCount;
-const int HealEnemy::CREATE_NUMBER = 50;
+const int HealEnemy::CREATE_NUMBER = GENERATE_COUNT;
 HeapIndexManager HealEnemy::heapIndexManager(CREATE_NUMBER);
 
 HealEnemy::HealEnemy()
