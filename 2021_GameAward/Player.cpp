@@ -468,7 +468,7 @@ void Player::Update()
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
 				//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
-				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.5f, q.z * 2.5),
+				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.2f, q.z * 2.5),
 				Vector3(q.x, 0, q.z)
 				));
 	};

@@ -9,6 +9,7 @@
 
 #include"Player.h"
 #include"XInputManager.h"
+#include"Fade.h"
 
 int StageSelect::maxStageNum;
 int StageSelect::selectStageNum;
@@ -153,7 +154,7 @@ void StageSelect::Initialize()
 	//playerRotateTimer = 0;
 
 	stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
-	nextSceneTimer.SetMaxTime(60 * 2);
+	nextSceneTimer.SetMaxTime(60 * 0.5);
 
 }
 
@@ -194,12 +195,12 @@ void StageSelect::Update()
 
 
 	if (nextSceneTimer.GetSameAsMaximumFlag())
+		Fade::GetInstance()->FadeStart();
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
 		isEnd = true;
 
 	ObjectManager::GetInstance()->Update();
 	
-	//デバッグ用
-	//isEnd = true;
 }
 
 void StageSelect::Draw()

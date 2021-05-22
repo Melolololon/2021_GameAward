@@ -499,6 +499,12 @@ void Play::Draw()
 	if (playerLockTargetNum != -1)
 		targetLockSprite.Draw(&targetLockTexture);
 
+
+	//ターゲットHP
+	for (auto& t : targetObjects)
+		t->DrawHp();
+
+
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
 	int keta = std::to_string(gameTime.GetTime() / 60).size();
@@ -511,11 +517,6 @@ void Play::Draw()
 		drawNum /= 10;
 	}
 #pragma endregion
-
-
-	//ターゲットHP
-	for (auto& t : targetObjects)
-		t->DrawHp();
 
 
 	if (drawArrow)

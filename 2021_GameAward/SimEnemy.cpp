@@ -58,6 +58,14 @@ void SimEnemy::Update()
 		return;
 	}
 
+	//やられたらアニメーション&return
+	//if (hp <= 0)
+	//{
+	//	UpdateDeadAnimationData();
+	//	modelData.SetAngle(angle, heapNum);
+	//	return;
+	//}
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
@@ -66,18 +74,18 @@ void SimEnemy::Update()
 	//プレイヤーの方を向かせる処理
 	if (id == 0)
 	{
-		float angleY = LibMath::Vecto2ToAngle({ 1,0 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ 1,0 }, true);
+	
 	}
 	else if (id == 1)
 	{
-		float angleY = LibMath::Vecto2ToAngle({ -0.5,0.5 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ -0.5,0.5 }, true);
+		
 	}
 	else
 	{
-		float angleY = LibMath::Vecto2ToAngle({ 0,-1 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ 0,-1 }, true);
+	
 	}
 
 
@@ -117,12 +125,14 @@ void SimEnemy::Update()
 
 	//アニメーション
 	//アニメーション更新
-	UpdateAnimationData(velocity);
+	UpdateMoveAnimationData(velocity);
 
 	//ボーンをセット
 	//右足 1 左足 2
 	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
 	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
+
+	modelData.SetAngle(angle, heapNum);
 }
 
 void SimEnemy::Draw()
