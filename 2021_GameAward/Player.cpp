@@ -10,6 +10,8 @@
 #include"TargetObject.h"
 #include"Block.h"
 
+#include"EnemyBullet.h"
+
 #include"Play.h"
 #include"StageSelect.h"
 
@@ -676,6 +678,9 @@ void Player::Hit
 
 	}
 
+
+	if (typeid(*object) == typeid(EnemyBullet))
+		DamageFromEnemy();
 
 	//if (isMuteki)return;
 	////if (typeid(*object) == typeid(Enemy))

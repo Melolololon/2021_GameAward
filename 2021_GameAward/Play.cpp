@@ -89,7 +89,6 @@ void Play::Initialize()
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 
-
 	//“G’Ç‰Á
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
