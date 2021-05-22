@@ -9,7 +9,7 @@
 
 ObjModel ShotEnemy::modelData;
 int ShotEnemy::createCount;
-const int ShotEnemy::CREATE_NUMBER = 50;
+const int ShotEnemy::CREATE_NUMBER = GENERATE_COUNT;
 HeapIndexManager ShotEnemy::heapIndexManager(CREATE_NUMBER);
 
 

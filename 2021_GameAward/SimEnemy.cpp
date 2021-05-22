@@ -6,7 +6,7 @@
 
 ObjModel SimEnemy::modelData;
 int SimEnemy::createCount;
-const int SimEnemy::CREATE_NUMBER = 50*3;
+const int SimEnemy::CREATE_NUMBER = GENERATE_COUNT * 3;
 HeapIndexManager SimEnemy::heapIndexManager(CREATE_NUMBER);
 
 SimEnemy::SimEnemy()

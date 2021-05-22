@@ -3,7 +3,7 @@
 
 PrimitiveModel DefenceEnemy::modelData;
 int DefenceEnemy::createCount;
-const int DefenceEnemy::CREATE_NUMBER = 50;
+const int DefenceEnemy::CREATE_NUMBER = GENERATE_COUNT;
 HeapIndexManager DefenceEnemy::heapIndexManager(CREATE_NUMBER);
 
 DefenceEnemy::DefenceEnemy()

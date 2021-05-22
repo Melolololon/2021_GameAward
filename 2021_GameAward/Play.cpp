@@ -203,7 +203,7 @@ void Play::Initialize()
 
 
 	gameTime.SetMaxTime(INT_MAX);
-	gameTime.SetNowTime(-60 * 4);
+	gameTime.SetNowTime(-60 * 3);
 	gameTime.SetStopFlag(false);
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
@@ -507,6 +507,7 @@ void Play::Draw()
 
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
+	if (drawNum < 0) drawNum *= -1;
 	int keta = std::to_string(gameTime.GetTime() / 60).size();
 	for (int i = 0; i < keta; i++)
 	{
@@ -558,6 +559,7 @@ void Play::Draw()
 	);
 
 }
+
 
 void Play::Finitialize()
 {

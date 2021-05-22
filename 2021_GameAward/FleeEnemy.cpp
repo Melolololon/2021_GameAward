@@ -2,12 +2,13 @@
 #include "Block.h"
 #include "Player.h"
 #include "PlayerBullet.h"
-#include"LibMath.h"
+#include "LibMath.h"
+#include "PlayerBullet.h"
 #include "Random.h"
 
 ObjModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
-const int FleeEnemy::CREATE_NUMBER = 50;
+const int FleeEnemy::CREATE_NUMBER = GENERATE_COUNT;
 HeapIndexManager FleeEnemy::heapIndexManager(CREATE_NUMBER);
 
 FleeEnemy::FleeEnemy()
@@ -25,6 +26,8 @@ FleeEnemy::~FleeEnemy()
 void FleeEnemy::Initialize()
 {
 	hp = 1;
+	moveSpeed = 0.15f;
+	shiver = Vector3(0, 0, 0);
 
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
@@ -68,6 +71,7 @@ void FleeEnemy::Update()
 		(pPlayer->GetHeadPosition().y - position.y) * (pPlayer->GetHeadPosition().y - position.y) +
 		(pPlayer->GetHeadPosition().z - position.z) * (pPlayer->GetHeadPosition().z - position.z)) >= 20 && escapeTimer == 300)
 	{
+		moveSpeed = 0.15f;
 		position = position + velocity * moveSpeed;
 		setPosition(position);
 	}
@@ -81,7 +85,8 @@ void FleeEnemy::Update()
 			if (attackAfterTimer == 60 * 2)
 			{
 				//座標更新
-				position = position - velocity * moveSpeed * 3;
+				moveSpeed = 0.15f * -3;
+				position = position + velocity * moveSpeed;
 				setPosition(position);
 
 
@@ -99,7 +104,8 @@ void FleeEnemy::Update()
 		else
 		{
 			velocity = 0;
-			position = position + Vector3(Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100 , 0, Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100);
+			shiver = Vector3(Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100, 0, Random::GetRandomNumberRangeSelectFloat(-20, 20) / 100);
+			position += shiver;
 			setPosition(position);
 		}
 
@@ -128,6 +134,48 @@ void FleeEnemy::Draw()
 	Library::drawGraphic(modelData, heapNum);*/
 	modelData.Draw(heapNum);
 
+}
+
+void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+{
+	//ブロックとの衝突判定
+	if (typeid(*object) == typeid(Block))
+	{
+		if (escapeTimer < 300 - 60 * 2 || escapeTimer == 300)
+		{
+			position -= velocity * moveSpeed;
+		}
+		else
+		{
+			position -= shiver;
+		}
+
+		setPosition(position);
+
+	}
+
+	//プレイヤーとの衝突判定
+	if (typeid(*object) == typeid(Player))
+	{
+		if (attackAfterTimer >= 60 * 2)
+		{
+			attackAfterTimer--;
+			//ここにプレイヤーの体力を減らす処理
+			pPlayer->DamageFromEnemy();
+		}
+	}
+
+	//プレイヤーの弾との衝突判定
+	if (typeid(*object) == typeid(PlayerBullet))
+	{
+		hp--;
+		if (hp <= 0)
+		{
+			//ここにスコアを与える処理
+
+			eraseManager = true;
+		}
+	}
 }
 
 void FleeEnemy::LoadResource()

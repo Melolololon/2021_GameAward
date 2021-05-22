@@ -5,7 +5,7 @@
 #include"LibMath.h"
 
 int MoveEnemy::createCount;
-const int MoveEnemy::CREATE_NUMBER = 30;
+const int MoveEnemy::CREATE_NUMBER = GENERATE_COUNT;
 ObjModel MoveEnemy::modelData;
 HeapIndexManager MoveEnemy::heapIndexManager(CREATE_NUMBER);
 
