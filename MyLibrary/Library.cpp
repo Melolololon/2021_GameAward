@@ -57,6 +57,8 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 void Library::Initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
 {
+	auto coResult = CoInitialize(NULL);
+
 	dx12 = DirectX12::GetInstance();
 	createPolygon = CreatePolygon::GetInstance();
 	createPolygon->Initialize(windowWidth, windowHeight);
@@ -198,6 +200,7 @@ void Library::LoopEndProcess()
 	{
 
 		//60fpsの時の1フレームの処理時間を計測(この数値は、環境に依存しない)
+		//これ毎回計測する必要ない
 		float pureTime = 1000.0f / (float)fps * ((float)count - 1.0f);
 		float currTime = 1000.0f / (float)fps * (float)count;
 		int taikiTime = (int)currTime - (int)pureTime;//待機しないといけない時間

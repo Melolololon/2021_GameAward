@@ -14,6 +14,10 @@
 #include"LibMath.h"
 #include"StageSelect.h"
 
+#include"GameClear.h"
+#include"GameOver.h"
+#include"StageSelect.h"
+
 #pragma region オブジェクト
 #include"Block.h"
 
@@ -484,11 +488,15 @@ void Play::Update()
 	if (player->GetIsDead())
 	{
 		sceneEndTimer.SetStopFlag(false);
+		slowTimer.SetStopFlag(false);
 		gameTime.SetStopFlag(true);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
 	}
 
 	if (sceneEndTimer.GetSameAsMaximumFlag())
+		Fade::GetInstance()->FadeStart();
+
+	if(Fade::GetInstance()->GetSceneChangeTimingFlag())
 		isEnd = true;
 #pragma endregion
 
@@ -575,6 +583,10 @@ void Play::Finitialize()
 
 Scene* Play::GetNextScene()
 {
+	if (playSceneState == PLAY_SCENE_GAMECLEAR)
+		return new GameClear();
+	else if (playSceneState == PLAY_SCENE_GAMEOVER)
+		return new GameOver();
 	return new StageSelect();
 }
 

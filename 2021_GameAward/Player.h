@@ -119,6 +119,7 @@ public:
 
 	void PlayMove();
 	void StageSelectMove();
+	void GameOverMove();
 	
 	void DamageFromEnemy();
 

@@ -3,6 +3,8 @@
 class GameClear :
     public Scene
 {
+private:
+	static UINT score;
 
 public:
 	GameClear(){}
@@ -14,5 +16,7 @@ public:
 	void Finitialize();
 	Scene* GetNextScene();
 	static void LoadResources();
+
+	static void SetScore(const UINT num) { score = num; }
 };
 
