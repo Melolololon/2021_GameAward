@@ -122,6 +122,8 @@ void Title::Draw()
 		);
 	
 	pushButtonSprite->Draw(pushButtonTexture.get());
+
+	Fade::GetInstance()->Draw();
 }
 
 void Title::Finitialize()

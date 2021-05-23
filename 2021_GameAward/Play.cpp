@@ -14,6 +14,10 @@
 #include"LibMath.h"
 #include"StageSelect.h"
 
+#include"GameClear.h"
+#include"GameOver.h"
+#include"StageSelect.h"
+
 #pragma region オブジェクト
 #include"Block.h"
 
@@ -204,7 +208,7 @@ void Play::Initialize()
 
 	gameTime.SetMaxTime(INT_MAX);
 	gameTime.SetNowTime(-60 * 3);
-	gameTime.SetStopFlag(false);
+
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 
@@ -216,6 +220,8 @@ void Play::Initialize()
 
 
 #pragma endregion
+
+	Fade::GetInstance()->SetIsStopFlag(true);
 }
 
 void Play::Update()
@@ -250,7 +256,7 @@ void Play::Update()
 
 #pragma endregion
 
-#pragma region スプライト
+#pragma region 矢印
 
 
 #pragma region 祠を示す矢印
@@ -422,6 +428,8 @@ void Play::Update()
 		{
 			//仮にこうしてる
 			playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
+			Fade::GetInstance()->SetIsStopFlag(false);
+			gameTime.SetStopFlag(false);
 		}
 	}
 	else if (playSceneState == PlaySceneState::PLAY_SCENE_START_PREVIOUS)
@@ -480,11 +488,15 @@ void Play::Update()
 	if (player->GetIsDead())
 	{
 		sceneEndTimer.SetStopFlag(false);
+		//slowTimer.SetStopFlag(false);
 		gameTime.SetStopFlag(true);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
 	}
 
 	if (sceneEndTimer.GetSameAsMaximumFlag())
+		Fade::GetInstance()->FadeStart();
+
+	if(Fade::GetInstance()->GetSceneChangeTimingFlag())
 		isEnd = true;
 #pragma endregion
 
@@ -498,6 +510,12 @@ void Play::Draw()
 	int playerLockTargetNum = player->GetLockTargetNum();
 	if (playerLockTargetNum != -1)
 		targetLockSprite.Draw(&targetLockTexture);
+
+
+	//ターゲットHP
+	for (auto& t : targetObjects)
+		t->DrawHp();
+
 
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
@@ -514,11 +532,6 @@ void Play::Draw()
 #pragma endregion
 
 
-	//ターゲットHP
-	for (auto& t : targetObjects)
-		t->DrawHp();
-
-
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
@@ -528,7 +541,8 @@ void Play::Draw()
 	//HP数字
 
 	//HPアニメーション
-	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME))
+	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME) 
+		&& !isPause)
 		hpAnimationNum++;
 	if (hpAnimationTimer.GetSameAsMaximumFlag())
 		hpAnimationNum = 0;
@@ -544,7 +558,8 @@ void Play::Draw()
 	//祠
 	
 	//祠アニメーション
-	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME))
+	if (targetAnimationTimer.GetMultipleTimeFlag(TARGET_ANIMATION_ONE_FREAM_TIME)
+		&& !isPause)
 		targetAnimationNum++;
 	if (targetAnimationTimer.GetSameAsMaximumFlag())
 		targetAnimationNum = 0;
@@ -557,6 +572,7 @@ void Play::Draw()
 		&targetAnimationTexture
 	);
 
+	Fade::GetInstance()->Draw();
 }
 
 
@@ -567,6 +583,10 @@ void Play::Finitialize()
 
 Scene* Play::GetNextScene()
 {
+	if (playSceneState == PLAY_SCENE_GAMECLEAR)
+		return new GameClear();
+	else if (playSceneState == PLAY_SCENE_GAMEOVER)
+		return new GameOver();
 	return new StageSelect();
 }
 

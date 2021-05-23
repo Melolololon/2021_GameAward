@@ -72,7 +72,7 @@ void PlayerBullet::Initialize()
 	collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].position = position;
-	sphereData[0].r = 0.5f;
+	sphereData[0].r = 0.7f;
 
 	scale = 1.0f;
 

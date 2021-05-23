@@ -36,7 +36,7 @@ void SimEnemy::Initialize()
 	sphereData[2].r = OBJSIZE / 2;
 	//中心　壁避け用
 	sphereData[3].position = position;
-	sphereData[3].r = OBJSIZE / 2 * 1.5f;
+	sphereData[3].r = OBJSIZE / 2 * 2.0f;
 
 	setPosition(position);
 
@@ -58,6 +58,8 @@ void SimEnemy::Update()
 		return;
 	}
 
+	
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
@@ -66,26 +68,32 @@ void SimEnemy::Update()
 	//プレイヤーの方を向かせる処理
 	if (id == 0)
 	{
-		float angleY = LibMath::Vecto2ToAngle({ 1,0 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ 1,0 }, true);
+	
 	}
 	else if (id == 1)
 	{
-		float angleY = LibMath::Vecto2ToAngle({ -0.5,0.5 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ -0.5,0.5 }, true);
+		
 	}
 	else
 	{
-		float angleY = LibMath::Vecto2ToAngle({ 0,-1 }, true);
-		modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+		angle.y = -LibMath::Vecto2ToAngle({ 0,-1 }, true);
+	
 	}
 
 
 	if (attackAfterTimer == 60 * 2)
 	{
-		//座標更新
-		position = position + velocity * moveSpeed;
-		setPosition(position);
+		//全員生きてるときだけ移動
+		if (!GetDeadFlag()
+			&& !other0->GetDeadFlag()
+			&& !other1->GetDeadFlag()) 
+		{
+			//座標更新
+			position = position + velocity * moveSpeed;
+			setPosition(position);
+		}
 	}
 	else
 	{
@@ -115,21 +123,33 @@ void SimEnemy::Update()
 		other1->eraseManager = true;
 	}
 
+	//やられたらアニメーション
+	if (hp <= 0)
+	{
+		DeadAnimation();
+	}
+	else
+	{
+		angle.z = 0.0f;
+	}
+
 	//アニメーション
 	//アニメーション更新
-	UpdateAnimationData(velocity);
+	UpdateMoveAnimationData(velocity);
 
 	//ボーンをセット
 	//右足 1 左足 2
 	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
 	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
+
+	modelData.SetAngle(angle, heapNum);
 }
 
 void SimEnemy::Draw()
 {
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
-	if (hp > 0)
+	//if (hp > 0)
 		modelData.Draw(heapNum);
 
 }
@@ -266,3 +286,23 @@ void SimEnemy::setPosition(Vector3 pos)
 
 	//Library::setPosition(position, modelData, heapNum);
 }
+
+
+void SimEnemy::DeadAnimation()
+{
+	if (angle.z < 90)
+	{
+		angle.z += 2.0f;
+	}
+	else
+		partDeadTimer--;
+}
+
+
+bool SimEnemy::GetDeadFlag()
+{
+	if (hp <= 0)
+		return true;
+	return false;
+}
+

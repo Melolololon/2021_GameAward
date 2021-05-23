@@ -49,6 +49,14 @@ void FleeEnemy::Update()
 		return;
 	}
 
+	//やられたらアニメーション&return
+	if (hp <= 0)
+	{
+		UpdateDeadAnimationData();
+		modelData.SetAngle(angle, heapNum);
+		return;
+	}
+
 	//プレイヤーへの方向ベクトルを求める
 	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
 	//正規化
@@ -56,8 +64,7 @@ void FleeEnemy::Update()
 
 
 	//プレイヤーの方を向かせる処理
-	float angleY = LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
-	modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+	LockPlayer();
 
 	//一定間隔以上なら座標更新
 	if (sqrt((pPlayer->GetHeadPosition().x - position.x) * (pPlayer->GetHeadPosition().x - position.x) +
@@ -82,8 +89,9 @@ void FleeEnemy::Update()
 				position = position + velocity * moveSpeed;
 				setPosition(position);
 
-				angleY = LibMath::Vecto2ToAngle({ -velocity.x,-velocity.z }, true);
-				modelData.SetAngle({ 0,-angleY,0 }, heapNum);
+
+				angle.y = -LibMath::Vecto2ToAngle({ -velocity.x,-velocity.z }, true);
+			
 			}
 			else
 			{
@@ -107,15 +115,17 @@ void FleeEnemy::Update()
 	if (escapeTimer < 0) escapeTimer = 300;
 
 
-
 	//アニメーション
 	//アニメーション更新
-	UpdateAnimationData(velocity);
+	UpdateMoveAnimationData(velocity);
 
 	//ボーンをセット
 	//右足 1 左足 2
 	modelData.SetBoneAngle(rightFootAngle, 0, heapNum);
 	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
+
+
+	modelData.SetAngle(angle, heapNum);
 }
 
 void FleeEnemy::Draw()
@@ -163,7 +173,7 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 		{
 			//ここにスコアを与える処理
 
-			eraseManager = true;
+			//eraseManager = true;
 		}
 	}
 }

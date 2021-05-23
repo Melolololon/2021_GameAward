@@ -21,6 +21,7 @@ private:
 	Texture fadeTex;
 	float fadeSubAlpha = 100.0f;
 	static const float FADE_SPEED;
+	bool isStop = false;
 
 	FadeState fadeState = FadeState::FADE_NOT;
 public:
@@ -32,8 +33,10 @@ public:
 	void Update();
 	void Draw();
 
-	void FadeStart() { fadeState = FadeState::FADE_IN; }
+	void FadeStart() { fadeState = FadeState::FADE_OUT; }
 	bool GetSceneChangeTimingFlag();
 	bool GetFadeEndFlag();
+
+	void SetIsStopFlag(const bool flag) { isStop = flag; }
 };
 

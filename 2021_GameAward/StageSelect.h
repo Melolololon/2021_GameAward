@@ -56,5 +56,6 @@ public:
 
 	static int GetSelectStageNum() { return selectStageNum; }
 	static StageSelectState GetStageSelectState() {return stageSelectState;}
+
 };
 

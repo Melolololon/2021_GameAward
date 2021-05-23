@@ -54,7 +54,7 @@ void TargetObject::Initialize()
 
 	heapNum = heapIndexManager.GetHeapIndex();
 
-	const float mulScale = 2.0f;
+	const float mulScale = 1.2f;
 	modelData.SetPosition(position, heapNum);
 	modelData.SetScale(mulScale, heapNum);
 
@@ -91,7 +91,7 @@ void TargetObject::Draw()
 
 void TargetObject::DrawHp()
 {
-	Vector3 lifePos = position + Vector3(0, 5.0f,3.0f);
+	Vector3 lifePos = position + Vector3(0, 2.5f,-7.0f);
 	hpGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.2, 0));
 	hpGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
 

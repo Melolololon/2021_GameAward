@@ -14,6 +14,7 @@
 
 #include"Play.h"
 #include"StageSelect.h"
+#include"GameOver.h"
 
 #include<fstream>
 
@@ -162,10 +163,10 @@ void Player::Initialize()
 	{
 		sphereData[i].position = bonePos[i];
 			
-			if(i <= boneNum - 2)
-				sphereData[i].r = 0.5f * scale.x;
-			else
-				sphereData[i].r = 1.0f * scale.x;
+			/*if(i <= boneNum - 2)
+				sphereData[i].r = 0.8f * scale.x;
+			else*/
+				sphereData[i].r = 1.5f * scale.x;
 	}
 
 #pragma endregion
@@ -311,6 +312,23 @@ void Player::StageSelectMove()
 		velRot += 360;
 }
 
+void Player::GameOverMove()
+{
+	float velRotAngle = initSpeed * 5;
+	if (GameOver::GetSelectEndFlag())
+	{
+		const float mulAngleNum = 6.0f;
+		velRotAngle *= mulAngleNum;
+		speed = initSpeed *  mulAngleNum;
+	}
+
+	velRot -= velRotAngle;
+	if (velRot >= 360)
+		velRot -= 360;
+	if (velRot <= 0)
+		velRot += 360;
+}
+
 void Player::Update()
 {
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
@@ -326,6 +344,36 @@ void Player::Update()
 		}
 	}
 
+
+#pragma region パラメーター処理
+
+#pragma region ライフ
+	if (hp <= 0)
+		isDead = true;
+#pragma endregion
+
+#pragma region 無敵処理
+	if (isMuteki)
+	{
+		mutekiTimer++;
+		if (mutekiTimer >= mutekiTime)
+		{
+			mutekiTimer = 0;
+			isMuteki = false;
+		}
+	}
+#pragma endregion
+
+
+#pragma endregion
+
+	if(isDead)
+	{
+		//点滅用
+		isMuteki = true;
+		return;
+	}
+
 	lockTargetNum = -1;
 
 
@@ -337,7 +385,9 @@ void Player::Update()
 		PlayMove();
 	if (typeid(*currentScene) == typeid(StageSelect))
 		StageSelectMove();
-
+	if (typeid(*currentScene) == typeid(GameOver))
+		GameOverMove();
+	
 
 	if (velRot != -1)
 	{
@@ -468,7 +518,7 @@ void Player::Update()
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
 				//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
-				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.5f, q.z * 2.5),
+				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.2f, q.z * 2.5),
 				Vector3(q.x, 0, q.z)
 				));
 	};
@@ -525,28 +575,6 @@ void Player::Update()
 
 #pragma endregion
 
-#pragma region パラメーター処理
-
-#pragma region ライフ
-	if (hp <= 0)
-		isDead = true;
-#pragma endregion
-
-#pragma region 無敵処理
-	if (isMuteki)
-	{
-		mutekiTimer++;
-		if (mutekiTimer >= mutekiTime)
-		{
-			mutekiTimer = 0;
-			isMuteki = false;
-		}
-	}
-#pragma endregion
-
-
-#pragma endregion
-
 	//スプライト座標
 	/*if (targetLock) 
 	{
@@ -574,6 +602,9 @@ void Player::Hit
 	const int& arrayNum
 )
 {
+	if (isDead)
+		return;
+
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))return;
 

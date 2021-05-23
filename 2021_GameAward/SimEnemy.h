@@ -21,6 +21,9 @@ private:
 	int partDeadTimer = 60 * 0.5;
 #pragma endregion
 
+	void DeadAnimation();
+
+	bool GetDeadFlag();
 public:
 	SimEnemy();
 	~SimEnemy();

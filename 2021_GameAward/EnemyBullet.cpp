@@ -32,7 +32,7 @@ void EnemyBullet::LoadResource()
 {
 	modelData.LoadModel
 	(
-		"Resources/Model/PlayerBullet/bullet.obj",
+		"Resources/Model/EnemyBullet/bullet.obj",
 		true,
 		CREATE_NUMBER,
 		0
@@ -53,10 +53,10 @@ void EnemyBullet::Initialize()
 	collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].position = position;
-	sphereData[0].r = 0.1f;
+	sphereData[0].r = 0.3f;
 
+	modelData.SetScale(0.7f, heapNum);
 	
-	modelData.SetScale(Vector3(0.4f, 0.4f, 0.4f), heapNum);
 }
 
 void EnemyBullet::Update()

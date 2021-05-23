@@ -9,6 +9,8 @@
 #include"Title.h"
 #include"StageSelect.h"
 #include"Play.h"
+#include"GameClear.h"
+#include"GameOver.h"
 #pragma endregion
 
 #pragma region Object
@@ -78,6 +80,9 @@ void Game::Initialize()
 	Title::LoadResources();
 	StageSelect::LoadResources();
 	Play::LoadResources();
+	GameClear::LoadResources();
+	GameOver::LoadResources();
+
 
 	Fade::GetInstance()->LoadResources();
 #pragma endregion
@@ -110,5 +115,4 @@ void Game::Update()
 void Game::Draw()
 {
 	SceneManager::GetInstace()->Draw();
-	Fade::GetInstance()->Draw();
 }

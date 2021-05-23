@@ -4,6 +4,8 @@
 #include "SceneManager.h"
 #include "Play.h"
 
+#include"LibMath.h"
+
 const float Enemy::OBJSIZE = 1.0f;
 const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
 const float Enemy::MAX_ANGLE = FREAM_MOVE_ANGLE / 2 * (MOVE_ANIMATION_MAX / 2);
@@ -21,7 +23,7 @@ void Enemy::setHeapNum()
 {
 }
 
-void Enemy::UpdateAnimationData(const Vector3& vel)
+void Enemy::UpdateMoveAnimationData(const Vector3& vel)
 {
 	if (hp <= 0)return;
 
@@ -70,6 +72,23 @@ void Enemy::UpdateAnimationData(const Vector3& vel)
 
 }
 
+void Enemy::UpdateDeadAnimationData()
+{
+	if (angle.z < 90)
+	{
+		angle.z += 2.0f;
+		position.y -= 0.025f;
+	}
+	else
+		eraseManager = true;
+
+}
+
+void Enemy::LockPlayer()
+{
+	angle.y = -LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
+}
+
 void Enemy::Initialize()
 {
 	setHeapNum();
@@ -113,7 +132,7 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 		{
 			//‚±‚±‚ÉƒXƒRƒA‚ð—^‚¦‚éˆ—
 
-			eraseManager = true;
+			//eraseManager = true;
 		}
 	}
 }
