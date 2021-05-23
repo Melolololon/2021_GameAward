@@ -46,6 +46,33 @@ void TargetObject::LoadResource()
 
 	maxHp = 30;
 	hpGaugeOneNumSizeX = hpSize.x / 30;
+
+
+	PipelineData data;
+	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.blendMode = BLEND_ADD;
+	data.cullMode = CULL_NONE;
+	data.depthMode = DEPTH_NONE;
+	data.drawMode = DRAW_SOLID;
+	auto result = hpPipeline.CreatePipeline
+	(
+		data,
+		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
+		PipelineType::PIPELINE_TYPE_SPRITE,
+		nullptr,
+		typeid(Sprite3D).name()
+	);
+
+	for (int i = 0; i < CREATE_NUMBER; i++) 
+	{
+		hpGaugeSprite[i].SetPipeline(&hpPipeline);
+		hpGaugeFreamSprite[i].SetPipeline(&hpPipeline);
+	}
+
 }
 
 

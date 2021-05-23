@@ -44,17 +44,6 @@ private:
 	Vector3 cameraTarget;
 #pragma endregion
 
-#pragma region 祠の方向を示す矢印
-	static Sprite2D arrowSprite;
-	static Texture arrowTexture;
-
-	//座標
-	Vector2 arrowPosition;
-	//回転角度
-	float arrowAngle;
-	//描画するかどうか
-	bool drawArrow;
-#pragma endregion
 
 
 #pragma region ステージデータ
@@ -69,14 +58,25 @@ private:
 #pragma endregion
 
 #pragma region スプライト関係
+
+
+#pragma region 祠の方向を示す矢印
+	static Sprite2D arrowSprite;
+	static Texture arrowTexture;
+
+	//座標
+	Vector2 arrowPosition;
+	//回転角度
+	float arrowAngle;
+	//描画するかどうか
+	bool drawArrow;
+#pragma endregion
+
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
 
-
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
-
-
 
 	static Sprite2D targetAnimationSprite;
 	static Texture targetAnimationTexture;
