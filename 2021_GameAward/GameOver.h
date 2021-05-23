@@ -12,7 +12,10 @@ private:
 	bool returnStageSelect = false;
 	static Sprite2D gameOverSpr;
 	static Texture gameOverTex;
+
 	std::shared_ptr<Player>player;
+	Vector3 yesPos = Vector3(-38, 0, -6);
+	Vector3 noPos = Vector3(3, 0, -6);
 public:
 	GameOver() {}
 	~GameOver() {}

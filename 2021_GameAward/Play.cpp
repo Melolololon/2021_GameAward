@@ -488,7 +488,7 @@ void Play::Update()
 	if (player->GetIsDead())
 	{
 		sceneEndTimer.SetStopFlag(false);
-		slowTimer.SetStopFlag(false);
+		//slowTimer.SetStopFlag(false);
 		gameTime.SetStopFlag(true);
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
 	}

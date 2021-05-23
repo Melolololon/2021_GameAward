@@ -17,7 +17,8 @@ void GameOver::LoadResources()
 
 void GameOver::Initialize()
 {
-	player = std::make_shared<Player>(Vector3(-38, 0, -6));
+	selectEnd = false;
+	player = std::make_shared<Player>(yesPos);
 	ObjectManager::GetInstance()->AddObject(player);
 
 
@@ -37,8 +38,32 @@ void GameOver::Update()
 {
 	ObjectManager::GetInstance()->Update();
 
+	if (DirectInput::KeyTrigger(DIK_RIGHT)
+		|| XInputManager::GetPadConnectedFlag(1))
+	{
+		float stickAngle = XInputManager::LeftStickAngle(1);
 
+		if (stickAngle >= 0
+			&& stickAngle <= 30
+			|| stickAngle >= 330) 
+		{
+			returnStageSelect = true;
+			player->SetModelMoveVector(noPos);
+		}
+	}
 
+	if (DirectInput::KeyTrigger(DIK_LEFT)
+		|| XInputManager::GetPadConnectedFlag(1))
+	{
+		float stickAngle = XInputManager::LeftStickAngle(1);
+
+		if (stickAngle >= 150
+			&& stickAngle <= 180)
+		{
+			returnStageSelect = false;
+			player->SetModelMoveVector(yesPos);
+		}
+	}
 
 	if (DirectInput::KeyTrigger(DIK_SPACE)
 		|| XInputManager::GetPadConnectedFlag(1)
@@ -61,6 +86,7 @@ void GameOver::Draw()
 
 void GameOver::Finitialize()
 {
+	ObjectManager::GetInstance()->AllEraseObject();
 }
 
 Scene* GameOver::GetNextScene()
