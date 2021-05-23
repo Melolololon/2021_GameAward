@@ -28,6 +28,14 @@ std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
 
+
+Sprite2D Player::hpAnimationSprite;
+Texture Player::hpAnimationTexture;
+Sprite2D Player::hpCrossSpr;
+Texture Player::hpCrossTex;
+Sprite2D Player::hpNumSpr;
+Texture Player::hpNumTex;
+
 Player::Player()
 {
 	Initialize();
@@ -63,6 +71,20 @@ void Player::LoadResource()
 	initialBonePos = modelData.GetBonePosition();
 	boneNum = static_cast<int>(initialBonePos.size());
 
+	
+	//スプライト
+	hpAnimationSprite.CreateSprite();
+	hpAnimationTexture.LoadSpriteTexture("Resources/Texture/hpAnimation.png");
+	hpAnimationSprite.SetPosition(Vector2(0, 0));
+
+	hpCrossSpr.CreateSprite();
+	hpCrossSpr.SetPosition(Vector2(70, 0));
+	hpCrossSpr.SetScale(Vector2(0.4, 0.4));
+	hpCrossTex.LoadSpriteTexture("Resources/Texture/numCross.png");
+
+	hpNumSpr.CreateSprite();
+	hpNumTex.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
+	hpNumSpr.SetPosition(Vector2(140, 10));
 
 	////スプライト
 	//targetLockSprite.CreateSprite({10,10});
@@ -176,6 +198,10 @@ void Player::Initialize()
 	//角度セット
 	for (int i = 0; i < boneNum; i++) 
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+
+	//スプライト関係
+	hpAnimationTimer.SetMaxTime(HP_ANIMATION_ONE_FREAM_TIME * 8);
+	hpAnimationTimer.SetStopFlag(false);
 
 }
 
@@ -581,6 +607,8 @@ void Player::Update()
 		Vector3 targetSprPos = targetPos[targetNum];
 		targetLockSprite.SetPosition(targetSprPos);
 	}*/
+
+
 }
 
 void Player::Draw()
@@ -721,6 +749,35 @@ void Player::Hit
 	//}
 }
 
+void Player::UpdateHpAnimation()
+{
+	//HPアニメーション
+	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME))
+		hpAnimationNum++;
+	if (hpAnimationTimer.GetSameAsMaximumFlag())
+		hpAnimationNum = 0;
+
+}
+
+void Player::DrawHp()
+{	
+	
+	//蛇のアニメーション
+	const Vector2 hpAnimationTextureSize = hpAnimationTexture.GetTextureSize();
+	hpAnimationSprite.SelectDrawAreaDraw
+	(
+		Vector2(hpAnimationTextureSize.x / 8 * hpAnimationNum, 0),
+		Vector2(hpAnimationTextureSize.x / 8 * (hpAnimationNum + 1), hpAnimationTextureSize.y),
+		&hpAnimationTexture
+	);
+
+	//かける
+	hpCrossSpr.Draw(&hpCrossTex);
+
+	//数字
+	const float numSize = hpNumTex.GetTextureSize().y;
+	hpNumSpr.SelectDrawAreaDraw(Vector2(numSize * hp, 0), Vector2(numSize * (hp + 1), numSize), &hpNumTex);
+}
 
 
 void Player::SetModelMoveVector(const Vector3& vector) 
@@ -737,6 +794,8 @@ void Player::SetModelMoveVector(const Vector3& vector)
 
 void Player::DamageFromEnemy()
 {
+	if (isMuteki)
+		return;
 	hp--;
 	isMuteki = true;
 }
