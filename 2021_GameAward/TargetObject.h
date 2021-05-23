@@ -6,6 +6,7 @@
 class TargetObject :public Object
 {
 private:
+
 	static const int CREATE_NUMBER;
 	int heapNum;
 	static ObjModel modelData;

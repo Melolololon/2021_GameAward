@@ -36,7 +36,6 @@ Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
 
-
 #pragma region スプライト
 
 Sprite3D Play::targetLockSprite;
@@ -45,8 +44,6 @@ Texture Play::targetLockTexture;
 Sprite2D Play::timerSprite[6];
 Texture Play::timerTexture;
 
-Sprite2D Play::hpAnimationSprite;
-Texture Play::hpAnimationTexture;
 
 Sprite2D Play::targetAnimationSprite;
 Texture Play::targetAnimationTexture;
@@ -80,9 +77,8 @@ void Play::LoadResources()
 	}
 	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 
-	hpAnimationSprite.CreateSprite();
-	hpAnimationTexture.LoadSpriteTexture("Resources/Texture/hpAnimation.png");
-	hpAnimationSprite.SetPosition(Vector2(0, 0));
+	
+
 
 	targetAnimationSprite.CreateSprite();
 	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
@@ -216,9 +212,7 @@ void Play::Initialize()
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 
-	hpAnimationTimer.SetMaxTime(HP_ANIMATION_ONE_FREAM_TIME * 8);
-	hpAnimationTimer.SetStopFlag(false);
-
+	
 	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
 	targetAnimationTimer.SetStopFlag(false);
 
@@ -230,6 +224,8 @@ void Play::Initialize()
 
 void Play::Update()
 {
+	
+
 #pragma region ポーズ
 	if (XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON ,1))
@@ -241,6 +237,8 @@ void Play::Update()
 		return;
 	
 #pragma endregion
+
+	player->UpdateHpAnimation();
 
 	//クリアのスロー
 	if (!slowTimer.GetMultipleTimeFlag(2))
@@ -554,22 +552,8 @@ void Play::Draw()
 	//プレイヤーHP
 	int playerHP = player->GetHp();
 
-	//HP数字
-
-	//HPアニメーション
-	if (hpAnimationTimer.GetMultipleTimeFlag(HP_ANIMATION_ONE_FREAM_TIME) 
-		&& !isPause)
-		hpAnimationNum++;
-	if (hpAnimationTimer.GetSameAsMaximumFlag())
-		hpAnimationNum = 0;
-
-	const Vector2 hpAnimationTextureSize = hpAnimationTexture.GetTextureSize();
-	hpAnimationSprite.SelectDrawAreaDraw
-	(
-		Vector2(hpAnimationTextureSize.x / 8 * hpAnimationNum, 0),
-		Vector2(hpAnimationTextureSize.x / 8 * (hpAnimationNum + 1), hpAnimationTextureSize.y),
-		&hpAnimationTexture
-	);
+	//playerのHPを描画
+	player->DrawHp();
 	
 	//祠
 	

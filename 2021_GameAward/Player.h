@@ -2,6 +2,9 @@
 #include"Object.h"
 #include"ObjModel.h"
 #include"HeapIndexManager.h"
+#include"Sprite2D.h"
+#include"Texture.h"
+#include"FreamTimer.h"
 class Player :public Object
 {
 public:
@@ -20,6 +23,22 @@ private:
 	static int boneNum;
 
 	Vector3 scale;
+
+
+#pragma endregion
+
+#pragma region スプライト関係
+	static Sprite2D hpAnimationSprite;
+	static Texture hpAnimationTexture;
+	UINT hpAnimationNum = 0;
+	FreamTimer hpAnimationTimer;
+	static const int HP_ANIMATION_ONE_FREAM_TIME = 60 * 0.1;
+
+	static Sprite2D hpCrossSpr;
+	static Texture hpCrossTex;
+
+	static Sprite2D hpNumSpr;
+	static Texture hpNumTex;
 #pragma endregion
 
 
@@ -122,6 +141,11 @@ public:
 	void GameOverMove();
 	
 	void DamageFromEnemy();
+
+	void UpdateHpAnimation();
+
+	void DrawHp();
+
 
 	/// <summary>
 	/// モデル読み込み
