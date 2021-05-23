@@ -30,14 +30,17 @@ protected:
 	static const float MAX_ANGLE;
 	static const float MIN_ANGLE;
 	bool isMoveAnimation = false;
-
 	//EnemyのUpdateで呼び出す
-	void UpdateAnimationData(const Vector3& vel);
+	void UpdateMoveAnimationData(const Vector3& vel);
 
+	//やられアニメーション
+	void UpdateDeadAnimationData();
+
+	void LockPlayer();
 #pragma endregion
 
 #pragma region 共通パラメータ
-	static const int GENERATE_COUNT = 5000;
+	static const int GENERATE_COUNT = 50;
 	Vector3 position;
 	Vector3 velocity;
 	float moveSpeed = 0.15f;
@@ -46,6 +49,7 @@ protected:
 
 	int attackAfterTimer = 60 * 2;
 
+	Vector3 angle = 0;
 #pragma endregion
 
 	//初期化と更新は各クラスでオーバーライド
