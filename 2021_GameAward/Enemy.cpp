@@ -80,7 +80,10 @@ void Enemy::UpdateDeadAnimationData()
 		position.y -= 0.025f;
 	}
 	else
+	{
+		pGameTime->SetNowTime(pGameTime->GetTime() - decreaseTime * 60);
 		eraseManager = true;
+	}
 
 }
 
