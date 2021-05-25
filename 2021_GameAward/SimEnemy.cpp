@@ -110,6 +110,7 @@ void SimEnemy::Update()
 		partDeadTimer--;
 		if (partDeadTimer < 0)
 		{
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/SimSE/EnemyDrop.wav");
 			partDeadTimer = 60 * 0.5;
 			hp = 1;
 		}

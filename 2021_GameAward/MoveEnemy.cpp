@@ -76,9 +76,10 @@ void MoveEnemy::Update()
 	else
 	{
 		attackAfterTimer--;
-		if (attackAfterTimer < 0)
+		if (attackAfterTimer < 0) 
+		{
 			attackAfterTimer = 60 * 2;
-
+		}
 		//アニメーション用
 		velocity = 0;
 	}

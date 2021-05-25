@@ -87,9 +87,11 @@ void ShotEnemy::Update()
 	else
 	{
 		//‚±‚±‚É’e‚ðŒ‚‚Âˆ—
-		if (shotWaitTimer == 60)
+		if (shotWaitTimer == 60) 
+		{
 			ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyBullet>(position, velocity));
-
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/ShotSE/EnemyShot.wav");
+		}
 		shotWaitTimer--;
 
 		if (attackAfterTimer != 60 * 2)

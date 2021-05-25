@@ -82,6 +82,11 @@ void FleeEnemy::Update()
 		//“¦‚°‚é
 		if (escapeTimer < 300 - 60 * 2)
 		{
+			if(escapeTimer == 300 - 60 * 2 - 1)
+			{
+				Library::PlaySoundEveryLoad("Resources/Sound/SE/FleeSE/EnemyRun.wav");
+			}
+
 			if (attackAfterTimer == 60 * 2)
 			{
 				//À•WXV

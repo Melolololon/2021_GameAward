@@ -1525,7 +1525,7 @@ void Library::CalculationNormal
 #pragma endregion
 
 #pragma region ƒTƒEƒ“ƒh
-void Library::PlaySound(const char* path)
+void Library::PlaySoundEveryLoad(const char* path)
 {
 	audio.get()->PlayWave(path);
 }

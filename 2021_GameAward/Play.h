@@ -35,6 +35,7 @@ private:
 	//とりあえず固定
 	const int ENEMY_COUNT = 5;
 
+
 	//ゲーム状態
 	static PlaySceneState playSceneState;
 
@@ -43,8 +44,6 @@ private:
 	Vector3 addCameraPosition;
 	Vector3 cameraTarget;
 #pragma endregion
-
-
 
 #pragma region ステージデータ
 	std::vector<std::shared_ptr<TargetObject> > targetObjects;
@@ -87,15 +86,16 @@ private:
 
 #pragma endregion
 
+#pragma region ゲームのタイマー
 
 
-	//時間
 	FreamTimer gameTime;
 
 	FreamTimer sceneEndTimer;
 	static const int SCENE_END_TIME = 60 * 3;
 
 	FreamTimer slowTimer;
+#pragma endregion
 
 	bool isPause = false;
 
