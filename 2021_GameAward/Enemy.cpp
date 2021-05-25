@@ -82,6 +82,7 @@ void Enemy::UpdateDeadAnimationData()
 	else
 	{
 		pGameTime->SetNowTime(pGameTime->GetTime() - decreaseTime * 60);
+		if (pGameTime->GetTime() < 0) pGameTime->SetNowTime(0);
 		eraseManager = true;
 	}
 
