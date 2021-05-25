@@ -110,15 +110,16 @@ void Player::Initialize()
 
 	position = { 0.0f,0.0f,0.0f };
 	velocity = { 1.0f,0.0f,0.0f };
-	initSpeed = fMap["speed"];
-	//initSpeed = 1.0f;
+	//initSpeed = fMap["speed"];
+	initSpeed = 0.25f;
 	speed = initSpeed;
 	stageSelectSpeedMag = 25.0f;
 	//selectStage = false;
 #pragma region パラメーター
 
 
-	hp = iMap["hp"];
+	//hp = iMap["hp"];
+	hp = 5;
 	isMuteki = false;
 	mutekiTimer = 0;
 	mutekiTime = 60 * 3;
@@ -155,9 +156,12 @@ void Player::Initialize()
 	rotateFlag = false;
 	twistAngles.resize(boneNum);
 	tienTimer = 0;
-	tienTime = iMap["tienTime"];
-	rotateSpeed = fMap["rotateSpeed"];//1フレームに回転する角度
-	pushRotateAngle = fMap["pushRotateAngle"];
+	//tienTime = iMap["tienTime"];
+	tienTime = 4;
+	//rotateSpeed = fMap["rotateSpeed"];//1フレームに回転する角度
+	rotateSpeed = 3.0f;
+	//pushRotateAngle = fMap["pushRotateAngle"];
+	pushRotateAngle = 360.0f;
 #pragma endregion
 
 #pragma region 移動
@@ -526,9 +530,10 @@ void Player::Update()
 #pragma endregion
 
 	//角度セット
-	for (int i = 0; i < boneNum; i++)
-		//Library::setOBJBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, modelData, 0);
+	for (int i = 0; i < boneNum; i++) 
+	{
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+	}
 
 	position = bonePos[bonePos.size() / 2];
 	modelData.SetPosition(modelMoveVector, heapNum);
@@ -547,6 +552,8 @@ void Player::Update()
 				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.2f, q.z * 2.5),
 				Vector3(q.x, 0, q.z)
 				));
+
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
 	};
 
 	//旧ショット(自動)

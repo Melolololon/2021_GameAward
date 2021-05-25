@@ -102,8 +102,11 @@ void Title::Update()
 	bool padStart = XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& XInputManager::GetPadConnectedFlag(1);
 	if (DirectInput::KeyTrigger(DIK_Z)
-		|| padStart)
+		|| padStart) 
+	{
 		Fade::GetInstance()->FadeStart();
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+	}
 
 	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
 		isEnd = true;

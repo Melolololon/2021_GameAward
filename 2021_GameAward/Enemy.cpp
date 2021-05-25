@@ -118,6 +118,8 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 	{
 		if (attackAfterTimer >= 60 * 2)
 		{
+
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/MoveSE/EnemyAttack.wav");
 			attackAfterTimer--;
 			//‚±‚±‚ÉƒvƒŒƒCƒ„[‚Ì‘Ì—Í‚ðŒ¸‚ç‚·ˆ—
 			pPlayer->DamageFromEnemy();
