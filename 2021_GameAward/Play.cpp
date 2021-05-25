@@ -100,6 +100,7 @@ void Play::Initialize()
 
 			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
 			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
 			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
@@ -107,6 +108,7 @@ void Play::Initialize()
 		else if (enemyType == EnemyType::ET_ShotEnemy) {
 			std::shared_ptr<ShotEnemy> enemy = std::make_shared<ShotEnemy>();
 			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
 			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
@@ -114,6 +116,7 @@ void Play::Initialize()
 		else if (enemyType == EnemyType::ET_FleeEnemy) {
 			std::shared_ptr<FleeEnemy> enemy = std::make_shared<FleeEnemy>();
 			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
 			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
 			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
@@ -126,6 +129,7 @@ void Play::Initialize()
 			{
 				enemy[j] = std::make_shared<SimEnemy>();
 				enemy[j]->setPPlayer(player.get());
+				enemy[j]->setPGameTime(&gameTime);
 				enemy[j]->setPosition(initPos);
 				enemy[j]->Initialize();
 
@@ -517,14 +521,26 @@ void Play::Draw()
 
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
-	if (drawNum < 0) drawNum *= -1;
-	int keta = std::to_string(gameTime.GetTime() / 60).size();
+	bool isMinus = gameTime.GetTime() < 0;
+	if (isMinus) drawNum--;
+	std::string drawStr = std::to_string(drawNum);
+	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
 	{
-		int n = drawNum % 10;
+		std::string str = drawStr.substr(keta - 1 - i, 1);
 		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40 * (i + 1), 0);
-		timerSprite[i].SetPosition(pos);
-		timerSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &timerTexture);
+		if (str == "-")
+		{
+			timerSprite[i].SetPosition(pos);
+			timerSprite[i].SelectDrawAreaDraw(Vector2(10 * 80, 0), Vector2(10 * 80 + 80, 80), &timerTexture);
+		}
+		else
+		{
+			int n = atoi(str.c_str());
+			timerSprite[i].SetPosition(pos);
+			timerSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &timerTexture);
+		}
+
 		drawNum /= 10;
 	}
 #pragma endregion

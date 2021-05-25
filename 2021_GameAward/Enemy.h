@@ -49,6 +49,10 @@ protected:
 	int attackAfterTimer = 60 * 2;
 
 	Vector3 angle = 0;
+
+	FreamTimer* pGameTime;
+
+	int decreaseTime = 10;
 #pragma endregion
 
 	//初期化と更新は各クラスでオーバーライド
@@ -72,6 +76,7 @@ public:
 	static void loadModel();
 
 	void setPPlayer(Player* p) { pPlayer = p; };
+	void setPGameTime(FreamTimer* pGameTime) { this->pGameTime = pGameTime; }
 	virtual void setPosition(Vector3 pos) = 0;
 
 	static bool isGameStart();
