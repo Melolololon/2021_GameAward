@@ -96,6 +96,8 @@ void Play::LoadResources()
 	targetAnimationSprite.CreateSprite();
 	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
 	targetAnimationSprite.SetPosition(Vector2(0,120));
+
+	Library::LoadSound("Resources/Sound/BGM/Map1BGM.wav", "Play", true);
 }
 
 
@@ -233,6 +235,8 @@ void Play::Initialize()
 #pragma endregion
 
 	Fade::GetInstance()->SetIsStopFlag(true);
+
+	Library::PlayLoadSound("Play");
 }
 
 void Play::Update()

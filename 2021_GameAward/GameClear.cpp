@@ -127,6 +127,7 @@ void GameClear::Draw()
 
 void GameClear::Finitialize()
 {
+	Library::StopLoadSound("Play", false);
 }
 
 Scene* GameClear::GetNextScene()

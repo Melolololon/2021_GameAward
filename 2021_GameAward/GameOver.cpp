@@ -87,12 +87,19 @@ void GameOver::Draw()
 void GameOver::Finitialize()
 {
 	ObjectManager::GetInstance()->AllEraseObject();
+
+	if (returnStageSelect) 
+	{
+		Library::StopLoadSound("Play", false);
+	}
 }
 
 Scene* GameOver::GetNextScene()
 {
-	if (returnStageSelect)
+	if (returnStageSelect) 
+	{
 		return new StageSelect();
+	}
 	return new Play();
 }
 

@@ -129,6 +129,7 @@ void StageSelect::LoadResources()
 
 	}
 
+	Library::LoadSound("Resources/Sound/BGM/StageSelect.wav", "StageSelect", true);
 }
 
 void StageSelect::Initialize()
@@ -158,6 +159,7 @@ void StageSelect::Initialize()
 	stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 	nextSceneTimer.SetMaxTime(60 * 0.5);
 
+	Library::PlayLoadSound("StageSelect");
 }
 
 void StageSelect::Update()
@@ -244,6 +246,7 @@ void StageSelect::Finitialize()
 
 	ObjectManager::GetInstance()->AllEraseObject();
 
+	Library::StopLoadSound("StageSelect", false);
 }
 
 Scene* StageSelect::GetNextScene()

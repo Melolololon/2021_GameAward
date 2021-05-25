@@ -28,6 +28,9 @@ void Title::LoadResources()
 	pushButtonSprite->CreateSprite();
 	pushButtonTexture = std::make_unique<Texture>();
 	pushButtonTexture->LoadSpriteTexture("Resources/Texture/MS_Title/press_X_button.png");
+
+	Library::LoadSound("Resources/Sound/BGM/SnakeTitle.wav", "Title", true);
+
 }
 
 void Title::Initialize()
@@ -41,6 +44,7 @@ void Title::Initialize()
 	}
 
 	//BGMçƒê∂
+	Library::PlayLoadSound("Title");
 }
 
 void Title::Update()
@@ -137,6 +141,7 @@ void Title::Draw()
 
 void Title::Finitialize()
 {
+	Library::StopLoadSound("Title", false);
 }
 
 Scene* Title::GetNextScene()
