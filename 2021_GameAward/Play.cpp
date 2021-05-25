@@ -106,76 +106,6 @@ void Play::Initialize()
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 
-	//ìGí«â¡
-	for (int i = 0; i < ENEMY_COUNT; i++)
-	{
-
-		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(4);
-		if (enemyType == Play::EnemyType::ET_MoveEnemy){
-
-			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
-			enemy->setPPlayer(player.get());
-			enemy->setPGameTime(&gameTime);
-			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
-			enemy->Initialize();
-			ObjectManager::GetInstance()->AddObject(enemy);
-		}
-		else if (enemyType == EnemyType::ET_ShotEnemy) {
-			std::shared_ptr<ShotEnemy> enemy = std::make_shared<ShotEnemy>();
-			enemy->setPPlayer(player.get());
-			enemy->setPGameTime(&gameTime);
-			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
-			enemy->Initialize();
-			ObjectManager::GetInstance()->AddObject(enemy);
-		}
-		else if (enemyType == EnemyType::ET_FleeEnemy) {
-			std::shared_ptr<FleeEnemy> enemy = std::make_shared<FleeEnemy>();
-			enemy->setPPlayer(player.get());
-			enemy->setPGameTime(&gameTime);
-			enemy->setPosition(Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z));
-			enemy->Initialize();
-			ObjectManager::GetInstance()->AddObject(enemy);
-		}
-		else if (enemyType == EnemyType::ET_SimEnemy) {
-			std::shared_ptr<SimEnemy> enemy[3];
-			Vector3 initPos = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
-
-			for (int j = 0; j < 3; j++)
-			{
-				enemy[j] = std::make_shared<SimEnemy>();
-				enemy[j]->setPPlayer(player.get());
-				enemy[j]->setPGameTime(&gameTime);
-				enemy[j]->setPosition(initPos);
-				enemy[j]->Initialize();
-
-				enemy[j]->SetID(j);
-			}
-
-			for (int j = 0; j < 3; j++)
-			{
-				int setNum = j - 1;
-				if (setNum < 0) setNum = 2;
-
-				enemy[j]->SetOther(0, enemy[setNum]);
-
-				setNum = j + 1;
-				if (setNum > 2) setNum = 0;
-
-				enemy[j]->SetOther(1, enemy[setNum]);
-
-				ObjectManager::GetInstance()->AddObject(enemy[j]);
-			}
-		}
-		/*
-		else if (enemyType == EnemyType::ET_DefenceEnemy) {
-			enemy = std::make_shared<DefenceEnemy>();
-		}
-		else if (enemyType == EnemyType::ET_HealEnemy) {
-			enemy = std::make_shared<HealEnemy>();
-		}*/
-
-	}
-
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
 #pragma region ÉJÉÅÉâ
@@ -208,6 +138,134 @@ void Play::Initialize()
 
 		t = std::make_shared<TargetObject>(targetPos);
 		ObjectManager::GetInstance()->AddObject(t);
+	}
+#pragma endregion
+
+#pragma region ìG
+	//ìGí«â¡
+	for (int i = 0; i < ENEMY_COUNT; i++)
+	{
+
+		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(4);
+		if (enemyType == Play::EnemyType::ET_MoveEnemy) {
+
+			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
+			Vector3 random;
+			bool b1 = false;
+			do {				
+				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
+				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
+				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+				for (int j = 0; j < blockPositions.size(); j++)
+				{
+					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
+					Vector3 blockRightDown = blockPositions[j] + blockScales[j] / 2;
+					b1 = isCollision(blockLeftUp, blockRightDown, enemyLeftUp, enemyRightDown);
+					if (b1) break;
+				}
+			} while (b1);
+			enemy->setPosition(random);
+			enemy->Initialize();
+			ObjectManager::GetInstance()->AddObject(enemy);
+		}
+		else if (enemyType == EnemyType::ET_ShotEnemy) {
+			std::shared_ptr<ShotEnemy> enemy = std::make_shared<ShotEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
+			Vector3 random;
+			bool b1 = false;
+			do {
+				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
+				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
+				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+				for (int j = 0; j < blockPositions.size(); j++)
+				{
+					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
+					Vector3 blockRightDown = blockPositions[j] + blockScales[j] / 2;
+					b1 = isCollision(blockLeftUp, blockRightDown, enemyLeftUp, enemyRightDown);
+					if (b1) break;
+				}
+			} while (b1);
+			enemy->setPosition(random);
+			enemy->Initialize();
+			ObjectManager::GetInstance()->AddObject(enemy);
+		}
+		else if (enemyType == EnemyType::ET_FleeEnemy) {
+			std::shared_ptr<FleeEnemy> enemy = std::make_shared<FleeEnemy>();
+			enemy->setPPlayer(player.get());
+			enemy->setPGameTime(&gameTime);
+			Vector3 random;
+			bool b1 = false;
+			do {
+				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
+				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
+				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+				for (int j = 0; j < blockPositions.size(); j++)
+				{
+					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
+					Vector3 blockRightDown = blockPositions[j] + blockScales[j] / 2;
+					b1 = isCollision(blockLeftUp, blockRightDown, enemyLeftUp, enemyRightDown);
+					if (b1) break;
+				}
+			} while (b1);
+			enemy->setPosition(random);
+			enemy->Initialize();
+			ObjectManager::GetInstance()->AddObject(enemy);
+		}
+		else if (enemyType == EnemyType::ET_SimEnemy) {
+			std::shared_ptr<SimEnemy> enemy[3];
+
+			Vector3 random;
+			bool b1 = false;
+			do {
+				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
+				Vector3 enemyLeftUp = random - Vector3(1.5, 0, 1.5); //ÇøÇÂÇ¡Ç∆çLÇﬂÇ…
+				Vector3 enemyRightDown = random + Vector3(1.5, 0, 1.5);
+				for (int j = 0; j < blockPositions.size(); j++)
+				{
+					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
+					Vector3 blockRightDown = blockPositions[j] + blockScales[j] / 2;
+					b1 = isCollision(blockLeftUp, blockRightDown, enemyLeftUp, enemyRightDown);
+					if (b1) break;
+				}
+			} while (b1);
+
+			for (int j = 0; j < 3; j++)
+			{
+				enemy[j] = std::make_shared<SimEnemy>();
+				enemy[j]->setPPlayer(player.get());
+				enemy[j]->setPGameTime(&gameTime);
+				enemy[j]->setPosition(random);
+				enemy[j]->Initialize();
+
+				enemy[j]->SetID(j);
+			}
+
+			for (int j = 0; j < 3; j++)
+			{
+				int setNum = j - 1;
+				if (setNum < 0) setNum = 2;
+
+				enemy[j]->SetOther(0, enemy[setNum]);
+
+				setNum = j + 1;
+				if (setNum > 2) setNum = 0;
+
+				enemy[j]->SetOther(1, enemy[setNum]);
+
+				ObjectManager::GetInstance()->AddObject(enemy[j]);
+			}
+		}
+		/*
+		else if (enemyType == EnemyType::ET_DefenceEnemy) {
+			enemy = std::make_shared<DefenceEnemy>();
+		}
+		else if (enemyType == EnemyType::ET_HealEnemy) {
+			enemy = std::make_shared<HealEnemy>();
+		}*/
+
 	}
 #pragma endregion
 
@@ -652,5 +710,18 @@ void Play::SetStageData
 	targetNumber = targetNum;
 	leftUpPosition = leftUpPos;
 	rightDownPosition = rightDownPos;
+
+}
+
+bool Play::isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown)
+{
+	if (blockLeftUp.x > enemyRightDown.x) return false;
+	if (blockRightDown.x < enemyLeftUp.x) return false;
+	if (blockLeftUp.y > enemyRightDown.y) return false;
+	if (blockRightDown.y < enemyLeftUp.y) return false;
+	if (blockLeftUp.z > enemyRightDown.z) return false;
+	if (blockRightDown.z < enemyLeftUp.z) return false;
+
+	return true;
 
 }

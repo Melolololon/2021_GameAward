@@ -35,7 +35,7 @@ private:
 
 	std::shared_ptr<Player> player;
 	//Ç∆ÇËÇ†Ç¶Ç∏å≈íË
-	const int ENEMY_COUNT = 5;
+	const int ENEMY_COUNT = 10;
 
 
 	//ÉQÅ[ÉÄèÛë‘
@@ -136,5 +136,6 @@ public:
 		return playSceneState;
 	}
 
+	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
 };
 
