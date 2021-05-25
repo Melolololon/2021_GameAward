@@ -31,6 +31,8 @@ public:
 	};
 
 private:
+	static int stageNum;
+
 	std::shared_ptr<Player> player;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
 	const int ENEMY_COUNT = 5;
@@ -74,6 +76,8 @@ private:
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
 
+
+
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
 
@@ -82,6 +86,10 @@ private:
 	UINT targetAnimationNum = 0;
 	FreamTimer targetAnimationTimer;
 	static const int TARGET_ANIMATION_ONE_FREAM_TIME = 60 * 0.1;
+
+	static Sprite2D targetNumSprite;
+	static Sprite2D targetCrossSprite;
+	static Texture targetCrossTexture;
 
 
 #pragma endregion
@@ -113,6 +121,7 @@ public:
 	
 	static void SetStageData
 	(
+		const int stage,
 		std::vector<Vector3>blockPos,
 		std::vector<Vector3>blockScale,
 		const float& targetDis,

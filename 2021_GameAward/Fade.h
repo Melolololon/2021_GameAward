@@ -6,13 +6,16 @@
 //フェードインアウトクラス
 class Fade
 {
-private:
+public:
 	enum FadeState
 	{
 		FADE_NOT,
 		FADE_IN,
 		FADE_OUT,
 	};
+
+private:
+
 
 	Fade(){}
 	~Fade(){}
@@ -36,6 +39,7 @@ public:
 	void FadeStart() { fadeState = FadeState::FADE_OUT; }
 	bool GetSceneChangeTimingFlag();
 	bool GetFadeEndFlag();
+	FadeState GetFadeState() { return fadeState; }
 
 	void SetIsStopFlag(const bool flag) { isStop = flag; }
 };

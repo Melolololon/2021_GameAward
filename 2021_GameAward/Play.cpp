@@ -24,9 +24,6 @@
 
 #pragma endregion
 
-Sprite2D Play::arrowSprite;
-Texture Play::arrowTexture;
-
 
 float Play::targetDistance;
 float Play::playerDistance;
@@ -35,11 +32,20 @@ Vector3 Play::leftUpPosition;
 Vector3 Play::rightDownPosition;
 std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
+int Play::stageNum = 0;
 
 #pragma region スプライト
 
+
+Sprite2D Play::arrowSprite;
+Texture Play::arrowTexture;
+
 Sprite3D Play::targetLockSprite;
 Texture Play::targetLockTexture;
+
+Sprite2D Play::targetNumSprite;
+Sprite2D Play::targetCrossSprite;
+Texture Play::targetCrossTexture;
 
 Sprite2D Play::timerSprite[6];
 Texture Play::timerTexture;
@@ -47,6 +53,7 @@ Texture Play::timerTexture;
 
 Sprite2D Play::targetAnimationSprite;
 Texture Play::targetAnimationTexture;
+
 
 #pragma endregion
 
@@ -66,6 +73,14 @@ void Play::LoadResources()
 	arrowSprite.CreateSprite();
 	arrowTexture.LoadSpriteTexture("Resources/Texture/arrow.png");
 
+	targetNumSprite.CreateSprite();
+	targetNumSprite.SetPosition(Vector2(140, 120));
+
+	targetCrossSprite.CreateSprite();
+	targetCrossSprite.SetPosition(Vector2(70, 120));
+	targetCrossSprite.SetScale(Vector2(0.4, 0.4));
+	targetCrossTexture.LoadSpriteTexture("Resources/Texture/numCross.png");
+
 	//スプライト
 	targetLockSprite.CreateSprite({ 10,10 });
 	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
@@ -78,8 +93,6 @@ void Play::LoadResources()
 	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 
 	
-
-
 	targetAnimationSprite.CreateSprite();
 	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
 	targetAnimationSprite.SetPosition(Vector2(0,120));
@@ -473,7 +486,6 @@ void Play::Update()
 #pragma endregion
 
 
-
 #pragma region 終了処理
 
 	//クリア
@@ -564,6 +576,20 @@ void Play::Draw()
 	if (targetAnimationTimer.GetSameAsMaximumFlag())
 		targetAnimationNum = 0;
 
+	//祠掛ける
+	targetCrossSprite.Draw(&targetCrossTexture);
+
+	//数字
+	const float targetNumSize = timerTexture.GetTextureSize().y;
+	const int targetNum = targetObjects.size();
+	targetNumSprite.SelectDrawAreaDraw
+	(
+		Vector2(targetNumSize * targetNum, 0),
+		Vector2(targetNumSize * (targetNum + 1), targetNumSize),
+		&timerTexture
+	);
+
+
 	const Vector2 targetAnimationTextureSize = targetAnimationTexture.GetTextureSize();
 	targetAnimationSprite.SelectDrawAreaDraw
 	(
@@ -583,16 +609,28 @@ void Play::Finitialize()
 
 Scene* Play::GetNextScene()
 {
-	if (playSceneState == PLAY_SCENE_GAMECLEAR)
+	if (playSceneState == PLAY_SCENE_GAMECLEAR) 
+	{
+		int drawNum = gameTime.GetTime() / 60;
+		bool isMinus = gameTime.GetTime() < 0;
+		if (isMinus) drawNum--;
+
+		GameClear::SetStageNum(stageNum);
+		GameClear::SetTime(drawNum);
+
 		return new GameClear();
-	else if (playSceneState == PLAY_SCENE_GAMEOVER)
+	}
+	else if (playSceneState == PLAY_SCENE_GAMEOVER) 
+	{
 		return new GameOver();
+	}
 	return new StageSelect();
 }
 
 
 void Play::SetStageData
 (
+	const int stage,
 	std::vector<Vector3>blockPos,
 	std::vector<Vector3>blockScale,
 	const float& targetDis,
@@ -602,6 +640,7 @@ void Play::SetStageData
 	const Vector3& rightDownPos
 )
 {
+	stageNum = stage;
 	blockPositions = blockPos;
 	blockScales = blockScale;
 	targetDistance = targetDis;

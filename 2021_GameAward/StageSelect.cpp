@@ -135,8 +135,10 @@ void StageSelect::Initialize()
 {
 	for (const auto& b1 : blocks)
 	{
-		for(const auto& b2 : b1)
-		ObjectManager::GetInstance()->AddObject(b2);
+		for (const auto& b2 : b1) 
+		{
+			ObjectManager::GetInstance()->AddObject(b2);
+		}
 	}
 
 	Vector3 cameraPosition = { 0,1400,-400 };
@@ -162,10 +164,14 @@ void StageSelect::Update()
 {
 	//ステージセレクト
 	float inputAngle;
-	if (XInputManager::GetPadConnectedFlag(1))
+	if (XInputManager::GetPadConnectedFlag(1)) 
+	{
 		inputAngle = XInputManager::LeftStickAngle(1);
-	else
+	}
+	else 
+	{
 		inputAngle = DirectInput::ArrowKeyAngle();
+	}
 
 	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
 	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
@@ -182,22 +188,31 @@ void StageSelect::Update()
 	}
 
 	bool padSelect = XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1);
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
+
 	if (DirectInput::KeyTrigger(DIK_Z)
+		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
 		|| padSelect) 
 	{
-		if (stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END) 
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+		
+
+		if (stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT)
 		{
 			nextSceneTimer.SetStopFlag(false);
 			stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
 		}
 	}
 
-
-	if (nextSceneTimer.GetSameAsMaximumFlag())
+	if (nextSceneTimer.GetSameAsMaximumFlag()) 
+	{
 		Fade::GetInstance()->FadeStart();
-	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
+	}
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag()) 
+	{
 		isEnd = true;
+	}
 
 	ObjectManager::GetInstance()->Update();
 	
@@ -217,6 +232,7 @@ void StageSelect::Finitialize()
 	//情報セット
 	Play::SetStageData
 	(
+		selectStageNum,
 		blockPositions[selectStageNum],
 		blockScales[selectStageNum],
 		targetDistance[selectStageNum],

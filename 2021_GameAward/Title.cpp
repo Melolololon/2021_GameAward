@@ -32,12 +32,15 @@ void Title::LoadResources()
 
 void Title::Initialize()
 {
+
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
 	for (int i = 0; i < _countof(titleSpritePosition); i++)
 	{
 		titleSlowMove[i] = false;
 		titleSpritePosition[i] = { 1280 + i * titleTextureSize * 3 ,0 };
 	}
+
+	//BGMÄ¶
 }
 
 void Title::Update()
@@ -102,10 +105,13 @@ void Title::Update()
 	bool padStart = XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& XInputManager::GetPadConnectedFlag(1);
 	if (DirectInput::KeyTrigger(DIK_Z)
-		|| padStart) 
+		|| padStart)
 	{
-		Fade::GetInstance()->FadeStart();
-		Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT) 
+		{
+			Fade::GetInstance()->FadeStart();
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+		}
 	}
 
 	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
@@ -133,7 +139,8 @@ void Title::Finitialize()
 {
 }
 
+#include"GameClear.h"
 Scene* Title::GetNextScene()
 {
-	return new StageSelect();
+	return new GameClear();
 }
