@@ -139,8 +139,7 @@ void Title::Finitialize()
 {
 }
 
-#include"GameClear.h"
 Scene* Title::GetNextScene()
 {
-	return new GameClear();
+	return new StageSelect();
 }

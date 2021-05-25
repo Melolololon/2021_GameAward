@@ -33,7 +33,7 @@ const int GameClear::B_RUNK_TIME[5] =
 
 
 int GameClear::stageNum = 0;
-int GameClear::time = 120;
+int GameClear::time = 0;
 
 Sprite2D GameClear::timeSprite[6];
 Texture GameClear::timeTexture;
@@ -112,7 +112,7 @@ void GameClear::Draw()
 	for (int i = 0; i < keta; i++)
 	{
 		std::string str = drawStr.substr(keta - 1 - i, 1);
-		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (timeScale.x * 1.2f) * (i + 1) - 150, 340);
+		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (timeScale.x * 1.2f) * (i + 1) - 120, 340);
 
 		int n = atoi(str.c_str());
 		timeSprite[i].SetPosition(pos);
