@@ -32,6 +32,11 @@ void MoveEnemy::Initialize()
 
 	modelData.SetScale(0.7f, heapNum);
 
+
+	modelData.SetBoneAngle(0, 0, heapNum);
+	modelData.SetBoneAngle(0, 1, heapNum);
+	modelData.SetAngle(0, heapNum);
+
 }
 
 void MoveEnemy::Update()

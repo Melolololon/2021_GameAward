@@ -112,7 +112,7 @@ private:
 #pragma endregion
 
 	static bool isPause;
-
+	bool backStageSelect = false;
 public:
 	Play();
 	~Play();

@@ -197,11 +197,13 @@ void StageSelect::Update()
 		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
 		|| padSelect) 
 	{
-		Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+
 		
 
-		if (stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT)
+		if (stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
+			&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT())
 		{
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
 			nextSceneTimer.SetStopFlag(false);
 			stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
 		}

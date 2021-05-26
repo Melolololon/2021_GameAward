@@ -320,23 +320,71 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	
-
-#pragma region ポーズ
-	Vector3 playerPos = player->GetPosition();
-	if (XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)) 
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
 	{
-		isPause = isPause == false ? true : false;
-
-		pauseSnake->SetModelMoveVector(playerPos + Vector3(-10, 30, -9));
+		isEnd = true;
 	}
 
+#pragma region ポーズ
 	FreamTimer::SetAllTimerStopFlag(isPause);
-	
+
+	//押したらポーズ
+	if (XInputManager::GetPadConnectedFlag(1)
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)
+		&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT) 
+	{
+		isPause = isPause == false ? true : false;
+		backStageSelect = false;
+	}
+
 	if (isPause) 
 	{
 		pauseSnake->Update();
+
+		//選択
+		float stickAngle = 0.0f;
+		if(XInputManager::GetPadConnectedFlag(1))
+		{
+			stickAngle = XInputManager::LeftStickAngle(1);
+		}
+		if(stickAngle >= 240
+			&& stickAngle <= 300)
+		{
+			backStageSelect = true;
+		}
+		if (stickAngle >= 60
+			&& stickAngle <= 120)
+		{
+			backStageSelect = false;
+		}
+
+		//ボタン
+		if(XInputManager::GetPadConnectedFlag(1))
+		{
+			if(XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON,1))
+			{
+				if(backStageSelect)
+				{
+					Fade::GetInstance()->FadeStart();
+				}
+				else
+				{
+					isPause = false;
+				}
+			}
+		}
+
+
+		//蛇(カーソル)移動
+		if(backStageSelect)
+		{
+			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-21, 30, -19));
+		}
+		else
+		{
+			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-23, 30, -9));
+		}
+
 		return;
 	}
 	
@@ -598,11 +646,12 @@ void Play::Update()
 		playSceneState = PlaySceneState::PLAY_SCENE_GAMEOVER;
 	}
 
-	if (sceneEndTimer.GetSameAsMaximumFlag())
+	if (sceneEndTimer.GetSameAsMaximumFlag()) 
+	{
 		Fade::GetInstance()->FadeStart();
+	}
 
-	if(Fade::GetInstance()->GetSceneChangeTimingFlag())
-		isEnd = true;
+	
 #pragma endregion
 
 }
@@ -727,6 +776,13 @@ void Play::Draw()
 
 void Play::Finitialize()
 {
+	if (backStageSelect)
+	{
+		Library::StopLoadSound("Play", false);
+	}
+
+	FreamTimer::SetAllTimerStopFlag(false);
+
 	ObjectManager::GetInstance()->AllEraseObject();
 }
 
