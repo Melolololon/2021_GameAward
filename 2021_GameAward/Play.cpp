@@ -58,6 +58,9 @@ Texture Play::startTex;
 Sprite2D Play::targetAnimationSprite;
 Texture Play::targetAnimationTexture;
 
+Sprite2D Play::pauseSpr;
+Texture Play::pauseTex;
+
 
 #pragma endregion
 
@@ -105,6 +108,12 @@ void Play::LoadResources()
 	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
 	targetAnimationSprite.SetPosition(Vector2(0,120));
 
+	pauseSpr.CreateSprite();
+	pauseSpr.SetPosition(Vector2(280, 100));
+	pauseSpr.SetScale(Vector2(1.2f, 1.2f));
+
+	pauseTex.LoadSpriteTexture("Resources/Texture/pause.png");
+
 	Library::LoadSound("Resources/Sound/BGM/Map1BGM.wav", "Play", true);
 }
 
@@ -113,6 +122,7 @@ void Play::Initialize()
 {
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
+
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
@@ -691,6 +701,11 @@ void Play::Draw()
 		Vector2(targetAnimationTextureSize.x / 4 * (targetAnimationNum + 1), targetAnimationTextureSize.y),
 		&targetAnimationTexture
 	);
+
+	if(isPause)
+	{
+		pauseSpr.Draw(&pauseTex);
+	}
 
 	Fade::GetInstance()->Draw();
 }

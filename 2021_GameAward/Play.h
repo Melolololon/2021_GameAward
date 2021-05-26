@@ -95,7 +95,8 @@ private:
 	static Sprite2D targetCrossSprite;
 	static Texture targetCrossTexture;
 
-
+	static Sprite2D pauseSpr;
+	static Texture pauseTex; 
 #pragma endregion
 
 #pragma region ゲームのタイマー

@@ -58,6 +58,7 @@ Player::Player(const Vector3& pos)
 	modelData.SetPosition(modelMoveVector, heapNum);
 }
 
+
 Player::~Player()
 {
 	playerModelHeapIndexManager.DrawEndCallFunction(heapNum);
@@ -133,6 +134,7 @@ void Player::Initialize()
 		speed = initSpeed * stageSelectSpeedMag;
 		scale = { 20,20,20 };
 	}
+
 	modelData.SetScale(scale, heapNum);
 
 	initialBonePosMulScale = initialBonePos;
