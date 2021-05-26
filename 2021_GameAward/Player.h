@@ -79,7 +79,7 @@ private:
 #pragma endregion
 
 #pragma region ステージセレクト時
-	float stageSelectSpeedMag;
+	float speedMag;
 	int selectStageNum = 0;
 	//bool selectStage;//ステージ選択したかどうか
 #pragma endregion
@@ -139,6 +139,7 @@ public:
 	void PlayMove();
 	void StageSelectMove();
 	void GameOverMove();
+	void PauseMove();
 	
 	void DamageFromEnemy();
 

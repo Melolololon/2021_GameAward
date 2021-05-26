@@ -63,7 +63,7 @@ Texture Play::pauseTex;
 
 
 #pragma endregion
-
+bool Play::isPause = false;
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -122,6 +122,7 @@ void Play::Initialize()
 {
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
+	pauseSnake = std::make_shared<Player>(0); 
 
 
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
@@ -313,6 +314,8 @@ void Play::Initialize()
 	Fade::GetInstance()->SetIsStopFlag(true);
 
 	Library::PlayLoadSound("Play");
+
+	isPause = false;
 }
 
 void Play::Update()
@@ -320,14 +323,22 @@ void Play::Update()
 	
 
 #pragma region ポーズ
+	Vector3 playerPos = player->GetPosition();
 	if (XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON ,1))
+		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)) 
+	{
 		isPause = isPause == false ? true : false;
+
+		pauseSnake->SetModelMoveVector(playerPos + Vector3(-10, 30, -9));
+	}
 
 	FreamTimer::SetAllTimerStopFlag(isPause);
 	
 	if (isPause) 
+	{
+		pauseSnake->Update();
 		return;
+	}
 	
 #pragma endregion
 
@@ -669,8 +680,10 @@ void Play::Draw()
 	}
 	
 	//矢印
-	if (drawArrow)
+	if (drawArrow) 
+	{
 		arrowSprite.Draw(&arrowTexture);
+	}
 
 	//プレイヤーHP
 	int playerHP = player->GetHp();
@@ -705,6 +718,7 @@ void Play::Draw()
 	if(isPause)
 	{
 		pauseSpr.Draw(&pauseTex);
+		pauseSnake->Draw();
 	}
 
 	Fade::GetInstance()->Draw();

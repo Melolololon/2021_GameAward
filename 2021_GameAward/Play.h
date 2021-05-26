@@ -34,6 +34,7 @@ private:
 	static int stageNum;
 
 	std::shared_ptr<Player> player;
+	std::shared_ptr<Player> pauseSnake;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
 	const int ENEMY_COUNT = 10;
 
@@ -110,7 +111,7 @@ private:
 	FreamTimer slowTimer;
 #pragma endregion
 
-	bool isPause = false;
+	static bool isPause;
 
 public:
 	Play();
@@ -140,6 +141,8 @@ public:
 	{
 		return playSceneState;
 	}
+
+	static bool GetIsPauseFlag() { return isPause; }
 
 	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
 };
