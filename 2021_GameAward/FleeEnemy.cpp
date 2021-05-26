@@ -180,6 +180,10 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 
 			//eraseManager = true;
 		}
+		if (hp == 0)
+		{
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
+		}
 	}
 }
 

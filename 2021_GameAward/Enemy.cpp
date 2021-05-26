@@ -108,6 +108,7 @@ void Enemy::Draw()
 
 void Enemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
+
 	//ブロックとの衝突判定
 	if (typeid(*object) == typeid(Block))
 	{
@@ -139,6 +140,10 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 			//ここにスコアを与える処理
 
 			//eraseManager = true;
+		}
+		if(hp == 0)
+		{
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 		}
 	}
 }

@@ -217,6 +217,10 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 
 				//eraseManager = true;
 			}
+			if (hp == 0)
+			{
+				Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
+			}
 		}
 	}
 
