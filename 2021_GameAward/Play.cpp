@@ -50,6 +50,10 @@ Texture Play::targetCrossTexture;
 Sprite2D Play::timerSprite[6];
 Texture Play::timerTexture;
 
+Sprite2D Play::startTimeSpr;
+Sprite2D Play::startSpr;
+Texture Play::startTex;
+
 
 Sprite2D Play::targetAnimationSprite;
 Texture Play::targetAnimationTexture;
@@ -81,7 +85,6 @@ void Play::LoadResources()
 	targetCrossSprite.SetScale(Vector2(0.4, 0.4));
 	targetCrossTexture.LoadSpriteTexture("Resources/Texture/numCross.png");
 
-	//スプライト
 	targetLockSprite.CreateSprite({ 10,10 });
 	targetLockTexture.LoadSpriteTexture("Resources/Texture/lock.png");
 	targetLockSprite.SetBillboardFlag(true, true, true);
@@ -92,6 +95,11 @@ void Play::LoadResources()
 	}
 	timerTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 
+	startTimeSpr.CreateSprite();
+	startTimeSpr.SetPosition(Vector2(600, 300));
+	startTimeSpr.SetScale(Vector2(4, 4));
+	startSpr.CreateSprite();
+	//startTex.LoadSpriteTexture();
 	
 	targetAnimationSprite.CreateSprite();
 	targetAnimationTexture.LoadSpriteTexture("Resources/Texture/targetAnimation.png");
@@ -581,6 +589,18 @@ void Play::Update()
 void Play::Draw()
 {
 
+	const float numTextureSizeY = timerTexture.GetTextureSize().y;
+	auto DrawNumber = [&numTextureSizeY](Sprite2D& numSprite, const int number)
+	{
+		numSprite.SelectDrawAreaDraw
+		(
+			Vector2(numTextureSizeY * number, 0),
+			Vector2(numTextureSizeY * (number + 1), numTextureSizeY),
+			&timerTexture
+		);
+	};
+
+
 	ObjectManager::GetInstance()->Draw();
 
 	int playerLockTargetNum = player->GetLockTargetNum();
@@ -593,10 +613,14 @@ void Play::Draw()
 		t->DrawHp();
 
 
+
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
 	bool isMinus = gameTime.GetTime() < 0;
 	if (isMinus) drawNum--;
+
+	if (drawNum < 0)drawNum = 0;
+
 	std::string drawStr = std::to_string(drawNum);
 	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
@@ -619,7 +643,22 @@ void Play::Draw()
 	}
 #pragma endregion
 
+	//321スタート
 
+	if(gameTime.GetTime() < 60 * -2)
+	{
+		DrawNumber(startTimeSpr, 3);
+	}
+	else if(gameTime.GetTime() < 60 * -1)
+	{
+		DrawNumber(startTimeSpr, 2);
+	}
+	else if (gameTime.GetTime() < 60 * 0)
+	{
+		DrawNumber(startTimeSpr, 1);
+	}
+	
+	//矢印
 	if (drawArrow)
 		arrowSprite.Draw(&arrowTexture);
 
@@ -642,16 +681,9 @@ void Play::Draw()
 	targetCrossSprite.Draw(&targetCrossTexture);
 
 	//数字
-	const float targetNumSize = timerTexture.GetTextureSize().y;
 	const int targetNum = targetObjects.size();
-	targetNumSprite.SelectDrawAreaDraw
-	(
-		Vector2(targetNumSize * targetNum, 0),
-		Vector2(targetNumSize * (targetNum + 1), targetNumSize),
-		&timerTexture
-	);
-
-
+	DrawNumber(targetNumSprite, targetNum);
+	
 	const Vector2 targetAnimationTextureSize = targetAnimationTexture.GetTextureSize();
 	targetAnimationSprite.SelectDrawAreaDraw
 	(

@@ -81,6 +81,10 @@ private:
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
 
+	static Sprite2D startTimeSpr;
+	static Sprite2D startSpr;
+	static Texture startTex;
+
 	static Sprite2D targetAnimationSprite;
 	static Texture targetAnimationTexture;
 	UINT targetAnimationNum = 0;
