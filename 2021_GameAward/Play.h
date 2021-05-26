@@ -20,6 +20,14 @@ public:
 		PLAY_SCENE_GAMECLEAR,//ゲームクリア
 	};
 
+	enum TutorialState
+	{
+		TUTORIAL_STATE_MOVE,//移動チュートリアル
+		TUTORIAL_STATE_SHOT,//攻撃チュートリアル
+		TUTORIAL_STATE_LOCK,//ロックチュートリアル
+		TUTORIAL_STATE_TWIST,//捻りチュートリアル
+	};
+
 	enum EnemyType
 	{
 		ET_MoveEnemy,
@@ -41,6 +49,9 @@ private:
 
 	//ゲーム状態
 	static PlaySceneState playSceneState;
+
+	//チュートリアル状態
+	TutorialState tutorialState = TutorialState::TUTORIAL_STATE_MOVE;
 
 #pragma region カメラ
 	Vector3 cameraPosition;
@@ -113,6 +124,8 @@ private:
 
 	static bool isPause;
 	bool backStageSelect = false;
+
+	static bool tutorial;
 public:
 	Play();
 	~Play();
@@ -122,6 +135,8 @@ public:
 	void Draw();
 	void Finitialize();
 	Scene* GetNextScene();
+
+	void Tutorial();
 
 	static void LoadResources();
 	
@@ -137,12 +152,15 @@ public:
 		const Vector3& rightDownPos
 	);
 
+	
+
 	static PlaySceneState GetPlaySceneState()
 	{
 		return playSceneState;
 	}
 
 	static bool GetIsPauseFlag() { return isPause; }
+
 
 	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
 };

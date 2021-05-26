@@ -46,11 +46,16 @@ void StageSelect::LoadResources()
 		std::ifstream openFile;
 		openFile.open(path, std::ios_base::binary);
 
-		//全部読み込み終わったら(開くの失敗したら)抜ける
-		//ここ最初にパス全部取得してその分だけループしたほうがいい?
-		if (!openFile)break;
-		maxStageNum++;
-
+		bool loadTutorialMap = false;
+		if (!openFile)
+		{
+			openFile.open(L"Resources/Map/ms_mapT.msmap", std::ios_base::binary);
+			loadTutorialMap = true;
+		}
+		else 
+		{
+			maxStageNum++;
+		}
 		targetDistance.resize(i + 1);
 		playerDistance.resize(i + 1);
 		targetNumbers.resize(i + 1);
@@ -100,6 +105,8 @@ void StageSelect::LoadResources()
 		}
 
 		openFile.close();
+
+		if (loadTutorialMap)break;
 	}
 
 	
@@ -134,12 +141,19 @@ void StageSelect::LoadResources()
 
 void StageSelect::Initialize()
 {
+	int count = 0;
 	for (const auto& b1 : blocks)
 	{
+		if(count == maxStageNum)
+		{
+			break;
+		}
+
 		for (const auto& b2 : b1) 
 		{
 			ObjectManager::GetInstance()->AddObject(b2);
 		}
+		count++;
 	}
 
 	Vector3 cameraPosition = { 0,1400,-400 };
@@ -249,6 +263,25 @@ void StageSelect::Finitialize()
 	ObjectManager::GetInstance()->AllEraseObject();
 
 	Library::StopLoadSound("StageSelect", false);
+}
+
+void StageSelect::SetTutorialData()
+{
+	//情報セット
+	Play::SetStageData
+	(
+		maxStageNum,
+		blockPositions[maxStageNum],
+		blockScales[maxStageNum],
+		targetDistance[maxStageNum],
+		playerDistance[maxStageNum],
+		targetNumbers[maxStageNum],
+		leftUpPositions[maxStageNum],
+		rightDownPositions[maxStageNum]
+	);
+
+	ObjectManager::GetInstance()->AllEraseObject();
+
 }
 
 Scene* StageSelect::GetNextScene()

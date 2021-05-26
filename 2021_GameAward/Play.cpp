@@ -64,6 +64,7 @@ Texture Play::pauseTex;
 
 #pragma endregion
 bool Play::isPause = false;
+bool Play::tutorial = true;
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -120,6 +121,7 @@ void Play::LoadResources()
 
 void Play::Initialize()
 {
+
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	pauseSnake = std::make_shared<Player>(0); 
@@ -139,6 +141,45 @@ void Play::Initialize()
 	for (int i = 0; i < blockNum; i++)
 		ObjectManager::GetInstance()->AddObject(std::make_shared<Block>(blockPositions[i], blockScales[i]));
 #pragma endregion
+
+
+#pragma region 矢印
+	arrowPosition = 0.0f;
+	arrowAngle = 0.0f;
+	drawArrow = false;
+#pragma endregion
+
+#pragma region タイマー
+
+
+	gameTime.SetMaxTime(INT_MAX);
+	gameTime.SetNowTime(-60 * 3);
+
+
+	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
+
+
+	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
+	targetAnimationTimer.SetStopFlag(false);
+
+
+#pragma endregion
+
+	Library::PlayLoadSound("Play");
+	isPause = false;
+
+	if (tutorial)
+	{
+		playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
+		gameTime.SetStopFlag(false);
+		return;
+	}
+	else
+	{
+		Fade::GetInstance()->SetIsStopFlag(true);
+	}
+
+
 
 
 #pragma region 祠セット
@@ -289,33 +330,6 @@ void Play::Initialize()
 #pragma endregion
 
 
-#pragma region 矢印
-	arrowPosition = 0.0f;
-	arrowAngle = 0.0f;
-	drawArrow = false;
-#pragma endregion
-
-#pragma region タイマー
-
-
-	gameTime.SetMaxTime(INT_MAX);
-	gameTime.SetNowTime(-60 * 3);
-
-
-	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
-
-	
-	targetAnimationTimer.SetMaxTime(TARGET_ANIMATION_ONE_FREAM_TIME * 4);
-	targetAnimationTimer.SetStopFlag(false);
-
-
-#pragma endregion
-
-	Fade::GetInstance()->SetIsStopFlag(true);
-
-	Library::PlayLoadSound("Play");
-
-	isPause = false;
 }
 
 void Play::Update()
@@ -331,7 +345,8 @@ void Play::Update()
 	//押したらポーズ
 	if (XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)
-		&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT) 
+		&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT
+		&& !tutorial)
 	{
 		isPause = isPause == false ? true : false;
 		backStageSelect = false;
@@ -494,7 +509,8 @@ void Play::Update()
 	//	//祠セット
 	//	//座標の値が変わってないのにワープしてたのは、
 	//	//生成を繰り返してヒープの番号が被った時に、元から置かれてた祠のモデルの座標が消えるやつの座標で上書きされたから
-	if (playSceneState == PlaySceneState::PLAY_SCENE_SET_TARGET)
+	if (playSceneState == PlaySceneState::PLAY_SCENE_SET_TARGET
+		&& !tutorial)
 	{
 		int createMissCount = 0;
 		for (auto& t : targetObjects)
@@ -624,12 +640,15 @@ void Play::Update()
 
 #pragma endregion
 
+	//チュートリアル
+	Tutorial();
 
 #pragma region 終了処理
 
 	//クリア
 	if (targetObjects.size() == 0 
-		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMEOVER)
+		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMEOVER
+		&& !tutorial)
 	{
 		sceneEndTimer.SetStopFlag(false);
 		slowTimer.SetStopFlag(false);
@@ -638,7 +657,8 @@ void Play::Update()
 	}
 
 	//ゲームオーバー
-	if (player->GetIsDead())
+	if (player->GetIsDead()
+		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMECLEAR)
 	{
 		sceneEndTimer.SetStopFlag(false);
 		//slowTimer.SetStopFlag(false);
@@ -654,6 +674,28 @@ void Play::Update()
 	
 #pragma endregion
 
+}
+
+void Play::Tutorial()
+{
+	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY)return;
+
+	switch (tutorialState)
+	{
+	case Play::TUTORIAL_STATE_MOVE:
+
+		break;
+	case Play::TUTORIAL_STATE_SHOT:
+
+		break;
+	case Play::TUTORIAL_STATE_LOCK:
+
+		break;
+	case Play::TUTORIAL_STATE_TWIST:
+
+		break;
+	}
+	
 }
 
 void Play::Draw()
@@ -776,10 +818,14 @@ void Play::Draw()
 
 void Play::Finitialize()
 {
-	if (backStageSelect)
+	if (backStageSelect
+		|| tutorial)
 	{
 		Library::StopLoadSound("Play", false);
+
 	}
+
+	if (tutorial)tutorial = false;
 
 	FreamTimer::SetAllTimerStopFlag(false);
 
@@ -803,6 +849,7 @@ Scene* Play::GetNextScene()
 	{
 		return new GameOver();
 	}
+
 	return new StageSelect();
 }
 
