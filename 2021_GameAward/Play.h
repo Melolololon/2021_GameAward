@@ -23,8 +23,8 @@ public:
 	enum EnemyType
 	{
 		ET_MoveEnemy,
-		ET_ShotEnemy,
 		ET_FleeEnemy,
+		ET_ShotEnemy,
 		ET_SimEnemy,
 		ET_DefenceEnemy,
 		ET_HealEnemy,
