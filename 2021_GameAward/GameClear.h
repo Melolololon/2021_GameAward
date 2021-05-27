@@ -3,7 +3,7 @@
 #include"Sprite2D.h"
 #include"Texture.h"
 class GameClear :
-    public Scene
+	public Scene
 {
 public:
 	static const int S_RUNK_TIME[5];
@@ -30,12 +30,12 @@ private:
 	static Texture rankTexture;
 
 	static Sprite2D rankFreamSprite;
-	static Texture rankFreamTexture;
+	static Texture rankFreamTexture[5];
 
-	 
+
 public:
-	GameClear(){}
-	~GameClear(){}
+	GameClear() {}
+	~GameClear() {}
 
 	void Initialize();
 	void Update();
