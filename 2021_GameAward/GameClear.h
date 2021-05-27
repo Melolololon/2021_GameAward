@@ -30,7 +30,7 @@ private:
 	static Texture rankTexture;
 
 	static Sprite2D rankFreamSprite;
-	static Texture rankFreamTexture;
+	static Texture rankFreamTexture[5];
 
 	 
 public:
