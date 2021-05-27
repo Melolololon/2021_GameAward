@@ -225,8 +225,16 @@ void Play::Initialize()
 	//敵追加
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
-
-		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(4);
+		int range = 2;
+		if (stageNum == 1)
+		{
+			range = 3;
+		}
+		else if (stageNum >= 2)
+		{
+			range = 4;
+		}
+		Play::EnemyType enemyType = (Play::EnemyType)Library::GetRandomNumber(range);
 		if (enemyType == Play::EnemyType::ET_MoveEnemy) {
 
 			std::shared_ptr<MoveEnemy> enemy = std::make_shared<MoveEnemy>();
@@ -234,18 +242,29 @@ void Play::Initialize()
 			enemy->setPGameTime(&gameTime);
 			Vector3 random;
 			bool b1 = false;
+			const float PLAYERCOLLISIONRANGE = 50;
 			do {				
 				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
 				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+
+				//プレイヤーに近すぎないように
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				if (b1) {
+					continue;
+				}
+
 				for (int j = 0; j < blockPositions.size(); j++)
 				{
 					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
 					Vector3 blockRightDown = blockPositions[j] + blockScales[j] / 2;
+					//ブロックと重なってるかどうか
 					b1 = isCollision(blockLeftUp, blockRightDown, enemyLeftUp, enemyRightDown);
 					if (b1) break;
 				}
+
 			} while (b1);
+
 			enemy->setPosition(random);
 			enemy->Initialize();
 			ObjectManager::GetInstance()->AddObject(enemy);
@@ -256,10 +275,18 @@ void Play::Initialize()
 			enemy->setPGameTime(&gameTime);
 			Vector3 random;
 			bool b1 = false;
+			const float PLAYERCOLLISIONRANGE = 50;
 			do {
 				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
 				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+
+				//プレイヤーに近すぎないように
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				if (b1) {
+					continue;
+				}
+
 				for (int j = 0; j < blockPositions.size(); j++)
 				{
 					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
@@ -278,10 +305,18 @@ void Play::Initialize()
 			enemy->setPGameTime(&gameTime);
 			Vector3 random;
 			bool b1 = false;
+			const float PLAYERCOLLISIONRANGE = 50;
 			do {
 				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
 				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+
+				//プレイヤーに近すぎないように
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				if (b1) {
+					continue;
+				}
+
 				for (int j = 0; j < blockPositions.size(); j++)
 				{
 					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
@@ -299,10 +334,18 @@ void Play::Initialize()
 
 			Vector3 random;
 			bool b1 = false;
+			const float PLAYERCOLLISIONRANGE = 50;
 			do {
 				random = Vector3(Library::GetRandomNumber(rightDownPosition.x - leftUpPosition.x) + leftUpPosition.x, 0, Library::GetRandomNumber(leftUpPosition.z - rightDownPosition.z) + rightDownPosition.z);
-				Vector3 enemyLeftUp = random - Vector3(1.5, 0, 1.5); //ちょっと広めに
-				Vector3 enemyRightDown = random + Vector3(1.5, 0, 1.5);
+				Vector3 enemyLeftUp = random - Vector3(0.5, 0, 0.5);
+				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
+
+				//プレイヤーに近すぎないように
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				if (b1) {
+					continue;
+				}
+
 				for (int j = 0; j < blockPositions.size(); j++)
 				{
 					Vector3 blockLeftUp = blockPositions[j] - blockScales[j] / 2;
