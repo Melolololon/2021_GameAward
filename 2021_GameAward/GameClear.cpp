@@ -42,13 +42,13 @@ Sprite2D GameClear::rankSprite;
 Texture GameClear::rankTexture;
 
 Sprite2D GameClear::rankFreamSprite;
-Texture GameClear::rankFreamTexture[5];
+Texture GameClear::rankFreamTexture;
 
 Vector2 GameClear::timeScale = Vector2(2, 2);
 
-void GameClear::LoadResources()
+void GameClear::LoadResources() 
 {
-	for (int i = 0; i < _countof(timeSprite); i++)
+	for (int i = 0; i < _countof(timeSprite); i++) 
 	{
 		timeSprite[i].CreateSprite();
 		timeSprite[i].SetScale(Vector2(2, 2));
@@ -58,14 +58,10 @@ void GameClear::LoadResources()
 	rankSprite.CreateSprite();
 	rankSprite.SetPosition(Vector2(730, 290));
 	rankTexture.LoadSpriteTexture("Resources/Texture/rank.png");
-
+	
 	rankFreamSprite.CreateSprite();
 	rankFreamSprite.SetPosition(Vector2(220, 80));
-
-	for (int i = 0; i < 5; i++) 
-	{
-		rankFreamTexture[i].LoadSpriteTexture("Resources/Texture/rankFream_" + std::to_string(i + 1) +".png");
-	}
+	rankFreamTexture.LoadSpriteTexture("Resources/Texture/rankFream.png");
 }
 
 void GameClear::Initialize()
@@ -107,7 +103,7 @@ void GameClear::Update()
 void GameClear::Draw()
 {
 	//ƒtƒŒ[ƒ€
-	rankFreamSprite.Draw(&rankFreamTexture[stageNum]);
+	rankFreamSprite.Draw(&rankFreamTexture);
 
 
 	//”Žš
