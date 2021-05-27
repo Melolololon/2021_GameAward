@@ -2,6 +2,7 @@
 #include"StageSelect.h"
 #include"XInputManager.h"
 #include"Fade.h"
+#include"Play.h"
 
 std::unique_ptr<Sprite2D>Title::titleSprite[7];
 std::unique_ptr<Texture>Title::titleTexture;
@@ -142,9 +143,11 @@ void Title::Draw()
 void Title::Finitialize()
 {
 	Library::StopLoadSound("Title", false);
+
+	StageSelect::SetTutorialData();
 }
 
 Scene* Title::GetNextScene()
 {
-	return new StageSelect();
+	return new Play();
 }

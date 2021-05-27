@@ -77,6 +77,7 @@ void Game::Initialize()
 	SimEnemy::LoadResource();
 	HealEnemy::LoadResource();
 
+
 	Title::LoadResources();
 	StageSelect::LoadResources();
 	Play::LoadResources();

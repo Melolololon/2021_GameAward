@@ -7,6 +7,8 @@
 #include"TargetObject.h"
 #include<vector>
 #include "FreamTimer.h"
+
+#include"MoveEnemy.h"
 class Play :
 	public Scene
 {
@@ -18,6 +20,15 @@ public:
 		PLAY_SCENE_PLAY,//ゲーム中
 		PLAY_SCENE_GAMEOVER,//ゲームオーバー
 		PLAY_SCENE_GAMECLEAR,//ゲームクリア
+	};
+
+	enum TutorialState
+	{
+		TUTORIAL_STATE_NOT_TUTORIAL,//チュートリアルではない
+		TUTORIAL_STATE_MOVE,//移動チュートリアル
+		TUTORIAL_STATE_SHOT,//攻撃チュートリアル
+		TUTORIAL_STATE_LOCK,//ロックチュートリアル
+		TUTORIAL_STATE_TWIST,//捻りチュートリアル
 	};
 
 	enum EnemyType
@@ -34,12 +45,16 @@ private:
 	static int stageNum;
 
 	std::shared_ptr<Player> player;
+	std::shared_ptr<Player> pauseSnake;
 	//とりあえず固定
 	const int ENEMY_COUNT = 10;
 
 
 	//ゲーム状態
 	static PlaySceneState playSceneState;
+
+	//チュートリアル状態
+	static TutorialState tutorialState;
 
 #pragma region カメラ
 	Vector3 cameraPosition;
@@ -60,6 +75,17 @@ private:
 
 #pragma region スプライト関係
 
+#pragma region チュートリアル
+	static Sprite2D tutorialMessageSpr;
+	static Texture tutorialMessageTex[4];
+	static Sprite2D tutorialSkipSpr;
+	static Texture tutorialSkipTex;
+	static Sprite2D tutorialNextSpr;
+	static Texture tutorialNextTex;
+
+	std::shared_ptr<MoveEnemy>tutorialEnemy;
+#pragma endregion
+
 
 #pragma region 祠の方向を示す矢印
 	static Sprite2D arrowSprite;
@@ -76,10 +102,12 @@ private:
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
 
-
-
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
+
+	static Sprite2D startTimeSpr;
+	static Sprite2D startSpr;
+	static Texture startTex;
 
 	static Sprite2D targetAnimationSprite;
 	static Texture targetAnimationTexture;
@@ -91,7 +119,8 @@ private:
 	static Sprite2D targetCrossSprite;
 	static Texture targetCrossTexture;
 
-
+	static Sprite2D pauseSpr;
+	static Texture pauseTex; 
 #pragma endregion
 
 #pragma region ゲームのタイマー
@@ -105,7 +134,8 @@ private:
 	FreamTimer slowTimer;
 #pragma endregion
 
-	bool isPause = false;
+	static bool isPause;
+	bool backStageSelect = false;
 
 public:
 	Play();
@@ -116,6 +146,8 @@ public:
 	void Draw();
 	void Finitialize();
 	Scene* GetNextScene();
+
+	void Tutorial();
 
 	static void LoadResources();
 	
@@ -131,10 +163,13 @@ public:
 		const Vector3& rightDownPos
 	);
 
-	static PlaySceneState GetPlaySceneState()
-	{
-		return playSceneState;
-	}
+	
+
+	static PlaySceneState GetPlaySceneState() { return playSceneState; }
+	static TutorialState GetTutorialState() { return tutorialState; }
+
+	static bool GetIsPauseFlag() { return isPause; }
+
 
 	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
 };

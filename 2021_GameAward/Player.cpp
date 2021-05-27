@@ -22,7 +22,7 @@
 //ファイルから読みとってstaticに入れられるか確かめる
 
 ObjModel Player::modelData;
-const int Player::CREATE_NUMBER = 1;
+const int Player::CREATE_NUMBER = 2;
 std::vector<Vector3> Player::initialBonePos;
 std::vector<Vector3> Player::initialBonePosMulScale;
 int Player::boneNum;
@@ -57,6 +57,7 @@ Player::Player(const Vector3& pos)
 	position = bonePos[bonePos.size() / 2];
 	modelData.SetPosition(modelMoveVector, heapNum);
 }
+
 
 Player::~Player()
 {
@@ -113,7 +114,7 @@ void Player::Initialize()
 	//initSpeed = fMap["speed"];
 	initSpeed = 0.25f;
 	speed = initSpeed;
-	stageSelectSpeedMag = 25.0f;
+
 	//selectStage = false;
 #pragma region パラメーター
 
@@ -130,9 +131,11 @@ void Player::Initialize()
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))
 	{
-		speed = initSpeed * stageSelectSpeedMag;
+		speedMag = 25.0f;
+		speed = initSpeed * speedMag;
 		scale = { 20,20,20 };
 	}
+
 	modelData.SetScale(scale, heapNum);
 
 	initialBonePosMulScale = initialBonePos;
@@ -332,7 +335,7 @@ void Player::StageSelectMove()
 	{
 	 	const float mulAngleNum = 6.0f;
 		velRotAngle *= mulAngleNum;
-		speed = initSpeed * stageSelectSpeedMag * mulAngleNum;
+		speed = initSpeed * speedMag * mulAngleNum;
 	}
 
 	velRot -= velRotAngle;
@@ -359,11 +362,29 @@ void Player::GameOverMove()
 		velRot += 360;
 }
 
+void Player::PauseMove()
+{
+	speedMag = 2.0f;
+	speed = initSpeed * speedMag;
+	scale = 0.3f;
+
+	float velRotAngle = initSpeed * 14.0f;
+	
+	velRot -= velRotAngle;
+	if (velRot >= 360)
+		velRot -= 360;
+	if (velRot <= 0)
+		velRot += 360; 
+	
+	modelData.SetScale(scale, heapNum);
+}
+
 void Player::Update()
 {
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	//準備前は動かないように
-	if (typeid(*currentScene) == typeid(Play))
+	if (typeid(*currentScene) == typeid(Play)
+		&& !Play::GetIsPauseFlag())
 	{
 		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)return;
 		else if (Play::GetPlaySceneState() == Play::PLAY_SCENE_START_PREVIOUS)
@@ -378,8 +399,10 @@ void Player::Update()
 #pragma region パラメーター処理
 
 #pragma region ライフ
-	if (hp <= 0)
+	if (hp <= 0) 
+	{
 		isDead = true;
+	}
 #pragma endregion
 
 #pragma region 無敵処理
@@ -412,11 +435,24 @@ void Player::Update()
 	previousRot = velRot;
 
 	if (typeid(*currentScene) == typeid(Play))
-		PlayMove();
-	if (typeid(*currentScene) == typeid(StageSelect))
+	{
+		if (Play::GetIsPauseFlag())
+		{
+			PauseMove();
+		}
+		else 
+		{
+			PlayMove();
+		}
+	}
+	if (typeid(*currentScene) == typeid(StageSelect)) 
+	{
 		StageSelectMove();
-	if (typeid(*currentScene) == typeid(GameOver))
+	}
+	if (typeid(*currentScene) == typeid(GameOver)) 
+	{
 		GameOverMove();
+	}
 	
 
 	if (velRot != -1)
@@ -482,6 +518,24 @@ void Player::Update()
 	}
 #pragma endregion
 
+	auto SetAngleAndPos = [&]()
+	{
+		//角度セット
+		for (int i = 0; i < boneNum; i++)
+		{
+			modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+		}
+
+		position = bonePos[bonePos.size() / 2];
+		modelData.SetPosition(modelMoveVector, heapNum);
+	};
+
+	if(Play::GetIsPauseFlag())
+	{
+		SetAngleAndPos();
+		return;
+	}
+
 #pragma region ひねり処理
 
 	if (!XInputManager::GetPadConnectedFlag(1))
@@ -529,19 +583,14 @@ void Player::Update()
 
 #pragma endregion
 
-	//角度セット
-	for (int i = 0; i < boneNum; i++) 
-	{
-		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
-	}
-
-	position = bonePos[bonePos.size() / 2];
-	modelData.SetPosition(modelMoveVector, heapNum);
+	SetAngleAndPos();
 
 #pragma region 弾を発射
 
 	auto shotBullet = [&](const UINT& arrayNum)
 	{
+		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_GAMECLEAR)return;
+
 		Vector3 forwordVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 		Vector3 normalizeForwordVector = Vector3Normalize(forwordVector);
 		Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
@@ -637,8 +686,8 @@ void Player::Hit
 	const int& arrayNum
 )
 {
-	if (isDead)
-		return;
+	if (isDead 
+		|| Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)return;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))return;
@@ -801,8 +850,9 @@ void Player::SetModelMoveVector(const Vector3& vector)
 
 void Player::DamageFromEnemy()
 {
-	if (isMuteki)
-		return;
+	if (isMuteki
+		|| Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)return;
+	
 	hp--;
 	isMuteki = true;
 }

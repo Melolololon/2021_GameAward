@@ -4,6 +4,8 @@
 #include "Block.h"
 #include "PlayerBullet.h"
 
+
+
 ObjModel SimEnemy::modelData;
 int SimEnemy::createCount;
 const int SimEnemy::CREATE_NUMBER = GENERATE_COUNT * 3;
@@ -42,6 +44,14 @@ void SimEnemy::Initialize()
 
 
 	modelData.SetScale(0.7f, heapNum);
+
+
+	modelData.SetBoneAngle(0, 0, heapNum);
+	modelData.SetBoneAngle(0, 1, heapNum);
+
+	modelData.SetAngle(0, heapNum);
+
+
 }
 
 void SimEnemy::Update()
@@ -144,6 +154,8 @@ void SimEnemy::Update()
 	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 
 	modelData.SetAngle(angle, heapNum);
+
+
 }
 
 void SimEnemy::Draw()
@@ -151,12 +163,14 @@ void SimEnemy::Draw()
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
 	//if (hp > 0)
-		modelData.Draw(heapNum);
+	modelData.Draw(heapNum);
+
 
 }
 
 void SimEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
+
 	if (arrayNum == 3)
 	{
 		//ブロックとの衝突判定
@@ -188,6 +202,9 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 	else
 	{
 
+		if (id != arrayNum)
+			return;
+
 		if (hp <= 0)
 			return;
 
@@ -216,6 +233,10 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 				//ここにスコアを与える処理
 
 				//eraseManager = true;
+			}
+			if (hp == 0)
+			{
+				Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 			}
 		}
 	}
@@ -248,6 +269,8 @@ void SimEnemy::LoadResource()
 		CREATE_NUMBER,
 		0
 	);
+
+
 }
 
 void SimEnemy::setHeapNum()
@@ -286,6 +309,9 @@ void SimEnemy::setPosition(Vector3 pos)
 	sphereData[3].position = position;
 
 	//Library::setPosition(position, modelData, heapNum);
+
+
+
 }
 
 
