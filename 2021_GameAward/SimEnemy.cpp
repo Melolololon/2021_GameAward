@@ -4,12 +4,14 @@
 #include "Block.h"
 #include "PlayerBullet.h"
 #include"DecrementTimeNumber.h"
-
+#include"EnemyParticle.h"
 
 ObjModel SimEnemy::modelData;
 int SimEnemy::createCount;
 const int SimEnemy::CREATE_NUMBER = GENERATE_COUNT * 3;
 HeapIndexManager SimEnemy::heapIndexManager(CREATE_NUMBER);
+
+
 
 SimEnemy::SimEnemy()
 {
@@ -133,8 +135,14 @@ void SimEnemy::Update()
 		other0->eraseManager = true;
 		other1->eraseManager = true;
 
-		Vector3 numPos = position + Vector3(0, 3, 0);
-		ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+		if (id == 0) 
+		{
+			Vector3 numPos = position + Vector3(0, 3, 0);
+			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+
+			Vector3 parPos = position + Vector3(0, 0, -1);
+			ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
+		}
 	}
 
 	//やられたらアニメーション

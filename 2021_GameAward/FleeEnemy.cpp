@@ -190,8 +190,8 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 		}
 		if (hp == 0)
 		{
-			Vector3 numPos = position + Vector3(0, 3, 0);
-			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+			/*Vector3 numPos = position + Vector3(0, 3, 0);
+			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));*/
 			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 		}
 	}

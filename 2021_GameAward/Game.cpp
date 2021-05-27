@@ -99,6 +99,7 @@ void Game::Initialize()
 	f.sphere = true;
 	f.box = true;
 	ObjectManager::GetInstance()->SetCollisionFlag3D(f);
+	ObjectManager::GetInstance()->SetAddObjectSortState(ObjectManager::OBJECT_SORT_SORT_NUMBER, true);
 
 	SceneManager::GetInstace()->SetStartScene(new Title());
 #pragma endregion
@@ -114,7 +115,7 @@ void Game::Finitialize()
 
 void Game::Update()
 {
-
+	ObjectManager::GetInstance()->ObjectSort(ObjectManager::OBJECT_SORT_Z, false);
 	SceneManager::GetInstace()->Update();
 	Fade::GetInstance()->Update();
 }

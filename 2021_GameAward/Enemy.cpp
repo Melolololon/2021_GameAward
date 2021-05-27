@@ -91,6 +91,9 @@ void Enemy::UpdateDeadAnimationData()
 
 		Vector3 parPos = position + Vector3(0, 0, -1);
 		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
+
+		Vector3 numPos = position + Vector3(0, 3, 0);
+		ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
 	}
 
 }
@@ -150,8 +153,7 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 		}
 		if(hp == 0)
 		{
-			Vector3 numPos = position + Vector3(0, 3, 0);
-			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+
 			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 		}
 	}
