@@ -26,6 +26,7 @@ std::vector<Vector3>StageSelect::mapMovePositions;
 std::vector<float>StageSelect::worldCenterToStageVectorAngle;
 StageSelect::StageSelectState StageSelect::stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 
+
 //const UINT StageSelect::playerRotateTime = 60 * 2;
 //const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
@@ -137,6 +138,8 @@ void StageSelect::LoadResources()
 	}
 
 	Library::LoadSound("Resources/Sound/BGM/StageSelect.wav", "StageSelect", true);
+
+
 }
 
 void StageSelect::Initialize()
@@ -203,8 +206,9 @@ void StageSelect::Update()
 		}
 	}
 
-	bool padSelect = XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+	bool padSelect = (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1))
+		&& XInputManager::GetPadConnectedFlag(1)
 		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
 
 	if (DirectInput::KeyTrigger(DIK_Z)

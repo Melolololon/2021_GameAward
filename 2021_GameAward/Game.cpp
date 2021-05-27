@@ -27,6 +27,7 @@
 #include"EnemyBullet.h"
 
 #include"DecrementTimeNumber.h"
+#include"EnemyParticle.h"
 #pragma endregion
 
 
@@ -89,6 +90,7 @@ void Game::Initialize()
 	Fade::GetInstance()->LoadResources();
 
 	DecrementTimeNumber::LoadResources();
+	EnemyParticle::LoadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定
@@ -112,6 +114,7 @@ void Game::Finitialize()
 
 void Game::Update()
 {
+
 	SceneManager::GetInstace()->Update();
 	Fade::GetInstance()->Update();
 }

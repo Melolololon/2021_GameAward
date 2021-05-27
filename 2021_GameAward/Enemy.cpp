@@ -8,7 +8,7 @@
 #include"LibMath.h"
 
 #include"DecrementTimeNumber.h"
-
+#include"EnemyParticle.h"
 
 const float Enemy::OBJSIZE = 1.0f;
 const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
@@ -88,6 +88,9 @@ void Enemy::UpdateDeadAnimationData()
 		pGameTime->SetNowTime(pGameTime->GetTime() - decreaseTime * 60);
 		if (pGameTime->GetTime() < 0) pGameTime->SetNowTime(0);
 		eraseManager = true;
+
+		Vector3 parPos = position + Vector3(0, 0, -1);
+		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
 	}
 
 }

@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /MyLibrary/lib/fbx_sdk
+/2021_GameAward/Resources/Texture/breakEnemyAnimation

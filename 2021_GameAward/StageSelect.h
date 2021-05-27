@@ -42,6 +42,7 @@ private:
 	static StageSelectState stageSelectState;
 	FreamTimer nextSceneTimer;
 
+	
 
 public:
 	StageSelect();

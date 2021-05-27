@@ -6,9 +6,10 @@ class EnemyParticle :
     public Object
 {
 private:
-
 	Sprite3D parSpr;
 	static std::vector<Texture> parTex;
+
+	int textureNum = 0;
 
 public:
 	EnemyParticle(const Vector3& pos);

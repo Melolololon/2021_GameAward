@@ -1,15 +1,12 @@
 #include "EnemyParticle.h"
 
-std::vector<Texture> EnemyParticle::parTex;
-
+std::vector<Texture> EnemyParticle::parTex(40);
 EnemyParticle::EnemyParticle(const Vector3& pos)
 {
 	Initialize();
-
-	parSpr.CreateSprite(Vector3());
 	parSpr.SetPosition(pos);
 
-	
+
 }
 
 EnemyParticle::~EnemyParticle()
@@ -18,27 +15,47 @@ EnemyParticle::~EnemyParticle()
 
 void EnemyParticle::LoadResources()
 {
-	for(int i = 0;;i++)
+	std::string numStr;
+	for (int i = 0;; i++)
 	{
-		parTex[i].LoadSpriteTexture("Resources/Texture/EnemyParticle" + std::to_string(i + 1) + ".png");
+		if (i + 1 == 7)continue;
+
+		numStr = std::to_string(i + 1);
+		
+		while (1)
+		{
+			numStr.insert(0, "0");
+			if (numStr.size() == 4)break;
+		}
+
+		parTex[i].LoadSpriteTexture("Resources/Texture/breakEnemyAnimation/" + numStr + ".png");
+		if (i == parTex.size() - 1)
+		{
+			break;
+		}
 	}
 }
 
 void EnemyParticle::Initialize()
 {
-	parSpr.CreateSprite(Vector2(2, 2));
+	parSpr.CreateSprite(Vector2(16 * 2, 9 * 2));
 	parSpr.SetBillboardFlag(true, true, true);
 }
 
 void EnemyParticle::Update()
 {
+	textureNum++;
+	if(textureNum == parTex.size())
+	{
+		eraseManager = true;
+	}
 }
 
 void EnemyParticle::Draw()
 {
-	for (auto& tex : parTex)
+	if (textureNum != 6) 
 	{
-		parSpr.Draw(&tex);
+		parSpr.Draw(&parTex[textureNum]);
 	}
 }
 

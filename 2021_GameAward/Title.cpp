@@ -36,7 +36,7 @@ void Title::LoadResources()
 
 void Title::Initialize()
 {
-
+		
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
 	for (int i = 0; i < _countof(titleSpritePosition); i++)
 	{
@@ -50,7 +50,6 @@ void Title::Initialize()
 
 void Title::Update()
 {
-	
 
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
 	float titleSpeed = 10.0f;
@@ -107,7 +106,8 @@ void Title::Update()
 	}
 	pushButtonSprite->SetPosition({ 500,400 });
 
-	bool padStart = XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
+	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
+		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_START_BUTTON, 1))
 		&& XInputManager::GetPadConnectedFlag(1);
 	if (DirectInput::KeyTrigger(DIK_Z)
 		|| padStart)
