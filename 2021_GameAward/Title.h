@@ -14,6 +14,9 @@ private:
 	static FreamTimer titleFreamTimer[7];
 	static Vector2 titleSpritePosition[7];
 	bool titleSlowMove[7];
+
+	static Sprite2D titleBackSpr;
+	static Texture titleBackTex;
 public:
 	Title();
 	~Title();

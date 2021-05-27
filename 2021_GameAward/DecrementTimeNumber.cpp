@@ -36,7 +36,7 @@ void DecrementTimeNumber::Initialize()
 	velocity = Vector3(0, 1, 0);
 	speed = Vector3(0, 0.1f, 0);
 
-	sortNumber = 1;
+	sortNumber = 2;
 }
 
 void DecrementTimeNumber::Update()

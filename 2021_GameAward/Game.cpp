@@ -115,7 +115,6 @@ void Game::Finitialize()
 
 void Game::Update()
 {
-	ObjectManager::GetInstance()->ObjectSort(ObjectManager::OBJECT_SORT_Z, false);
 	SceneManager::GetInstace()->Update();
 	Fade::GetInstance()->Update();
 }

@@ -41,7 +41,7 @@ void EnemyParticle::Initialize()
 	parSpr.CreateSprite(Vector2(16 * 2, 9 * 2));
 	parSpr.SetBillboardFlag(true, true, true);
 
-	sortNumber = 2;
+	sortNumber = 1;
 }
 
 void EnemyParticle::Update()

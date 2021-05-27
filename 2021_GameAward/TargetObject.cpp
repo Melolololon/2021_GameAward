@@ -3,6 +3,9 @@
 #include"Player.h"
 #include"Block.h"
 #include"PlayerBullet.h"
+#include"EnemyParticle.h"
+#include"ObjectManager.h"
+
 ObjModel TargetObject::modelData;
 const int TargetObject::CREATE_NUMBER = 100;
 bool TargetObject::hitSegment;
@@ -103,9 +106,14 @@ void TargetObject::Update()
 	boxData[0].position = position;
 	modelData.SetPosition(position, heapNum);
 
-	if (hp <= 0)
-		eraseManager = true;
+	if (hp <= 0) 
+	{
 
+		Vector3 parPos = position + Vector3(0, 0, -1);
+		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
+
+		eraseManager = true;
+	}
 
 
 }

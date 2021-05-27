@@ -10,6 +10,10 @@ std::unique_ptr<Sprite2D>Title::pushButtonSprite;
 std::unique_ptr<Texture>Title::pushButtonTexture;
 FreamTimer Title::titleFreamTimer[7];
 Vector2 Title::titleSpritePosition[7];
+
+Sprite2D Title::titleBackSpr;
+Texture Title::titleBackTex;
+
 Title::Title(){}
 Title::~Title(){}
 
@@ -30,7 +34,11 @@ void Title::LoadResources()
 	pushButtonTexture = std::make_unique<Texture>();
 	pushButtonTexture->LoadSpriteTexture("Resources/Texture/MS_Title/press_X_button.png");
 
+	titleBackSpr.CreateSprite();
+	titleBackTex.LoadSpriteTexture("Resources/Texture/MS_Title/titleBackTex.png");
+
 	Library::LoadSound("Resources/Sound/BGM/SnakeTitle.wav", "Title", true);
+
 
 }
 
@@ -126,6 +134,8 @@ void Title::Update()
 
 void Title::Draw()
 {
+	titleBackSpr.Draw(&titleBackTex);
+
 	const float titleTextureSize = titleTexture->GetTextureSize().y;
 	for (int i = 0; i < _countof(titleSprite); i++)
 		titleSprite[i]->SelectDrawAreaDraw
