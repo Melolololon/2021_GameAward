@@ -7,6 +7,8 @@
 #include"TargetObject.h"
 #include<vector>
 #include "FreamTimer.h"
+
+#include"MoveEnemy.h"
 class Play :
 	public Scene
 {
@@ -22,6 +24,7 @@ public:
 
 	enum TutorialState
 	{
+		TUTORIAL_STATE_NOT_TUTORIAL,//チュートリアルではない
 		TUTORIAL_STATE_MOVE,//移動チュートリアル
 		TUTORIAL_STATE_SHOT,//攻撃チュートリアル
 		TUTORIAL_STATE_LOCK,//ロックチュートリアル
@@ -51,7 +54,7 @@ private:
 	static PlaySceneState playSceneState;
 
 	//チュートリアル状態
-	TutorialState tutorialState = TutorialState::TUTORIAL_STATE_MOVE;
+	static TutorialState tutorialState;
 
 #pragma region カメラ
 	Vector3 cameraPosition;
@@ -72,6 +75,17 @@ private:
 
 #pragma region スプライト関係
 
+#pragma region チュートリアル
+	static Sprite2D tutorialMessageSpr;
+	static Texture tutorialMessageTex[4];
+	static Sprite2D tutorialSkipSpr;
+	static Texture tutorialSkipTex;
+	static Sprite2D tutorialNextSpr;
+	static Texture tutorialNextTex;
+
+	std::shared_ptr<MoveEnemy>tutorialEnemy;
+#pragma endregion
+
 
 #pragma region 祠の方向を示す矢印
 	static Sprite2D arrowSprite;
@@ -87,8 +101,6 @@ private:
 
 	static Sprite3D targetLockSprite;
 	static Texture targetLockTexture;
-
-
 
 	static Sprite2D timerSprite[6];
 	static Texture timerTexture;
@@ -125,7 +137,6 @@ private:
 	static bool isPause;
 	bool backStageSelect = false;
 
-	static bool tutorial;
 public:
 	Play();
 	~Play();
@@ -154,10 +165,8 @@ public:
 
 	
 
-	static PlaySceneState GetPlaySceneState()
-	{
-		return playSceneState;
-	}
+	static PlaySceneState GetPlaySceneState() { return playSceneState; }
+	static TutorialState GetTutorialState() { return tutorialState; }
 
 	static bool GetIsPauseFlag() { return isPause; }
 

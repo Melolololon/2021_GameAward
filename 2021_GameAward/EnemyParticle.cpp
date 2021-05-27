@@ -1,19 +1,27 @@
 #include "EnemyParticle.h"
 
+std::vector<Texture> EnemyParticle::parTex;
+
 EnemyParticle::EnemyParticle(const Vector3& pos)
 {
 	Initialize();
 
+	parSpr.CreateSprite(Vector3());
 	parSpr.SetPosition(pos);
 
-	for(int i = 0; i < _countof(parTex);i++)
-	{
-		parTex[i];
-	}
+	
 }
 
 EnemyParticle::~EnemyParticle()
 {
+}
+
+void EnemyParticle::LoadResources()
+{
+	for(int i = 0;;i++)
+	{
+		parTex[i].LoadSpriteTexture("Resources/Texture/EnemyParticle" + std::to_string(i + 1) + ".png");
+	}
 }
 
 void EnemyParticle::Initialize()
@@ -28,9 +36,9 @@ void EnemyParticle::Update()
 
 void EnemyParticle::Draw()
 {
-	for (int i = 0; i < _countof(parTex); i++) 
+	for (auto& tex : parTex)
 	{
-		parSpr.Draw(&parTex[i]);
+		parSpr.Draw(&tex);
 	}
 }
 

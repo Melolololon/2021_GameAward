@@ -8,7 +8,7 @@ class EnemyParticle :
 private:
 
 	Sprite3D parSpr;
-	Texture parTex[2];
+	static std::vector<Texture> parTex;
 
 public:
 	EnemyParticle(const Vector3& pos);
@@ -22,5 +22,7 @@ public:
 		const CollisionType& collisionType,
 		const int& arrayNum
 	)override;
+
+	static void LoadResources();
 };
 

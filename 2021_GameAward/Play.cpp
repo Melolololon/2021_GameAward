@@ -36,6 +36,12 @@ int Play::stageNum = 0;
 
 #pragma region スプライト
 
+Sprite2D Play::tutorialMessageSpr;
+Texture Play::tutorialMessageTex[4];
+Sprite2D Play::tutorialSkipSpr;
+Texture Play::tutorialSkipTex; 
+Sprite2D Play::tutorialNextSpr;
+Texture Play::tutorialNextTex;
 
 Sprite2D Play::arrowSprite;
 Texture Play::arrowTexture;
@@ -64,7 +70,7 @@ Texture Play::pauseTex;
 
 #pragma endregion
 bool Play::isPause = false;
-bool Play::tutorial = true;
+Play::TutorialState Play::tutorialState = TutorialState::TUTORIAL_STATE_MOVE;
 
 Play::PlaySceneState Play::playSceneState;
 Play::Play()
@@ -76,6 +82,21 @@ Play::~Play() {}
 
 void Play::LoadResources()
 {
+	tutorialMessageSpr.CreateSprite();
+	tutorialMessageSpr.SetPosition(Vector2(40, 480));
+	for(int i = 0; i < 4;i++)
+	{
+		tutorialMessageTex[i].LoadSpriteTexture("Resources/Texture/Tutorial/tutorial_" + std::to_string(i + 1) + ".png");
+	}
+
+	tutorialSkipSpr.CreateSprite();
+	tutorialSkipSpr.SetPosition(Vector2(800,600 ));
+	tutorialSkipTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialSkip.png");
+
+	tutorialNextSpr.CreateSprite();	
+	tutorialNextSpr.SetPosition(Vector2(800, 500));
+	tutorialNextTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialNext.png");
+
 	/*Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
 	arrowSprite.CreateSprite();
@@ -121,7 +142,6 @@ void Play::LoadResources()
 
 void Play::Initialize()
 {
-
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	pauseSnake = std::make_shared<Player>(0); 
@@ -168,7 +188,7 @@ void Play::Initialize()
 	Library::PlayLoadSound("Play");
 	isPause = false;
 
-	if (tutorial)
+	if (tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
 		gameTime.SetStopFlag(false);
@@ -327,6 +347,16 @@ void Play::Initialize()
 		}*/
 
 	}
+
+
+	if(tutorialState != Play::TUTORIAL_STATE_NOT_TUTORIAL)
+	{
+		tutorialEnemy = std::make_shared<MoveEnemy>();
+		tutorialEnemy->setPosition(Vector3(0, 0, 4));
+		tutorialEnemy->setPPlayer(player.get());
+		tutorialEnemy->setPGameTime(&gameTime);
+	}
+
 #pragma endregion
 
 
@@ -346,7 +376,7 @@ void Play::Update()
 	if (XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)
 		&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT
-		&& !tutorial)
+		&& tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		isPause = isPause == false ? true : false;
 		backStageSelect = false;
@@ -510,7 +540,7 @@ void Play::Update()
 	//	//座標の値が変わってないのにワープしてたのは、
 	//	//生成を繰り返してヒープの番号が被った時に、元から置かれてた祠のモデルの座標が消えるやつの座標で上書きされたから
 	if (playSceneState == PlaySceneState::PLAY_SCENE_SET_TARGET
-		&& !tutorial)
+		&& tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		int createMissCount = 0;
 		for (auto& t : targetObjects)
@@ -648,7 +678,7 @@ void Play::Update()
 	//クリア
 	if (targetObjects.size() == 0 
 		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMEOVER
-		&& !tutorial)
+		&& tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		sceneEndTimer.SetStopFlag(false);
 		slowTimer.SetStopFlag(false);
@@ -680,21 +710,66 @@ void Play::Tutorial()
 {
 	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY)return;
 
+	//スキップ処理
+	if(XInputManager::GetPadConnectedFlag(1))
+	{
+		if(XInputManager::ButtonTrigger(XInputManager::XINPUT_B_BUTTON,1))
+		{
+			Fade::GetInstance()->FadeStart();
+		}
+	}
+
+	auto GetNextTutorialScene = []()
+	{
+		if (XInputManager::GetPadConnectedFlag(1))
+		{
+			return XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1);
+		}
+		return false;
+	};
+
 	switch (tutorialState)
 	{
 	case Play::TUTORIAL_STATE_MOVE:
+		
+		if(GetNextTutorialScene())
+		{
+			tutorialState = TUTORIAL_STATE_SHOT;
+
+			//敵追加
+			//ObjectManager::GetInstance()->AddObject(tutorialEnemy);
+		}
 
 		break;
+
 	case Play::TUTORIAL_STATE_SHOT:
+		if (GetNextTutorialScene())
+		{
+			tutorialState = TUTORIAL_STATE_LOCK;
 
+			//祠
+			targetObjects.push_back(std::make_shared<TargetObject>(Vector3(0, 0, 0)));
+			ObjectManager::GetInstance()->AddObject(targetObjects[0]);
+		}
 		break;
+
 	case Play::TUTORIAL_STATE_LOCK:
-
+		if (GetNextTutorialScene())
+		{
+			tutorialState = TUTORIAL_STATE_TWIST;
+		}
 		break;
-	case Play::TUTORIAL_STATE_TWIST:
 
+	case Play::TUTORIAL_STATE_TWIST:
+		if (GetNextTutorialScene())
+		{
+			Fade::GetInstance()->FadeStart();
+		}
 		break;
 	}
+
+	//if (DirectInput::KeyTrigger(DIK_A))
+	//	isEnd = true;
 	
 }
 
@@ -806,10 +881,20 @@ void Play::Draw()
 		&targetAnimationTexture
 	);
 
+
 	if(isPause)
 	{
 		pauseSpr.Draw(&pauseTex);
 		pauseSnake->Draw();
+	}
+
+	//チュートリアル
+	if(playSceneState == PlaySceneState::PLAY_SCENE_PLAY
+		&& tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
+	{
+		tutorialMessageSpr.Draw(&tutorialMessageTex[tutorialState - 1]);
+		tutorialSkipSpr.Draw(&tutorialSkipTex);
+		tutorialNextSpr.Draw(&tutorialNextTex);
 	}
 
 	Fade::GetInstance()->Draw();
@@ -819,13 +904,16 @@ void Play::Draw()
 void Play::Finitialize()
 {
 	if (backStageSelect
-		|| tutorial)
+		|| tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		Library::StopLoadSound("Play", false);
 
 	}
 
-	if (tutorial)tutorial = false;
+	if (tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
+	{
+		tutorialState = TutorialState::TUTORIAL_STATE_NOT_TUTORIAL;
+	}
 
 	FreamTimer::SetAllTimerStopFlag(false);
 

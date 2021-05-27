@@ -686,8 +686,8 @@ void Player::Hit
 	const int& arrayNum
 )
 {
-	if (isDead)
-		return;
+	if (isDead 
+		|| Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)return;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))return;
@@ -850,8 +850,9 @@ void Player::SetModelMoveVector(const Vector3& vector)
 
 void Player::DamageFromEnemy()
 {
-	if (isMuteki)
-		return;
+	if (isMuteki
+		|| Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)return;
+	
 	hp--;
 	isMuteki = true;
 }

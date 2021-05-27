@@ -4,6 +4,8 @@
 #include "PlayerBullet.h"
 #include"LibMath.h"
 
+#include"Play.h"
+
 int MoveEnemy::createCount;
 const int MoveEnemy::CREATE_NUMBER = GENERATE_COUNT;
 ObjModel MoveEnemy::modelData;
@@ -72,7 +74,8 @@ void MoveEnemy::Update()
 	LockPlayer();
 	
 
-	if (attackAfterTimer == 60 * 2)
+	if (attackAfterTimer == 60 * 2
+		&& Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		//ç¿ïWçXêV
 		position = position + velocity * moveSpeed;
