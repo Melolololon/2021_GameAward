@@ -75,7 +75,7 @@ void MoveEnemy::Update()
 	
 
 	if (attackAfterTimer == 60 * 2
-		&& Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)
+		&& Play::GetTutorialState() == Play::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
 		//ç¿ïWçXêV
 		position = position + velocity * moveSpeed;

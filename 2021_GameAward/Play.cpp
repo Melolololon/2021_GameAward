@@ -376,7 +376,10 @@ void Play::Update()
 	if (XInputManager::GetPadConnectedFlag(1)
 		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1)
 		&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT
-		&& tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
+		&& tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL
+		&& playSceneState != Play::PLAY_SCENE_SET_TARGET
+		&& playSceneState != Play::PLAY_SCENE_GAMECLEAR
+		&& playSceneState != Play::PLAY_SCENE_GAMEOVER)
 	{
 		isPause = isPause == false ? true : false;
 		backStageSelect = false;

@@ -3,7 +3,7 @@
 #include "LibMath.h"
 #include "Block.h"
 #include "PlayerBullet.h"
-
+#include"DecrementTimeNumber.h"
 
 
 ObjModel SimEnemy::modelData;
@@ -132,6 +132,9 @@ void SimEnemy::Update()
 		eraseManager = true;
 		other0->eraseManager = true;
 		other1->eraseManager = true;
+
+		Vector3 numPos = position + Vector3(0, 3, 0);
+		ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
 	}
 
 	//やられたらアニメーション

@@ -686,8 +686,7 @@ void Player::Hit
 	const int& arrayNum
 )
 {
-	if (isDead 
-		|| Play::GetTutorialState() != Play::TUTORIAL_STATE_NOT_TUTORIAL)return;
+	if (isDead )return;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))return;
@@ -793,6 +792,7 @@ void Player::Hit
 
 	}
 
+	
 
 	if (typeid(*object) == typeid(EnemyBullet))
 		DamageFromEnemy();

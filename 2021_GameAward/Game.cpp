@@ -26,6 +26,7 @@
 #include"HealEnemy.h"
 #include"EnemyBullet.h"
 
+#include"DecrementTimeNumber.h"
 #pragma endregion
 
 
@@ -86,6 +87,8 @@ void Game::Initialize()
 
 
 	Fade::GetInstance()->LoadResources();
+
+	DecrementTimeNumber::LoadResources();
 #pragma endregion
 
 #pragma region マネージャー初期化_設定

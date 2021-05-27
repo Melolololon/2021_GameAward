@@ -105,6 +105,9 @@
     <ClCompile Include="EnemyParticle.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="DecrementTimeNumber.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -168,6 +171,9 @@
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="EnemyParticle.h">
+      <Filter>ヘッダー ファイル\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="DecrementTimeNumber.h">
       <Filter>ヘッダー ファイル\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

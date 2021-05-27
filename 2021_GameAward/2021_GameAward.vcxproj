@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DecrementTimeNumber.cpp" />
     <ClCompile Include="DefenceEnemy.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Block.cpp" />
@@ -187,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="DecrementTimeNumber.h" />
     <ClInclude Include="DefenceEnemy.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />

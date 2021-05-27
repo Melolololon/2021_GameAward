@@ -4,7 +4,11 @@
 #include "SceneManager.h"
 #include "Play.h"
 
+#include"ObjectManager.h"
 #include"LibMath.h"
+
+#include"DecrementTimeNumber.h"
+
 
 const float Enemy::OBJSIZE = 1.0f;
 const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
@@ -143,6 +147,8 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 		}
 		if(hp == 0)
 		{
+			Vector3 numPos = position + Vector3(0, 3, 0);
+			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
 			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 		}
 	}

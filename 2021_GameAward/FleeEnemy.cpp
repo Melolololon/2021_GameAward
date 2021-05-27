@@ -4,6 +4,9 @@
 #include "PlayerBullet.h"
 #include "LibMath.h"
 #include "PlayerBullet.h"
+#include"DecrementTimeNumber.h"
+
+#include"ObjectManager.h"
 #include "Random.h"
 
 ObjModel FleeEnemy::modelData;
@@ -187,6 +190,8 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 		}
 		if (hp == 0)
 		{
+			Vector3 numPos = position + Vector3(0, 3, 0);
+			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
 			Library::PlaySoundEveryLoad("Resources/Sound/SE/CommonSE/EnemyLostSE.wav");
 		}
 	}
