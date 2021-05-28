@@ -756,8 +756,10 @@ void Play::Tutorial()
 {
 	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY)return;
 
+	bool skipTimeOver = gameTime.GetTime() >= 60 * 1;
 	//スキップ処理
-	if(XInputManager::GetPadConnectedFlag(1))
+	if(XInputManager::GetPadConnectedFlag(1)
+		&& skipTimeOver)
 	{
 		if(XInputManager::ButtonTrigger(XInputManager::XINPUT_B_BUTTON,1))
 		{
@@ -765,9 +767,11 @@ void Play::Tutorial()
 		}
 	}
 
-	auto GetNextTutorialScene = []()
+	//次へ進める処理
+	auto GetNextTutorialScene = [&skipTimeOver]()
 	{
-		if (XInputManager::GetPadConnectedFlag(1))
+		if (XInputManager::GetPadConnectedFlag(1)
+			&& skipTimeOver)
 		{
 			return XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1);
 		}
