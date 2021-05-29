@@ -126,14 +126,14 @@ void Player::Initialize()
 	mutekiTime = 60 * 3;
 #pragma endregion
 
-	scale = { 1.2,1.2,1.2 };
+	scale = 1.2f;
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))
 	{
 		speedMag = 25.0f;
 		speed = initSpeed * speedMag;
-		scale = { 20,20,20 };
+		scale = 20.0f;
 	}
 
 	modelData.SetScale(scale, heapNum);
@@ -382,7 +382,7 @@ void Player::PauseMove()
 	speed = initSpeed * speedMag;
 	scale = 0.3f;
 
-	float velRotAngle = initSpeed * 14.0f;
+	float velRotAngle = initSpeed * 10.0f;
 	
 	velRot -= velRotAngle;
 	if (velRot >= 360)

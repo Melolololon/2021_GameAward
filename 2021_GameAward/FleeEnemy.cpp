@@ -41,6 +41,10 @@ void FleeEnemy::Initialize()
 	modelData.SetBoneAngle(0, 0, heapNum);
 	modelData.SetBoneAngle(0, 1, heapNum);
 	modelData.SetAngle(0, heapNum);
+
+	//プレイヤーへの方向ベクトルを求める
+	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+	LockPlayer();
 }
 
 void FleeEnemy::Update()

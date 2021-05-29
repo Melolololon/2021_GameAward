@@ -469,11 +469,11 @@ void Play::Update()
 		//ŽÖ(ƒJ[ƒ\ƒ‹)ˆÚ“®
 		if(backStageSelect)
 		{
-			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-21, 30, -19));
+			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-26, 30, -22));
 		}
 		else
 		{
-			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-23, 30, -9));
+			pauseSnake->SetModelMoveVector(cameraTarget + Vector3(-29, 30, -9));
 		}
 
 		return;
