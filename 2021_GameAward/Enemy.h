@@ -42,7 +42,7 @@ protected:
 #pragma region ‹¤’Êƒpƒ‰ƒ[ƒ^
 	static const int GENERATE_COUNT = 50;
 
-	float moveSpeed = 0.15f;
+	float moveSpeed = 0.10f;
 	int hp = 3;
 	static const float OBJSIZE;
 

@@ -31,6 +31,7 @@ void Title::LoadResources()
 
 	pushButtonSprite = std::make_unique<Sprite2D>();
 	pushButtonSprite->CreateSprite();
+	pushButtonSprite->SetPosition({ 390,180 });
 	pushButtonTexture = std::make_unique<Texture>();
 	pushButtonTexture->LoadSpriteTexture("Resources/Texture/MS_Title/press_X_button.png");
 
@@ -112,7 +113,6 @@ void Title::Update()
 		titleSprite[i]->SetPosition(titleSpritePosition[i]);
 
 	}
-	pushButtonSprite->SetPosition({ 500,400 });
 
 	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_START_BUTTON, 1))

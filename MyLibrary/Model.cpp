@@ -814,6 +814,7 @@ void Model::SetCmdList(const int modelNum)
 
 void Model::Draw(const int modelNum)
 {
+	if (modelNum == -1)return;
 	MapConstData(modelNum);
 	SetCmdList(modelNum);
 
@@ -822,18 +823,22 @@ void Model::Draw(const int modelNum)
 #pragma region ëÄçÏ
 void Model::SetPosition(const Vector3& position, const int modelNum)
 {
+	if (modelNum == -1)return;
+
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].position = position.ToXMFLOAT3();
 }
 
 void Model::SetAngle(const Vector3& angle, const int modelNum)
 {
+	if (modelNum == -1)return;
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].angle = angle.ToXMFLOAT3();
 }
 
 void Model::SetScale(const Vector3& scale, const int modelNum)
 {
+	if (modelNum == -1)return;
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].scale = scale.ToXMFLOAT3();
 }

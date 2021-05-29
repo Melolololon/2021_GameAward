@@ -323,10 +323,94 @@ bool ObjModel::Initialize()
 
 void ObjModel::Draw(const int modelNum)
 {
+	if (modelNum == -1)return;
 	MapConstData(modelNum);
 	MapBoneMatrix(modelNum);
 	SetCmdList(modelNum);
 }
+
+#pragma region ëÄçÏ
+
+void ObjModel::SetBoneMoveVector
+(
+	const Vector3& vector,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	boneDatas[modelNum][boneNum].moveVector = vector.ToXMFLOAT3();
+}
+
+void ObjModel::SetBoneScale
+(
+	const Vector3& scale,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	boneDatas[modelNum][boneNum].scale = scale.ToXMFLOAT3();
+}
+
+void ObjModel::SetBoneAngle
+(
+	const Vector3& angle,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	boneDatas[modelNum][boneNum].angle = angle.ToXMFLOAT3();
+}
+
+void ObjModel::SetParentBone
+(
+	const int bone,
+	const int parentBone,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	parentBoneDatas[modelNum][bone].parentBoneNum = parentBone;
+}
+
+void ObjModel::SetMoveVectorImpact
+(
+	const Vector3& impact,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	parentBoneDatas[modelNum][boneNum].moveVectorImpact = impact.ToXMFLOAT3();
+}
+
+
+void ObjModel::SetAngleImpact
+(
+	const Vector3& impact,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	parentBoneDatas[modelNum][boneNum].angleImpact = impact.ToXMFLOAT3();
+}
+
+void ObjModel::SetScaleImpact
+(
+	const Vector3& impact,
+	const int boneNum,
+	const int modelNum
+)
+{
+	if (modelNum == -1)return;
+	parentBoneDatas[modelNum][boneNum].scaleImpact = impact.ToXMFLOAT3();
+}
+
+#pragma endregion
+
 
 #pragma region èÓïÒéÊìæ
 std::vector<Vector3>ObjModel::GetBonePosition()

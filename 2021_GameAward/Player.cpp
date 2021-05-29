@@ -162,7 +162,7 @@ void Player::Initialize()
 	//tienTime = iMap["tienTime"];
 	tienTime = 4;
 	//rotateSpeed = fMap["rotateSpeed"];//1ƒtƒŒ[ƒ€‚É‰ñ“]‚·‚éŠp“x
-	rotateSpeed = 3.0f;
+	rotateSpeed = 5.0f;
 	//pushRotateAngle = fMap["pushRotateAngle"];
 	pushRotateAngle = 360.0f;
 #pragma endregion

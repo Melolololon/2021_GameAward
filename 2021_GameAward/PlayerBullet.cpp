@@ -18,7 +18,7 @@
 #include"StageSelect.h"
 
 ObjModel PlayerBullet::modelData;
-const int PlayerBullet::CREATE_NUMBER = 300;
+const int PlayerBullet::CREATE_NUMBER = 250;
 HeapIndexManager PlayerBullet::heapIndexManager(CREATE_NUMBER);
 
 bool PlayerBullet::IsEnemy(const Object* p)
@@ -118,6 +118,9 @@ void PlayerBullet::Hit
 	const int& arrayNum
 )
 {
+	if (heapNum == -1)return;
+	
+
 	if (typeid(*object) == typeid(TargetObject) ||
 		typeid(*object) == typeid(Block)||
 		typeid(*object) == typeid(EnemyBullet))
