@@ -32,7 +32,7 @@ void ShotEnemy::Initialize()
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
 
-	modelData.SetScale(0.7f, heapNum);
+	modelData.SetScale(0.8f, heapNum);
 
 
 	modelData.SetBoneAngle(0, 0, heapNum);

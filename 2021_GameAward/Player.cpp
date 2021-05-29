@@ -261,7 +261,7 @@ void Player::PlayMove()
 		lockTargetNum = nearTargetNum;
 
 		//âK‚É‹ß‚Ã‚­ˆ—
-		float targetRotateMaxDistance = 12.0f;
+		float targetRotateMaxDistance = 11.0f;
 		float targetRotateMinDistance = 10.0f;
 		if (typeid(*currentScene) == typeid(StageSelect))targetRotateMaxDistance *= 30.0f;
 
