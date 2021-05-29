@@ -47,8 +47,8 @@ void TargetObject::LoadResource()
 	hpGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
 	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
 
-	maxHp = 60;
-	hpGaugeOneNumSizeX = hpSize.x / 30;
+	maxHp = 150;
+	hpGaugeOneNumSizeX = hpSize.x / maxHp;
 
 
 	PipelineData data;

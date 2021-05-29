@@ -33,11 +33,11 @@ void SimEnemy::Initialize()
 	float mag = 1.5f;
 	//各ID用
 	sphereData[0].position = position + Vector3(std::cos(LibMath::AngleConversion(0, 0)) * mag, 0, std::sin(LibMath::AngleConversion(0, 0)) * mag);
-	sphereData[0].r = OBJSIZE / 2;
+	sphereData[0].r = OBJSIZE / 2 + 0.3f;
 	sphereData[1].position = position + Vector3(std::cos(LibMath::AngleConversion(0, 120)) * mag, 0, std::sin(LibMath::AngleConversion(0, 120)) * mag);
-	sphereData[1].r = OBJSIZE / 2;
+	sphereData[1].r = OBJSIZE / 2 + 0.3f;
 	sphereData[2].position = position + Vector3(std::cos(LibMath::AngleConversion(0, 240)) * mag, 0, std::sin(LibMath::AngleConversion(0, 240)) * mag);
-	sphereData[2].r = OBJSIZE / 2;
+	sphereData[2].r = OBJSIZE / 2 + 0.3f;
 	//中心　壁避け用
 	sphereData[3].position = position;
 	sphereData[3].r = OBJSIZE / 2 * 2.0f;
@@ -45,7 +45,7 @@ void SimEnemy::Initialize()
 	setPosition(position);
 
 
-	modelData.SetScale(0.7f, heapNum);
+	modelData.SetScale(0.5f, heapNum);
 
 
 	modelData.SetBoneAngle(0, 0, heapNum);
