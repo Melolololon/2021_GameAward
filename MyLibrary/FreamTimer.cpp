@@ -25,10 +25,10 @@ FreamTimer::~FreamTimer()
 
 void FreamTimer::Update()
 {
+	timeResetFream = false;
 	if (isStop
 		|| setAllTimerStopFlag)return;
 
-	timeResetFream = false;
 	time++;
 	if (time == maxTime)
 	{
