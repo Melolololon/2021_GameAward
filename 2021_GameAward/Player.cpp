@@ -126,7 +126,7 @@ void Player::Initialize()
 	mutekiTime = 60 * 3;
 #pragma endregion
 
-	scale = { 1,1,1 };
+	scale = { 1.2,1.2,1.2 };
 
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))

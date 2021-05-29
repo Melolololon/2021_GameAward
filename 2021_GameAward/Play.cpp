@@ -150,7 +150,7 @@ void Play::Initialize()
 	playSceneState = PlaySceneState::PLAY_SCENE_SET_TARGET;
 
 #pragma region ÉJÉÅÉâ
-	addCameraPosition = { 0,60,-30 };
+	addCameraPosition = { 0,70,-35 };
 	cameraPosition = addCameraPosition;
 	cameraTarget = { 0,0,0 };
 #pragma endregion
