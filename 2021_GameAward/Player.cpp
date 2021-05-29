@@ -156,7 +156,7 @@ void Player::Initialize()
 	
 
 #pragma region ひねり
-	rotateFlag = false;
+	twistFlag = false;
 	twistAngles.resize(boneNum);
 	tienTimer = 0;
 	//tienTime = iMap["tienTime"];
@@ -164,7 +164,9 @@ void Player::Initialize()
 	//rotateSpeed = fMap["rotateSpeed"];//1フレームに回転する角度
 	rotateSpeed = 5.0f;
 	//pushRotateAngle = fMap["pushRotateAngle"];
-	pushRotateAngle = 360.0f;
+	pushRotateAngle = 180.0f;
+
+	inverseTimer.SetMaxTime(60 * 1);
 #pragma endregion
 
 #pragma region 移動
@@ -413,7 +415,7 @@ void Player::Update()
 #pragma region パラメーター処理
 
 #pragma region ライフ
-	if (hp <= 0) 
+	if (hp <= 0)
 	{
 		isDead = true;
 	}
@@ -434,7 +436,7 @@ void Player::Update()
 
 #pragma endregion
 
-	if(isDead)
+	if (isDead)
 	{
 		//点滅用
 		isMuteki = true;
@@ -454,20 +456,20 @@ void Player::Update()
 		{
 			PauseMove();
 		}
-		else 
+		else
 		{
 			PlayMove();
 		}
 	}
-	if (typeid(*currentScene) == typeid(StageSelect)) 
+	if (typeid(*currentScene) == typeid(StageSelect))
 	{
 		StageSelectMove();
 	}
-	if (typeid(*currentScene) == typeid(GameOver)) 
+	if (typeid(*currentScene) == typeid(GameOver))
 	{
 		GameOverMove();
 	}
-	
+
 
 	if (velRot != -1)
 	{
@@ -544,7 +546,7 @@ void Player::Update()
 		modelData.SetPosition(modelMoveVector, heapNum);
 	};
 
-	if(Play::GetIsPauseFlag())
+	if (Play::GetIsPauseFlag())
 	{
 		SetAngleAndPos();
 		return;
@@ -555,14 +557,20 @@ void Player::Update()
 	if (!XInputManager::GetPadConnectedFlag(1))
 	{
 		if (DirectInput::KeyTrigger(DIK_SPACE))
-			rotateFlag = true;
+		{
+			twistFlag = true;
+		}
 	}
 	else
+	{
 		if (XInputManager::ButtonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
-			rotateFlag = true;
+		{
+			twistFlag = true;
+		}
+	}
 
-
-	if (rotateFlag && typeid(*currentScene) == typeid(Play))
+	//ここまだいじってないからいじって改良して 5/29
+	if (twistFlag && typeid(*currentScene) == typeid(Play))
 	{
 		for (int i = 0; i < boneNum; i++)
 		{
@@ -578,17 +586,40 @@ void Player::Update()
 			}
 			//超えたら設定量を代入し、回転を止める
 			else
+			{
 				twistAngles[i] = pushRotateAngle;
+
+				if (inverseTimer.GetSameAsMaximumFlag())
+				{
+					pushRotateAngle = 360.0f;
+					inverseTimer.ResetTime();
+					inverseTimer.SetStopFlag(true);
+					tienTimer = 0;
+				}
+
+			}
 		}
 
+		if (twistAngles[boneNum - 1] == pushRotateAngle
+			&& pushRotateAngle == 180.0f)
+		{
+			inverseTimer.SetStopFlag(false);
+		}
+		
 		//全部回転し終わったら入る
-		if (twistAngles[boneNum - 1] == pushRotateAngle)
+		if (twistAngles[boneNum - 1] == pushRotateAngle
+			&& pushRotateAngle == 360.0f)
 		{
 			//リセット
-			rotateFlag = false;
+			twistFlag = false;
 			tienTimer = 0;
 			for (auto& a : twistAngles)
+			{
 				a = 0;
+			}
+			pushRotateAngle = 180.0f;
+
+
 		}
 
 		//回転してたらカウント
@@ -612,7 +643,7 @@ void Player::Update()
 		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
 			(
 				//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
-				bonePos[arrayNum] + Vector3(q.x * 2.5 ,-0.2f, q.z * 2.5),
+				bonePos[arrayNum] + Vector3(q.x * 2.5, -0.2f, q.z * 2.5),
 				Vector3(q.x, 0, q.z)
 				));
 
@@ -635,33 +666,41 @@ void Player::Update()
 
 	//新ショット(手動)
 	bool keyShot = DirectInput::KeyTrigger(DIK_Z)
-		&& !rotateFlag
 		&& typeid(*currentScene) == typeid(Play);
 
 	bool padShot = XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1) 
-		&& !rotateFlag
+		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& typeid(*currentScene) == typeid(Play);
 
 	if (keyShot || padShot)
 	{
+
 		for (int i = 3; i < boneNum - 3; i++)
 		{
 			if (i % 2 == 0)continue;
-			shotBullet(i);
+			if (twistAngles[i] == 0.0f
+				|| twistAngles[i] >= 360.0f)
+			{
+				shotBullet(i);
+			}
 		}
+
 	}
 
-
-	for (int i = 3; i < boneNum - 3; i++)
+	if (keyShot || padShot)
 	{
-		if (i % 2 == 0)continue;
 
-		if (twistAngles[i] >= 180 &&
-			twistAngles[i] < 180 + rotateSpeed)
-			shotBullet(i);
-	}
+		for (int i = 3; i < boneNum - 3; i++)
+		{
+			if (i % 2 == 0)continue;
 
+			if (twistAngles[i] >= 180 &&
+				twistAngles[i] < 180 + rotateSpeed)
+			{
+				shotBullet(i);
+			}
+		}
+	}	
 
 #pragma endregion
 

@@ -89,7 +89,7 @@ private:
 
 #pragma region ‰ñ“](”P‚è)
 	//’x‰„’†‚©‚Ç‚¤‚©
-	bool rotateFlag;
+	bool twistFlag;
 	//‰ñ“]‘¬“x(1ƒtƒŒ[ƒ€‚É‰ñ“]‚·‚éŠp“x)
 	float rotateSpeed;
 	//‚Ğ‚Ë‚èŠp“x
@@ -100,6 +100,9 @@ private:
 	int tienTime;
 	//‰ñ“]‚·‚éŠp“x(‰ñ“]‚µ‚½Šp“x‚ª‚±‚ê‚É’B‚µ‚½‚ç‰ñ“]I—¹)
 	float pushRotateAngle;
+
+	FreamTimer inverseTimer;
+
 #pragma endregion
 
 #pragma region ’e
