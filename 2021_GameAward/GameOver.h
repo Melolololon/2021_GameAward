@@ -14,8 +14,8 @@ private:
 	static Texture gameOverTex;
 
 	std::shared_ptr<Player>player;
-	Vector3 yesPos = Vector3(-38, 0, -6);
-	Vector3 noPos = Vector3(3, 0, -6);
+	Vector3 yesPos = Vector3(-41, 0, -6);
+	Vector3 noPos = Vector3(0, 0, -6);
 public:
 	GameOver() {}
 	~GameOver() {}
