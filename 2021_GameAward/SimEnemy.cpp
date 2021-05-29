@@ -332,8 +332,10 @@ void SimEnemy::DeadAnimation()
 	{
 		angle.z += 2.0f;
 	}
-	else
+	else 
+	{
 		partDeadTimer--;
+	}
 }
 
 

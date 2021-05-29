@@ -238,6 +238,7 @@ void Player::PlayMove()
 			nearTargetNum = i;
 		}
 	}
+
 	float maxDistance = 40.0f;
 	Scene* currentScene = SceneManager::GetInstace()->GetCurrentScene();
 	if (typeid(*currentScene) == typeid(StageSelect))maxDistance *= 17.0f;
@@ -260,10 +261,11 @@ void Player::PlayMove()
 		lockTargetNum = nearTargetNum;
 
 		//âK‚É‹ß‚Ã‚­ˆ—
-		float minDistance = 10.0f;
-		if (typeid(*currentScene) == typeid(StageSelect))minDistance *= 30.0f;
+		float targetRotateMaxDistance = 12.0f;
+		float targetRotateMinDistance = 10.0f;
+		if (typeid(*currentScene) == typeid(StageSelect))targetRotateMaxDistance *= 30.0f;
 
-		if (nearTergetDis >= minDistance
+		if (nearTergetDis >= targetRotateMaxDistance
 			&& !targetRotatePlayer)
 		{
 			targetRotatePlayer = false;
@@ -277,8 +279,20 @@ void Player::PlayMove()
 			velRot = playerToNeraTargetAngle;
 
 		}
+		//—£‚ê‚éˆ—
+		else if(nearTergetDis <= targetRotateMinDistance
+			&& !targetRotatePlayer)
+		{
+			Vector3 playerToNeraTarget = nearTergetPosition - bonePos[0];
+			float playerToNeraTargetAngle = LibMath::Vecto2ToAngle
+			(
+				{ -playerToNeraTarget.x,-playerToNeraTarget.z },
+				true
+			);
+			velRot = playerToNeraTargetAngle;
+		}
 		//‰ñ‚éˆ—
-		else
+		else 
 		{
 			if (!targetRotatePlayer)
 			{
