@@ -192,9 +192,9 @@ void Player::Initialize()
 	{
 		sphereData[i].position = bonePos[i];
 			
-			/*if(i <= boneNum - 2)
-				sphereData[i].r = 0.8f * scale.x;
-			else*/
+			if(i >= boneNum - 3)
+				sphereData[i].r = 0.6f * scale.x;
+			else
 				sphereData[i].r = 1.5f * scale.x;
 	}
 

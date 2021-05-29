@@ -44,7 +44,7 @@ void EnemyBullet::Initialize()
 {
 	position = 0;
 	velocity = 0;
-	speed = 0.4;
+	speed = 0.3f;
 	setHeapNum();
 
 	deadTimer = 0;

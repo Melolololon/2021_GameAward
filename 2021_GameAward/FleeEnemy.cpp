@@ -28,7 +28,7 @@ FleeEnemy::~FleeEnemy()
 
 void FleeEnemy::Initialize()
 {
-	hp = 1;
+	hp = 3;
 	moveSpeed = 0.15f;
 	shiver = Vector3(0, 0, 0);
 
@@ -42,9 +42,9 @@ void FleeEnemy::Initialize()
 	modelData.SetBoneAngle(0, 1, heapNum);
 	modelData.SetAngle(0, heapNum);
 
-	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
-	LockPlayer();
+	////プレイヤーへの方向ベクトルを求める
+	//velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+	//LockPlayer();
 }
 
 void FleeEnemy::Update()
@@ -58,6 +58,12 @@ void FleeEnemy::Update()
 	if (isGameStart() == false)
 	{
 		setPosition(position);
+
+		////プレイヤーへの方向ベクトルを求める
+		velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+		LockPlayer();
+		velocity = 0;
+		modelData.SetAngle(angle, heapNum);
 		return;
 	}
 

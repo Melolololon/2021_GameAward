@@ -45,7 +45,7 @@ void SimEnemy::Initialize()
 	setPosition(position);
 
 
-	modelData.SetScale(0.5f, heapNum);
+	modelData.SetScale(0.7f, heapNum);
 
 
 	modelData.SetBoneAngle(0, 0, heapNum);

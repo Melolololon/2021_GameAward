@@ -27,7 +27,7 @@ ShotEnemy::~ShotEnemy()
 
 void ShotEnemy::Initialize()
 {
-	hp = 2;
+	hp = 4;
 
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
@@ -40,9 +40,9 @@ void ShotEnemy::Initialize()
 
 	modelData.SetAngle(0, heapNum);
 
-	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
-	LockPlayer();
+	////プレイヤーへの方向ベクトルを求める
+	//velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+	//LockPlayer();
 }
 
 void ShotEnemy::Update()
@@ -56,6 +56,12 @@ void ShotEnemy::Update()
 	if (isGameStart() == false)
 	{
 		setPosition(position);
+
+		////プレイヤーへの方向ベクトルを求める
+		velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+		LockPlayer();
+		velocity = 0;
+		modelData.SetAngle(angle, heapNum);
 		return;
 	}
 

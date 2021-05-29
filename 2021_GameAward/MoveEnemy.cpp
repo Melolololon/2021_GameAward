@@ -27,7 +27,7 @@ void MoveEnemy::Initialize()
 {
 	//setHeapNum();
 
-	hp = 3;
+	hp = 7;
 
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;
@@ -39,9 +39,7 @@ void MoveEnemy::Initialize()
 	modelData.SetBoneAngle(0, 1, heapNum);
 	modelData.SetAngle(0, heapNum);
 
-	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
-	LockPlayer();
+
 }
 
 void MoveEnemy::Update()
@@ -55,6 +53,12 @@ void MoveEnemy::Update()
 	if (isGameStart() == false)
 	{
 		setPosition(position);
+
+		////プレイヤーへの方向ベクトルを求める
+		velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+		LockPlayer();
+		velocity = 0;
+		modelData.SetAngle(angle, heapNum);
 		return;
 	}
 

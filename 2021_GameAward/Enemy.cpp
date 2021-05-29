@@ -21,6 +21,8 @@ Enemy::Enemy()
 	rightFootAngle.z = -MIN_ANGLE;
 	moveAnimationTime.SetMaxTime(MOVE_ANIMATION_MAX);
 	moveAnimationTime.SetStopFlag(false);
+
+
 }
 
 void Enemy::setHeapNum()
