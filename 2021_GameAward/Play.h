@@ -47,7 +47,7 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Player> pauseSnake;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
-	const int ENEMY_COUNT = 10;
+	const int ENEMY_COUNT = 4;
 
 
 	//ƒQ[ƒ€ó‘Ô
@@ -148,6 +148,7 @@ public:
 	Scene* GetNextScene();
 
 	void Tutorial();
+	void SetEnemy();
 
 	static void LoadResources();
 	
