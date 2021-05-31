@@ -12,7 +12,10 @@ public :
 	{
 		STAGE_SELECT_STATE_SELECT,
 		STAGE_SELECT_STATE_SELECT_END,
+		STAGE_SELECT_STATE_RETURN_TITLE,
+
 	};
+
 
 private:
 	static int selectStageNum;
@@ -38,11 +41,16 @@ private:
 	//UINT nextFromSelectionTimer;//‘I‘ğ‚©‚çŸ‚ÌƒV[ƒ“‚Ü‚Å‚ÌŠÔ
 	//static const UINT nextFromSelectionTime;
 
+	static Sprite2D returnTitleSpr;
+	static Texture returnTitleTex;
+	static Sprite2D selectSpr;
+	static Texture selectTex;
+
 	//ó‘Ô
 	static StageSelectState stageSelectState;
 	FreamTimer nextSceneTimer;
 
-	
+
 
 public:
 	StageSelect();

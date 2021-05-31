@@ -90,11 +90,13 @@ void Play::LoadResources()
 	}
 
 	tutorialSkipSpr.CreateSprite();
-	tutorialSkipSpr.SetPosition(Vector2(800,600 ));
+	tutorialSkipSpr.SetPosition(Vector2(878, 610));
+	tutorialSkipSpr.SetScale(Vector2(0.8f,0.8f ));
 	tutorialSkipTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialSkip.png");
 
 	tutorialNextSpr.CreateSprite();	
-	tutorialNextSpr.SetPosition(Vector2(800, 500));
+	tutorialNextSpr.SetPosition(Vector2(860, 520));
+	tutorialNextSpr.SetScale(Vector2(0.8f, 0.8f));
 	tutorialNextTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialNext.png");
 
 	/*Library::createSprite(&arrowSprite);
@@ -579,7 +581,8 @@ void Play::Update()
 
 void Play::Tutorial()
 {
-	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY)return;
+	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY
+		|| tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)return;
 
 	bool skipTimeOver = gameTime.GetTime() >= 60 * 1;
 	//スキップ処理

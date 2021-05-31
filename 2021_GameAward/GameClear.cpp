@@ -89,8 +89,7 @@ void GameClear::Initialize()
 
 void GameClear::Update()
 {
-	if (DirectInput::KeyTrigger(DIK_Z)
-		|| XInputManager::GetPadConnectedFlag(1)
+	if (XInputManager::GetPadConnectedFlag(1)
 		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
 	{

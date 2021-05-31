@@ -256,8 +256,7 @@ void Player::PlayMove()
 	bool keyTargetObjectRot = DirectInput::KeyState(DIK_X)
 		&& distanceFlag;
 
-	if (keyTargetObjectRot
-		|| padTargetObjectRot)
+	if (padTargetObjectRot)
 	{
 		lockTarget = true;
 		lockTargetNum = nearTargetNum;
@@ -329,16 +328,13 @@ void Player::PlayMove()
 	{
 		targetRotatePlayer = false;
 
-		if (XInputManager::GetPadConnectedFlag(1))
+		if (XInputManager::LeftStickDown(40, 1) ||
+			XInputManager::LeftStickUp(40, 1) ||
+			XInputManager::LeftStickLeft(40, 1) ||
+			XInputManager::LeftStickRight(40, 1)) 
 		{
-			if (XInputManager::LeftStickDown(40, 1) ||
-				XInputManager::LeftStickUp(40, 1) ||
-				XInputManager::LeftStickLeft(40, 1) ||
-				XInputManager::LeftStickRight(40, 1))
-				velRot = XInputManager::LeftStickAngle(1);
+			velRot = XInputManager::LeftStickAngle(1);
 		}
-		else
-			velRot = DirectInput::ArrowKeyAngle();
 	}
 
 
@@ -554,22 +550,13 @@ void Player::Update()
 
 #pragma region Ç–ÇÀÇËèàóù
 
-	if (!XInputManager::GetPadConnectedFlag(1))
+
+	if (XInputManager::ButtonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
 	{
-		if (DirectInput::KeyTrigger(DIK_SPACE))
-		{
-			twistFlag = true;
-		}
-	}
-	else
-	{
-		if (XInputManager::ButtonTrigger(XInputManager::XINPUT_RB_BUTTON, 1))
-		{
-			twistFlag = true;
-		}
+		twistFlag = true;
 	}
 
-	//Ç±Ç±Ç‹ÇæÇ¢Ç∂Ç¡ÇƒÇ»Ç¢Ç©ÇÁÇ¢Ç∂Ç¡Çƒâ¸ó«ÇµÇƒ 5/29
+
 	if (twistFlag && typeid(*currentScene) == typeid(Play))
 	{
 		for (int i = 0; i < boneNum; i++)
@@ -672,14 +659,17 @@ void Player::Update()
 		&& XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		&& typeid(*currentScene) == typeid(Play);
 
-	if (keyShot || padShot)
+	if (padShot)
 	{
 		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
 		for (int i = 3; i < boneNum - 3; i++)
 		{
 			if (i % 2 == 0)continue;
+
 			if (twistAngles[i] == 0.0f
-				|| twistAngles[i] >= 360.0f)
+				|| twistAngles[i] >= 360.0f
+				|| twistAngles[i] >= 180
+				&& twistAngles[i] < 180 + rotateSpeed)
 			{
 				shotBullet(i);
 			}
@@ -688,20 +678,6 @@ void Player::Update()
 	}
 
 
-	if (keyShot || padShot)
-	{
-		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
-		for (int i = 3; i < boneNum - 3; i++)
-		{
-			if (i % 2 == 0)continue;
-
-			if (twistAngles[i] >= 180 
-				&& twistAngles[i] < 180 + rotateSpeed)
-			{
-				shotBullet(i);
-			}
-		}
-	}	
 
 #pragma endregion
 

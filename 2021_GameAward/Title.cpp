@@ -3,6 +3,7 @@
 #include"XInputManager.h"
 #include"Fade.h"
 #include"Play.h"
+#include"StageSelect.h"
 
 std::unique_ptr<Sprite2D>Title::titleSprite[7];
 std::unique_ptr<Texture>Title::titleTexture;
@@ -13,6 +14,8 @@ Vector2 Title::titleSpritePosition[7];
 
 Sprite2D Title::titleBackSpr;
 Texture Title::titleBackTex;
+
+bool Title::nextSceneTutorial = true;
 
 Title::Title(){}
 Title::~Title(){}
@@ -117,8 +120,7 @@ void Title::Update()
 	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_START_BUTTON, 1))
 		&& XInputManager::GetPadConnectedFlag(1);
-	if (DirectInput::KeyTrigger(DIK_Z)
-		|| padStart)
+	if (padStart)
 	{
 		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT) 
 		{
@@ -154,10 +156,19 @@ void Title::Finitialize()
 {
 	Library::StopLoadSound("Title", false);
 
-	StageSelect::SetTutorialData();
+	if (nextSceneTutorial) 
+	{
+		StageSelect::SetTutorialData();
+	}
+
 }
 
 Scene* Title::GetNextScene()
 {
-	return new Play();
+	if (nextSceneTutorial) 
+	{
+		nextSceneTutorial = false;
+		return new Play();
+	}
+	return new StageSelect();
 }
