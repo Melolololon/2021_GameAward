@@ -108,7 +108,6 @@ void TargetObject::Update()
 
 	if (hp <= 0) 
 	{
-
 		Vector3 parPos = position + Vector3(0, 0, -1);
 		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
 

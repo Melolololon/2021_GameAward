@@ -5,6 +5,7 @@
 #include "PlayerBullet.h"
 #include"DecrementTimeNumber.h"
 #include"EnemyParticle.h"
+#include"TargetObject.h"
 
 ObjModel SimEnemy::modelData;
 int SimEnemy::createCount;
@@ -185,29 +186,48 @@ void SimEnemy::Hit(const Object* const object, const CollisionType& collisionTyp
 	if (arrayNum == 3)
 	{
 		//ブロックとの衝突判定
-		if (typeid(*object) == typeid(Block))
+		if (typeid(*object) == typeid(Block)
+			|| typeid(*object) == typeid(TargetObject))
 		{
-			//personalPos -= velocity * moveSpeed;
-
 			switch (sphereData[arrayNum].boxHitDistance)
 			{
 			case BOX_HIT_DIRECTION_RIGHT:
-				position.x += OBJSIZE * moveSpeed;
-				setPosition(position);
+				//内側に入り込むの防止するif
+				//velocityを固定のfloatにすればめり込まないが、カメラが動きまくるのでこうしてる
+				if (velocity.x >= 0)
+					position.x += velocity.x * moveSpeed;
+				else
+					position.x += -velocity.x * moveSpeed;
+
+
 				break;
 			case BOX_HIT_DIRECTION_LEFT:
-				position.x -= OBJSIZE * moveSpeed;
-				setPosition(position);
+				if (velocity.x <= 0)
+					position.x += velocity.x * moveSpeed;
+				else
+					position.x += -velocity.x * moveSpeed;
+
+
 				break;
 			case BOX_HIT_DIRECTION_FRONT:
-				position.z -= OBJSIZE * moveSpeed;
-				setPosition(position);
+				if (velocity.z <= 0)
+					position.z += velocity.z * moveSpeed;
+				else
+					position.z += -velocity.z * moveSpeed;
+
 				break;
 			case BOX_HIT_DIRECTION_BACK:
-				position.z += OBJSIZE * moveSpeed;
-				setPosition(position);
+				if (velocity.z >= 0)
+					position.z += velocity.z * moveSpeed;
+				else
+					position.z += -velocity.z * moveSpeed;
+
 				break;
 			}
+
+			//position -= velocity * moveSpeed;
+
+			setPosition(position);
 		}
 	}
 	else

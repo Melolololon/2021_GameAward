@@ -9,6 +9,7 @@
 
 #include"DecrementTimeNumber.h"
 #include"EnemyParticle.h"
+#include"TargetObject.h"
 
 const float Enemy::OBJSIZE = 1.0f;
 const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
@@ -122,9 +123,82 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 {
 
 	//ƒuƒƒbƒN‚Æ‚ÌÕ“Ë”»’è
-	if (typeid(*object) == typeid(Block))
+	if (typeid(*object) == typeid(Block)
+		|| typeid(*object) == typeid(TargetObject))
 	{
-		position -= velocity * moveSpeed;
+		switch (sphereData[arrayNum].boxHitDistance)
+		{
+		case BOX_HIT_DIRECTION_RIGHT:
+			//“à‘¤‚É“ü‚èž‚Þ‚Ì–hŽ~‚·‚éif
+			//velocity‚ðŒÅ’è‚Ìfloat‚É‚·‚ê‚Î‚ß‚èž‚Ü‚È‚¢‚ªAƒJƒƒ‰‚ª“®‚«‚Ü‚­‚é‚Ì‚Å‚±‚¤‚µ‚Ä‚é
+			if (velocity.x >= 0)
+				position.x += 1.0f * moveSpeed;
+			else
+				position.x += -velocity.x * moveSpeed;
+
+
+			break;
+		case BOX_HIT_DIRECTION_LEFT:
+			if (velocity.x <= 0)
+				position.x += -1.0f * moveSpeed;
+			else
+				position.x += -velocity.x * moveSpeed;
+
+
+			break;
+		case BOX_HIT_DIRECTION_FRONT:
+			if (velocity.z <= 0)
+				position.z += -1.0f * moveSpeed;
+			else
+				position.z += -velocity.z * moveSpeed;
+
+			break;
+		case BOX_HIT_DIRECTION_BACK:
+			if (velocity.z >= 0)
+				position.z += 1.0f * moveSpeed;
+			else
+				position.z += -velocity.z * moveSpeed;
+
+			break;
+		}
+
+
+		switch (sphereData[arrayNum].boxHitDistance)
+		{
+		case BOX_HIT_DIRECTION_RIGHT:
+			//“à‘¤‚É“ü‚èž‚Þ‚Ì–hŽ~‚·‚éif
+			//velocity‚ðŒÅ’è‚Ìfloat‚É‚·‚ê‚Î‚ß‚èž‚Ü‚È‚¢‚ªAƒJƒƒ‰‚ª“®‚«‚Ü‚­‚é‚Ì‚Å‚±‚¤‚µ‚Ä‚é
+			if (velocity.x >= 0)
+				position.x += velocity.x * moveSpeed;
+			else
+				position.x += -velocity.x * moveSpeed;
+
+
+			break;
+		case BOX_HIT_DIRECTION_LEFT:
+			if (velocity.x <= 0)
+				position.x += velocity.x * moveSpeed;
+			else
+				position.x += -velocity.x * moveSpeed;
+
+
+			break;
+		case BOX_HIT_DIRECTION_FRONT:
+			if (velocity.z <= 0)
+				position.z += velocity.z * moveSpeed;
+			else
+				position.z += -velocity.z * moveSpeed;
+
+			break;
+		case BOX_HIT_DIRECTION_BACK:
+			if (velocity.z >= 0)
+				position.z += velocity.z * moveSpeed;
+			else
+				position.z += -velocity.z * moveSpeed;
+
+			break;
+		}
+		//position -= velocity * moveSpeed;
 
 		setPosition(position);
 
