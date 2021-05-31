@@ -27,7 +27,7 @@ void MoveEnemy::Initialize()
 {
 	//setHeapNum();
 
-	hp = 7;
+	hp = 5;
 
 	sphereData[0].position = position;
 	sphereData[0].r = OBJSIZE / 2;

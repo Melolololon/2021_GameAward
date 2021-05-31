@@ -52,7 +52,7 @@ protected:
 
 	FreamTimer* pGameTime;
 
-	int decreaseTime = 3;
+	int decreaseTime = 4;
 #pragma endregion
 
 	//初期化と更新は各クラスでオーバーライド

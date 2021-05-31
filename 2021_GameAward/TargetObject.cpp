@@ -47,7 +47,7 @@ void TargetObject::LoadResource()
 	hpGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
 	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
 
-	maxHp = 150;
+	maxHp = 120;
 	hpGaugeOneNumSizeX = hpSize.x / maxHp;
 
 
@@ -84,14 +84,14 @@ void TargetObject::Initialize()
 
 	heapNum = heapIndexManager.GetHeapIndex();
 
-	const float mulScale = 1.2f;
+	const float mulScale = 1.8f;
 	modelData.SetPosition(position, heapNum);
 	modelData.SetScale(mulScale, heapNum);
 
 	collisionFlag.box = true;
 	boxData.resize(1);
 	boxData[0].position = position;
-	boxData[0].size = Vector3(2, 5, 2) * mulScale;
+	boxData[0].size = Vector3(3, 5, 3) * mulScale;
 
 	hp = maxHp;
 	setEnd = false;

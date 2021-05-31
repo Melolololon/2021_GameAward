@@ -112,7 +112,7 @@ void Player::Initialize()
 	position = { 0.0f,0.0f,0.0f };
 	velocity = { 1.0f,0.0f,0.0f };
 	//initSpeed = fMap["speed"];
-	initSpeed = 0.25f;
+	initSpeed = 0.30f;
 	speed = initSpeed;
 
 	//selectStage = false;
@@ -647,7 +647,7 @@ void Player::Update()
 				Vector3(q.x, 0, q.z)
 				));
 
-		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
+		
 	};
 
 	//‹ŒƒVƒ‡ƒbƒg(Ž©“®)
@@ -674,7 +674,7 @@ void Player::Update()
 
 	if (keyShot || padShot)
 	{
-
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
 		for (int i = 3; i < boneNum - 3; i++)
 		{
 			if (i % 2 == 0)continue;
@@ -687,15 +687,16 @@ void Player::Update()
 
 	}
 
+
 	if (keyShot || padShot)
 	{
-
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
 		for (int i = 3; i < boneNum - 3; i++)
 		{
 			if (i % 2 == 0)continue;
 
-			if (twistAngles[i] >= 180 &&
-				twistAngles[i] < 180 + rotateSpeed)
+			if (twistAngles[i] >= 180 
+				&& twistAngles[i] < 180 + rotateSpeed)
 			{
 				shotBullet(i);
 			}

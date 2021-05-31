@@ -273,7 +273,8 @@ void Play::Update()
 		//ボタン
 		if(XInputManager::GetPadConnectedFlag(1))
 		{
-			if(XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON,1))
+			if(XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON,1)
+				|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1))
 			{
 				if(backStageSelect)
 				{
@@ -522,7 +523,10 @@ void Play::Update()
 				targetObjectsSize--;
 				i--;
 
-				SetEnemy();
+				if (targetObjects.size() != 0) 
+				{
+					SetEnemy();
+				}
 			}
 			else//falseだったら追加
 			{
@@ -814,6 +818,8 @@ Scene* Play::GetNextScene()
 
 void Play::SetEnemy()
 {
+	Vector3 playerPosition = player->GetPosition();
+
 	//敵追加
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
@@ -841,7 +847,7 @@ void Play::SetEnemy()
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
 
 				//プレイヤーに近すぎないように
-				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE+ playerPosition.x, 0, -PLAYERCOLLISIONRANGE + playerPosition.z), Vector3(PLAYERCOLLISIONRANGE + playerPosition.x, 0, PLAYERCOLLISIONRANGE + playerPosition.z), enemyLeftUp, enemyRightDown);
 				if (b1) {
 					continue;
 				}
@@ -874,7 +880,7 @@ void Play::SetEnemy()
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
 
 				//プレイヤーに近すぎないように
-				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE + playerPosition.x, 0, -PLAYERCOLLISIONRANGE + playerPosition.z), Vector3(PLAYERCOLLISIONRANGE + playerPosition.x, 0, PLAYERCOLLISIONRANGE + playerPosition.z), enemyLeftUp, enemyRightDown);
 				if (b1) {
 					continue;
 				}
@@ -904,7 +910,7 @@ void Play::SetEnemy()
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
 
 				//プレイヤーに近すぎないように
-				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE + playerPosition.x, 0, -PLAYERCOLLISIONRANGE + playerPosition.z), Vector3(PLAYERCOLLISIONRANGE + playerPosition.x, 0, PLAYERCOLLISIONRANGE + playerPosition.z), enemyLeftUp, enemyRightDown);
 				if (b1) {
 					continue;
 				}
@@ -933,7 +939,7 @@ void Play::SetEnemy()
 				Vector3 enemyRightDown = random + Vector3(0.5, 0, 0.5);
 
 				//プレイヤーに近すぎないように
-				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE, 0, -PLAYERCOLLISIONRANGE), Vector3(PLAYERCOLLISIONRANGE, 0, PLAYERCOLLISIONRANGE), enemyLeftUp, enemyRightDown);
+				b1 = isCollision(Vector3(-PLAYERCOLLISIONRANGE + playerPosition.x, 0, -PLAYERCOLLISIONRANGE + playerPosition.z), Vector3(PLAYERCOLLISIONRANGE + playerPosition.x, 0, PLAYERCOLLISIONRANGE + playerPosition.z), enemyLeftUp, enemyRightDown);
 				if (b1) {
 					continue;
 				}
