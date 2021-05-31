@@ -109,13 +109,22 @@ void MoveEnemy::Update()
 	modelData.SetBoneAngle(leftFootAngle, 1, heapNum);
 
 	modelData.SetAngle(angle, heapNum);
+
+	//“_–Å—p
+	FlashingTimerMaxCheck();
+
 }
 
 void MoveEnemy::Draw()
 {
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
-	modelData.Draw(heapNum);
+
+	if (flashingTimer.GetMultipleTimeFlag(2) 
+		|| hp <= 0)
+	{
+		modelData.Draw(heapNum);
+	}
 }
 
 

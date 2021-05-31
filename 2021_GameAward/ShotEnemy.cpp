@@ -136,13 +136,20 @@ void ShotEnemy::Update()
 
 
 	modelData.SetAngle(angle, heapNum);
+
+	//“_–Å
+	FlashingTimerMaxCheck();
 }
 
 void ShotEnemy::Draw()
 {
 	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	//Library::drawGraphic(modelData, heapNum);
-	modelData.Draw(heapNum);
+	if (flashingTimer.GetMultipleTimeFlag(2)
+		|| hp <= 0)
+	{
+		modelData.Draw(heapNum);
+	}
 
 }
 
