@@ -5,9 +5,10 @@
 #include "LibMath.h"
 #include "PlayerBullet.h"
 #include"DecrementTimeNumber.h"
+#include"TargetObject.h"
 
 #include"ObjectManager.h"
-#include "Random.h"
+#include"Random.h"
 
 ObjModel FleeEnemy::modelData;
 int FleeEnemy::createCount;
@@ -108,12 +109,13 @@ void FleeEnemy::Update()
 			if (attackAfterTimer == 60 * 2)
 			{
 				//座標更新
-				moveSpeed = 0.15f * -3;
+				velocity *= -1;
+				moveSpeed = 0.15f * 3;
 				position = position + velocity * moveSpeed;
 				setPosition(position);
 
 
-				angle.y = -LibMath::Vecto2ToAngle({ -velocity.x,-velocity.z }, true);
+				angle.y = -LibMath::Vecto2ToAngle({ velocity.x,velocity.z }, true);
 			
 			}
 			else
@@ -162,11 +164,48 @@ void FleeEnemy::Draw()
 void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 	//ブロックとの衝突判定
-	if (typeid(*object) == typeid(Block))
+	if (typeid(*object) == typeid(Block)
+		|| typeid(*object) == typeid(TargetObject))
 	{
 		if (escapeTimer < 300 - 60 * 2 || escapeTimer == 300)
 		{
-			position -= velocity * moveSpeed;
+			switch (sphereData[arrayNum].boxHitDistance)
+			{
+			case BOX_HIT_DIRECTION_RIGHT:
+				
+				if (velocity.x >= 0)
+					position.x += velocity.x * moveSpeed;
+				else
+					position.x += -velocity.x * moveSpeed;
+
+
+				break;
+			case BOX_HIT_DIRECTION_LEFT:
+				if (velocity.x <= 0)
+					position.x += velocity.x * moveSpeed;
+				else
+					position.x += -velocity.x * moveSpeed;
+
+
+				break;
+			case BOX_HIT_DIRECTION_FRONT:
+				if (velocity.z <= 0)
+					position.z += velocity.z * moveSpeed;
+				else
+					position.z += -velocity.z * moveSpeed;
+
+				break;
+			case BOX_HIT_DIRECTION_BACK:
+				if (velocity.z >= 0)
+					position.z += velocity.z * moveSpeed;
+				else
+					position.z += -velocity.z * moveSpeed;
+
+				break;
+			}
+
+
+			//position -= velocity * moveSpeed;
 		}
 		else
 		{
