@@ -621,8 +621,6 @@ void Player::Update()
 
 	auto shotBullet = [&](const UINT& arrayNum)
 	{
-		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_GAMECLEAR)return;
-
 		Vector3 forwordVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
 		Vector3 normalizeForwordVector = Vector3Normalize(forwordVector);
 		Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
@@ -661,6 +659,8 @@ void Player::Update()
 
 	if (padShot)
 	{
+		if (Play::GetPlaySceneState() == Play::PLAY_SCENE_GAMECLEAR)return;
+
 		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
 		for (int i = 3; i < boneNum - 3; i++)
 		{
