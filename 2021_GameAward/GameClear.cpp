@@ -7,18 +7,18 @@
 
 const int GameClear::S_RUNK_TIME[5] =
 {
+	12,
+	12,
+	30,
 	20,
-	20,
-	20,
-	20,
-	20
+	15
 };
 
 const int GameClear::A_RUNK_TIME[5] =
 {
 	30,
 	30,
-	30,
+	45,
 	30,
 	30
 };
@@ -26,7 +26,7 @@ const int GameClear::B_RUNK_TIME[5] =
 {
 	40,
 	40,
-	40,
+	60,
 	40,
 	40
 };
@@ -91,7 +91,8 @@ void GameClear::Update()
 {
 	if (DirectInput::KeyTrigger(DIK_Z)
 		|| XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1))
+		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
 	{
 		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT)
 		{

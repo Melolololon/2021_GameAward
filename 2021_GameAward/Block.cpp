@@ -35,7 +35,7 @@ void Block::LoadResource()
 	//Library::create3DBox({ 1,1,1 }, modelData);
 	//Library::createHeapData2({ 150,150,150,255 }, CREATE_NUMBER, modelData);
 
-	modelData.CreateBox({ 1,1,1 }, { 150,150,150,255 }, CREATE_NUMBER);
+	modelData.CreateBox({ 1,1,1 }, { 0,100,0,255 }, CREATE_NUMBER);
 }
 
 void Block::Initialize()
@@ -62,7 +62,7 @@ void Block::Update()
 {
 
 	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)
-		boxData[0].size = scale + Vector3(10, 0, 10);
+		boxData[0].size = scale + Vector3(17, 0, 17);
 	else
 		boxData[0].size = scale;
 

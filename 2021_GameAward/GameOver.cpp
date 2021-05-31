@@ -67,7 +67,8 @@ void GameOver::Update()
 
 	if (DirectInput::KeyTrigger(DIK_SPACE)
 		|| XInputManager::GetPadConnectedFlag(1)
-		&& XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)) 
+		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
 	{
 		selectEnd = true;
 		Fade::GetInstance()->FadeStart();

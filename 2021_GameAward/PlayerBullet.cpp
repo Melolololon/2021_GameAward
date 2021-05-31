@@ -89,6 +89,7 @@ void PlayerBullet::Initialize()
 
 void PlayerBullet::Update()
 {
+
 	if (heapNum == -1)
 	{
 		eraseManager = true;
