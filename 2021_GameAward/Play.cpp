@@ -777,7 +777,7 @@ void Play::Draw()
 
 	Fade::GetInstance()->Draw();
 }
-
+ 
 
 void Play::Finitialize()
 {
