@@ -17,6 +17,8 @@ private:
 
 	static Sprite2D titleBackSpr;
 	static Texture titleBackTex;
+
+	static bool nextSceneTutorial;
 public:
 	Title();
 	~Title();

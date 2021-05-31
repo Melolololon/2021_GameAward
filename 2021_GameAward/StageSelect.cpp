@@ -2,8 +2,12 @@
 
 #include<fstream>
 
-#include"ObjectManager.h"
+
 #include"Play.h"
+#include"Title.h"
+
+#include"ObjectManager.h"
+
 #include"Quaternion.h"
 #include"LibMath.h"
 
@@ -26,7 +30,10 @@ std::vector<Vector3>StageSelect::mapMovePositions;
 std::vector<float>StageSelect::worldCenterToStageVectorAngle;
 StageSelect::StageSelectState StageSelect::stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 
-
+Sprite2D StageSelect::returnTitleSpr;
+Texture StageSelect::returnTitleTex;
+Sprite2D StageSelect::selectSpr;
+Texture StageSelect::selectTex;
 //const UINT StageSelect::playerRotateTime = 60 * 2;
 //const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
@@ -40,6 +47,16 @@ StageSelect::~StageSelect()
 
 void StageSelect::LoadResources()
 {
+	returnTitleSpr.CreateSprite();
+	returnTitleSpr.SetPosition(Vector2(838, 610));
+	returnTitleSpr.SetScale(Vector2(0.8f, 0.8f));
+	returnTitleTex.LoadSpriteTexture("Resources/Texture/returnTitle.png");
+
+	selectSpr.CreateSprite();
+	selectSpr.SetPosition(Vector2(860, 520));
+	selectSpr.SetScale(Vector2(0.8f, 0.8f));
+	selectTex.LoadSpriteTexture("Resources/Texture/select.png");
+
 	//マップ読み込み
 	for (int i = 0; ; i++)
 	{
@@ -187,10 +204,6 @@ void StageSelect::Update()
 	{
 		inputAngle = XInputManager::LeftStickAngle(1);
 	}
-	else 
-	{
-		inputAngle = DirectInput::ArrowKeyAngle();
-	}
 
 	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
 	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
@@ -206,17 +219,19 @@ void StageSelect::Update()
 		}
 	}
 
-	bool padSelect = (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+	bool padStageSelect = (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1))
 		&& XInputManager::GetPadConnectedFlag(1)
 		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
 
-	if (DirectInput::KeyTrigger(DIK_Z)
-		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
-		|| padSelect) 
-	{
 
-		
+	bool padReturnTitle = XInputManager::ButtonTrigger(XInputManager::XINPUT_B_BUTTON, 1)
+		&& XInputManager::GetPadConnectedFlag(1)
+		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
+
+	//ステージ決定処理
+	if (padStageSelect) 
+	{
 
 		if (stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
 			&& Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT())
@@ -226,6 +241,18 @@ void StageSelect::Update()
 			stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT_END;
 		}
 	}
+
+	//タイトルに戻る処理
+	if (padReturnTitle)
+	{
+		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT())
+		{
+			Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
+			Fade::GetInstance()->FadeStart();
+			stageSelectState = StageSelect::STAGE_SELECT_STATE_RETURN_TITLE;
+		}
+	}
+
 
 	if (nextSceneTimer.GetSameAsMaximumFlag()) 
 	{
@@ -244,6 +271,9 @@ void StageSelect::Draw()
 {
 	ObjectManager::GetInstance()->Draw();
 
+	returnTitleSpr.Draw(&returnTitleTex);
+	selectSpr.Draw(&selectTex);
+
 	Fade::GetInstance()->Draw();
 }
 
@@ -252,17 +282,20 @@ void StageSelect::Draw()
 void StageSelect::Finitialize()
 {
 	//情報セット
-	Play::SetStageData
-	(
-		selectStageNum,
-		blockPositions[selectStageNum],
-		blockScales[selectStageNum],
-		targetDistance[selectStageNum],
-		playerDistance[selectStageNum],
-		targetNumbers[selectStageNum],
-		leftUpPositions[selectStageNum],
-		rightDownPositions[selectStageNum]
-	);
+	if (stageSelectState == StageSelect::StageSelectState::STAGE_SELECT_STATE_SELECT_END)
+	{
+		Play::SetStageData
+		(
+			selectStageNum,
+			blockPositions[selectStageNum],
+			blockScales[selectStageNum],
+			targetDistance[selectStageNum],
+			playerDistance[selectStageNum],
+			targetNumbers[selectStageNum],
+			leftUpPositions[selectStageNum],
+			rightDownPositions[selectStageNum]
+		);
+	}
 
 	ObjectManager::GetInstance()->AllEraseObject();
 
@@ -290,6 +323,10 @@ void StageSelect::SetTutorialData()
 
 Scene* StageSelect::GetNextScene()
 {
-	return new Play();
+	if (stageSelectState == StageSelect::StageSelectState::STAGE_SELECT_STATE_SELECT_END)
+	{
+		return new Play();
+	}
+	return new Title();
 }
 

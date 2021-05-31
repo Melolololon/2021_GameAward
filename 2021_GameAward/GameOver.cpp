@@ -38,8 +38,7 @@ void GameOver::Update()
 {
 	ObjectManager::GetInstance()->Update();
 
-	if (DirectInput::KeyTrigger(DIK_RIGHT)
-		|| XInputManager::GetPadConnectedFlag(1))
+	if (XInputManager::GetPadConnectedFlag(1))
 	{
 		float stickAngle = XInputManager::LeftStickAngle(1);
 
@@ -52,8 +51,7 @@ void GameOver::Update()
 		}
 	}
 
-	if (DirectInput::KeyTrigger(DIK_LEFT)
-		|| XInputManager::GetPadConnectedFlag(1))
+	if (XInputManager::GetPadConnectedFlag(1))
 	{
 		float stickAngle = XInputManager::LeftStickAngle(1);
 
@@ -65,8 +63,7 @@ void GameOver::Update()
 		}
 	}
 
-	if (DirectInput::KeyTrigger(DIK_SPACE)
-		|| XInputManager::GetPadConnectedFlag(1)
+	if (XInputManager::GetPadConnectedFlag(1)
 		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
 	{
