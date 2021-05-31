@@ -30,7 +30,6 @@ void SimEnemy::Initialize()
 {
 	hp = 1;
 
-
 	float mag = 1.5f;
 	//ŠeID—p
 	sphereData[0].position = position + Vector3(std::cos(LibMath::AngleConversion(0, 0)) * mag, 0, std::sin(LibMath::AngleConversion(0, 0)) * mag);
@@ -54,6 +53,7 @@ void SimEnemy::Initialize()
 
 	modelData.SetAngle(0, heapNum);
 
+	decreaseTime = 6;
 
 }
 

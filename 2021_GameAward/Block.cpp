@@ -62,7 +62,7 @@ void Block::Update()
 {
 
 	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)
-		boxData[0].size = scale + Vector3(17, 0, 17);
+		boxData[0].size = scale + Vector3(15, 0, 15);
 	else
 		boxData[0].size = scale;
 
