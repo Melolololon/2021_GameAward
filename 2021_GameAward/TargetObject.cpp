@@ -111,6 +111,7 @@ void TargetObject::Update()
 		Vector3 parPos = position + Vector3(0, 0, -1);
 		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
 
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/TargetSE/clash_hokora.wav");
 		eraseManager = true;
 	}
 

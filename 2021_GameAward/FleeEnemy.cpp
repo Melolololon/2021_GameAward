@@ -151,13 +151,21 @@ void FleeEnemy::Update()
 
 
 	modelData.SetAngle(angle, heapNum);
+
+
+	//点滅
+	FlashingTimerMaxCheck();
 }
 
 void FleeEnemy::Draw()
 {
 	/*Library::setPipeline(PIPELINE_OBJ_ANIMATION);
 	Library::drawGraphic(modelData, heapNum);*/
-	modelData.Draw(heapNum);
+	if (flashingTimer.GetMultipleTimeFlag(2) 
+		|| hp <= 0)
+	{
+		modelData.Draw(heapNum);
+	}
 
 }
 
@@ -231,6 +239,9 @@ void FleeEnemy::Hit(const Object* const object, const CollisionType& collisionTy
 	if (typeid(*object) == typeid(PlayerBullet))
 	{
 		hp--;
+		flashingTimer.SetStopFlag(false);
+		flashingTimer.ResetTime();
+
 		if (hp <= 0)
 		{
 			//ここにスコアを与える処理

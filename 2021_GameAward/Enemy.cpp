@@ -23,7 +23,7 @@ Enemy::Enemy()
 	moveAnimationTime.SetMaxTime(MOVE_ANIMATION_MAX);
 	moveAnimationTime.SetStopFlag(false);
 
-
+	flashingTimer.SetMaxTime(FLASHING_TIME);
 }
 
 void Enemy::setHeapNum()
@@ -221,6 +221,9 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 	if (typeid(*object) == typeid(PlayerBullet))
 	{
 		hp--;
+		flashingTimer.SetStopFlag(false);
+		flashingTimer.ResetTime();
+
 		if (hp <= 0)
 		{
 			//‚±‚±‚ÉƒXƒRƒA‚ð—^‚¦‚éˆ—
@@ -260,3 +263,11 @@ bool Enemy::isGameStart()
 }
 
 
+void Enemy::FlashingTimerMaxCheck()
+{
+	if(flashingTimer.GetSameAsMaximumFlag())
+	{
+		flashingTimer.ResetTime();
+		flashingTimer.SetStopFlag(true);
+	}
+}

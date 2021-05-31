@@ -53,7 +53,17 @@ protected:
 	FreamTimer* pGameTime;
 
 	int decreaseTime = 4;
+
+	
+	//点滅
+	FreamTimer flashingTimer;
+	const int FLASHING_TIME = 60 * 0.3f;
+
+
 #pragma endregion
+
+	//点滅
+	void FlashingTimerMaxCheck();
 
 	//初期化と更新は各クラスでオーバーライド
 public:
