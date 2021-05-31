@@ -824,7 +824,7 @@ void Play::SetEnemy()
 	Vector3 playerPosition = player->GetPosition();
 
 	//“G’Ç‰Á
-	for (int i = 0; i < ENEMY_COUNT; i++)
+	for (int i = 0; i < ENEMY_NUMBER[stageNum]; i++)
 	{
 		int range = 2;
 		if (stageNum == 1)

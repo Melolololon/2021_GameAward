@@ -48,7 +48,14 @@ private:
 	std::shared_ptr<Player> pauseSnake;
 	//‚Æ‚è‚ ‚¦‚¸ŒÅ’è
 	const int ENEMY_COUNT = 4;
-
+	const int ENEMY_NUMBER[5] =
+	{
+		3,
+		4,
+		4,
+		4,
+		5
+	};
 
 	//ƒQ[ƒ€ó‘Ô
 	static PlaySceneState playSceneState;

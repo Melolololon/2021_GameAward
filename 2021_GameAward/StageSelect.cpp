@@ -199,7 +199,7 @@ void StageSelect::Initialize()
 void StageSelect::Update()
 {
 	//ステージセレクト
-	float inputAngle;
+	float inputAngle = -1.0f;
 	if (XInputManager::GetPadConnectedFlag(1)) 
 	{
 		inputAngle = XInputManager::LeftStickAngle(1);
@@ -209,7 +209,8 @@ void StageSelect::Update()
 	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
 	{
 		if(LibMath::AngleDifference(inputAngle, worldCenterToStageVectorAngle[i],20.0f)
-			&& stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END)
+			&& stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END
+			&& inputAngle >= 0.0f)
 		{
 
 			selectStageNum = i;
