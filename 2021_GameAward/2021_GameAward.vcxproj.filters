@@ -177,8 +177,4 @@
       <Filter>ヘッダー ファイル\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="LittleMosaicPixelShader.hlsl" />
-    <FxCompile Include="LostMosaicPixelShader.hlsl" />
-  </ItemGroup>
 </Project>
