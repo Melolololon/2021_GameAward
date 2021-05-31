@@ -16,19 +16,19 @@ const int GameClear::S_RUNK_TIME[5] =
 
 const int GameClear::A_RUNK_TIME[5] =
 {
-	30,
-	30,
-	45,
-	30,
-	30
+	15,
+	15,
+	35,
+	25,
+	20
 };
 const int GameClear::B_RUNK_TIME[5] =
 {
+	20,
+	20,
 	40,
-	40,
-	60,
-	40,
-	40
+	30,
+	25
 };
 
 

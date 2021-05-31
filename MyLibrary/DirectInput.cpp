@@ -93,7 +93,7 @@ void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 
 #pragma endregion
 
-	if (getEnum.size() == 0)
+	/*if (getEnum.size() == 0)
 	{
 		dInputDevice->EnumDevices(DI8DEVCLASS_GAMECTRL, &diEnumDevicesCallBack, NULL, DIEDFL_ATTACHEDONLY);
 
@@ -120,7 +120,7 @@ void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 				getEnum.shrink_to_fit();
 			}
 		}
-	}
+	}*/
 }
 
 //これをEnumDeviceに渡すとこれに接続したものを渡してくれる
@@ -153,39 +153,39 @@ void DirectInput::Update()
 	//LPVOID callV = nullptr;
 
 	//ゲームパッドの設定にしたのにペンタブ認識した
-	padPrevious = padState;
+	//padPrevious = padState;
 
-	
-	
-	
-	if (getEnum.size() != 0 && !setPad)
-	{
-		//パッド接続するとGUID_JoystickでS_OK戻ってくる(やっていいかはわからん)
-		//enumのやつ渡す場合、インスタンスのやつを渡せばいいっぽい?
-		auto ifresult = dInputDevice->CreateDevice(getEnum[0].guidInstance, &devPad, NULL);
-		padCaps.dwSize = sizeof(DIDEVCAPS);
-		ifresult = devPad->GetCapabilities(&padCaps);
-		ifresult = devPad->SetDataFormat(&c_dfDIJoystick);
-		ifresult = devPad->SetCooperativeLevel(mHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-		//result = devPad->EnumObjects();
-		//joyPadState = new DIJOYSTATE();
-	
-		setPad = true;
+	//
+	//
+	//
+	//if (getEnum.size() != 0 && !setPad)
+	//{
+	//	//パッド接続するとGUID_JoystickでS_OK戻ってくる(やっていいかはわからん)
+	//	//enumのやつ渡す場合、インスタンスのやつを渡せばいいっぽい?
+	//	auto ifresult = dInputDevice->CreateDevice(getEnum[0].guidInstance, &devPad, NULL);
+	//	padCaps.dwSize = sizeof(DIDEVCAPS);
+	//	ifresult = devPad->GetCapabilities(&padCaps);
+	//	ifresult = devPad->SetDataFormat(&c_dfDIJoystick);
+	//	ifresult = devPad->SetCooperativeLevel(mHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	//	//result = devPad->EnumObjects();
+	//	//joyPadState = new DIJOYSTATE();
+	//
+	//	setPad = true;
 
-		
-	}
-	
+	//	
+	//}
+	//
 
-	if (setPad) 
-	{
-		//アクセスエラー
-		 auto ifresult = devPad->Acquire();
+	//if (setPad) 
+	//{
+	//	//アクセスエラー
+	//	 auto ifresult = devPad->Acquire();
 
-		//ここエラー
-		ifresult = devPad->Poll();
-		ifresult = devPad->GetDeviceState(sizeof(padState), &padState);
-	}
-	
+	//	//ここエラー
+	//	ifresult = devPad->Poll();
+	//	ifresult = devPad->GetDeviceState(sizeof(padState), &padState);
+	//}
+	//
 #pragma endregion
 
 
@@ -558,11 +558,11 @@ void DirectInput::Release()
 
 	devKeyBoard->Unacquire();
 	devKeyBoard->Release();
-	if (devPad) 
+	/*if (devPad) 
 	{
 		devPad->Unacquire();
 		devPad->Release();
-	}
+	}*/
 	dInputDevice->Release();
 
 }
