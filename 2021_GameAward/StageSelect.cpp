@@ -63,6 +63,7 @@ void StageSelect::LoadResources()
 		const std::wstring path = L"Resources/Map/ms_map" + std::to_wstring(i + 1) + L".msmap";
 		std::ifstream openFile;
 		openFile.open(path, std::ios_base::binary);
+		//openFile.open("gihgi");
 
 		bool loadTutorialMap = false;
 		if (!openFile)

@@ -5,75 +5,80 @@
 #include"SceneManager.h"
 #include"PlayerBullet.h"
 
-PrimitiveModel Block::modelData;
-const int Block::CREATE_NUMBER = 300;
+ObjModel Block::treeModelData;
+const int Block::CREATE_NUMBER = 5000;
 HeapIndexManager Block::heapIndexManager(CREATE_NUMBER);
+
 
 Block::Block(const Vector3& pos, const Vector3& scale)
 {
 	Initialize();
 	position = pos;
 	this->scale = scale;
-	modelData.SetScale(this->scale, heapNum);
-	modelData.SetPosition(position, heapNum);
+	this->scale.x = scale.x < treeScale.x ? treeScale.x :scale.x;
+	this->scale.z = scale.z < treeScale.z ? treeScale.z :scale.z;
+
+	//scaleをtreeScaleの倍数にしないといけない
+
+	//スケールx*スケールz = 表示モデル数
+	heapNums.resize(static_cast<int>(this->scale.x / treeScale.x) * static_cast<int>(this->scale.z / treeScale.z));
+
+	//添え字設定
+	for (auto& h : heapNums)
+	{
+	
+		h = heapIndexManager.GetHeapIndex();
+	}
+
+	SetModel();
+
+	boxData[0].position = position;
 }
 
 
 
 Block::~Block()
 {
-	heapIndexManager.DrawEndCallFunction(heapNum);
+	for (auto& h : heapNums) 
+	{
+		heapIndexManager.DrawEndCallFunction(h);
+	}
 }
 
 void Block::LoadResource()
 {
-	std::string mtl;
-
-	//modelData.key = "block";
-	////Library::loadOBJVertex("Resources/Model/testSnake.obj", true, true, &mtl, modelData);
-	////Library::loadOBJMaterial("Resources/Model/", mtl, CREATE_NUMBER, modelData);
-	//Library::create3DBox({ 1,1,1 }, modelData);
-	//Library::createHeapData2({ 150,150,150,255 }, CREATE_NUMBER, modelData);
-
-	modelData.CreateBox({ 1,1,1 }, { 0,100,0,255 }, CREATE_NUMBER);
+	treeModelData.LoadModel("Resources/Model/tree/tree.obj", true, CREATE_NUMBER, 0);
 }
 
 void Block::Initialize()
 {
-
-	heapNum = heapIndexManager.GetHeapIndex();
-
-	velocity = 0;
 	collisionFlag.box = true;
 	boxData.resize(1);
 
-
-	scale = 1;
-
-
-	//Library::setScale(scale, modelData, heapNum);
-	//Library::setPosition(position, modelData, heapNum);
-	modelData.SetScale(scale, heapNum);
-	modelData.SetPosition(position, heapNum);
-
+	for (auto& h : heapNums) 
+	{
+		treeModelData.SetScale(treeScale, h);
+	}
 }
 
 void Block::Update()
 {
-
-	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET)
+	if (Play::GetPlaySceneState() == Play::PLAY_SCENE_SET_TARGET) 
+	{
 		boxData[0].size = scale + Vector3(15, 0, 15);
-	else
+	}
+	else 
+	{
 		boxData[0].size = scale;
-
-	boxData[0].position = position;
-
+	}
 }
 
 void Block::Draw()
 {
-	//Library::drawGraphic(modelData, heapNum);
-	modelData.Draw(heapNum);
+	for (auto& h : heapNums) 
+	{
+		treeModelData.Draw(h);
+	}
 }
 
 void Block::Hit
@@ -96,5 +101,26 @@ const void* Block::GetPtr()const
 void Block::MovePosition(const Vector3& vector)
 {
 	position += vector;
-	modelData.SetPosition(position, heapNum);
+	boxData[0].position = position;
+
+	SetModel();
+
+}
+
+void Block::SetModel()
+{
+	//木の配置
+	Vector3 leftUpPos = position + Vector3(-scale.x / 2, 0, scale.z / 2);
+	for (int z = 0 ,loopNumZ = static_cast<int>(scale.z / treeScale.z); z < loopNumZ; z++)
+	{
+		for (int x = 0, loopNumX = static_cast<int>(scale.x / treeScale.x); x < loopNumX; x++)
+		{
+		
+			treeModelData.SetPosition
+			(
+				leftUpPos + Vector3(x * treeScale.x, 0, -z * treeScale.z),
+				heapNums[z * loopNumX + x]
+			);
+		}
+	}
 }

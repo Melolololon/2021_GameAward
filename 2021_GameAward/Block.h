@@ -11,19 +11,20 @@ private:
 
 #pragma region ƒ‚ƒfƒ‹ŠÖŒW
 
-	static PrimitiveModel modelData;
+	static ObjModel treeModelData;
+
 	static const int CREATE_NUMBER;
-	int heapNum;
+	std::vector<int> heapNums;
 
 	static HeapIndexManager heapIndexManager;
 
-
+	void SetModel();
 
 #pragma endregion
 
 
 	Vector3 scale = 0;
-
+	Vector3 treeScale = 3;
 
 
 
