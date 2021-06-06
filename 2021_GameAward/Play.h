@@ -178,6 +178,7 @@ public:
 
 	static bool GetIsPauseFlag() { return isPause; }
 
+	static void SetTutorialState(const TutorialState state) { tutorialState = state; }
 
 	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
 };
