@@ -2,6 +2,71 @@
 #include"DirectInput.h"
 
 
+
+float LibMath::MultipleClamp(const float num, const float multiple, const bool returnBigNum)
+{
+	if (multiple == 0.0f
+		|| num == 0.0f)return 0.0f;
+
+	//smallNumとbigNum確認用の変数
+	float checkNum = 0.0f;
+	//numより小さいかつ一番近い数値
+	float smallNum = 0.0f;
+	//numより大きいかつ一番近い数値
+	float bigNum = 0.0f;
+
+	bool checkSmall = false;
+	bool checkBig = false;
+
+	while (1)
+	{
+		if (num >= checkNum)
+		{
+			smallNum = checkNum;
+			checkSmall = true;
+		}
+		else
+		{
+			bigNum = checkNum;
+			checkBig = true;
+		}
+
+		if (checkSmall && checkBig)break;
+
+		//符号が違う場合は減らす
+		if (num >= 0 && multiple < 0
+			|| num < 0 && multiple >= 0)
+		{
+			checkNum -= multiple;
+		}
+		else
+		{
+			checkNum += multiple;
+		}
+	}
+
+	float smallDifference = num - smallNum;
+	float bigDifference = bigNum - num;
+	
+	//差が小さいほう(近いほう)をリターン
+	if (smallDifference > bigDifference)
+	{
+		return bigNum;
+	}
+	else if (smallDifference < bigDifference)
+	{
+		return smallNum;
+	}
+	//差が同等だった場合、フラグに従う
+	else
+	{
+		if (returnBigNum)return bigNum;
+		return smallNum;
+	}
+
+}
+
+
 float LibMath::AngleConversion(int paterrn, float angle)
 {
 	if (paterrn == 0)

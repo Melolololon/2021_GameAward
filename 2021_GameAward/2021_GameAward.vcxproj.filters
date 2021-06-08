@@ -54,9 +54,6 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="MoveEnemy.cpp">
-      <Filter>ソース ファイル\Object\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="DecrementTimeNumber.cpp">
+      <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveEnemy.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>

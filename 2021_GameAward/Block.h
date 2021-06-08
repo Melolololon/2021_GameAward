@@ -24,7 +24,7 @@ private:
 
 
 	Vector3 scale = 0;
-	Vector3 treeScale = 3;
+	Vector3 treeScale = 4;
 
 
 

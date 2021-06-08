@@ -56,8 +56,12 @@ void Game::Run()
 	Finitialize();
 }
 
+#include"LibMath.h"
 void Game::Initialize()
 {
+	
+
+
 #pragma region ライブラリ初期化_設定
 	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 230,160,200,255 }, L"メビウスネーク");
 	Library::SetCameraNearAndFar(0.1f, 2500.0f);
