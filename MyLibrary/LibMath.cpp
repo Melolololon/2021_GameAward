@@ -3,7 +3,12 @@
 
 
 
-float LibMath::MultipleClamp(const float num, const float multiple, const bool returnBigNum)
+float LibMath::MultipleClamp
+(
+	const float num,
+	const float multiple,
+	const MultipleClampType type
+)
 {
 	if (multiple == 0.0f
 		|| num == 0.0f)return 0.0f;
@@ -45,26 +50,30 @@ float LibMath::MultipleClamp(const float num, const float multiple, const bool r
 		}
 	}
 
-	float smallDifference = num - smallNum;
-	float bigDifference = bigNum - num;
-	
+	if (type == MultipleClampType::CLAMP_TYPE_BIG)return bigNum;
+	else if (type == MultipleClampType::CLAMP_TYPE_SMALL)return smallNum;
+
+	float bigDif = bigNum - num;
+	float smallDif = num - smallNum;
+
+
 	//差が小さいほう(近いほう)をリターン
-	if (smallDifference > bigDifference)
+	if (smallDif > bigDif)
 	{
 		return bigNum;
 	}
-	else if (smallDifference < bigDifference)
+	else if (smallDif < bigDif)
 	{
 		return smallNum;
 	}
-	//差が同等だった場合、フラグに従う
-	else
+	else//同じだった場合、タイプに従う
 	{
-		if (returnBigNum)return bigNum;
+		if (type == MultipleClampType::CLAMP_TYPE_NEAR_BIG)return bigNum;
 		return smallNum;
 	}
-
 }
+
+
 
 
 float LibMath::AngleConversion(int paterrn, float angle)

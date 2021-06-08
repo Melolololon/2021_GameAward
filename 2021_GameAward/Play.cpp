@@ -161,8 +161,10 @@ void Play::Initialize()
 #pragma region ブロックセット
 	int blockNum = static_cast<int>(blockPositions.size());
 
-	for (int i = 0; i < blockNum; i++)
+	for (int i = 0; i < blockNum; i++) 
+	{
 		ObjectManager::GetInstance()->AddObject(std::make_shared<Block>(blockPositions[i], blockScales[i]));
+	}
 #pragma endregion
 
 

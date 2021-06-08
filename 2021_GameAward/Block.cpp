@@ -8,7 +8,7 @@
 #include"LibMath.h"
 
 ObjModel Block::treeModelData;
-const int Block::CREATE_NUMBER = 5000;
+const int Block::CREATE_NUMBER = 5200;
 HeapIndexManager Block::heapIndexManager(CREATE_NUMBER);
 
 
@@ -20,12 +20,12 @@ Block::Block(const Vector3& pos, const Vector3& scale)
 	this->scale = scale;
 
 	//クランプ
-	this->scale.x = LibMath::MultipleClamp(scale.x, treeScale.x,true );
-	this->scale.z = LibMath::MultipleClamp(scale.z, treeScale.z ,true);
+	this->scale.x = LibMath::MultipleClamp(scale.x, treeScale.x / 2, LibMath::MultipleClampType::CLAMP_TYPE_BIG);
+	this->scale.z = LibMath::MultipleClamp(scale.z, treeScale.z / 2, LibMath::MultipleClampType::CLAMP_TYPE_BIG);
 
 	//小さかったら木のサイズと同じに
-	this->scale.x = scale.x < treeScale.x ? treeScale.x : scale.x;
-	this->scale.z = scale.z < treeScale.z ? treeScale.z : scale.z;
+	this->scale.x = this->scale.x < treeScale.x ? treeScale.x : this->scale.x;
+	this->scale.z = this->scale.z < treeScale.z ? treeScale.z : this->scale.z;
 
 	//スケールx*スケールz = 表示モデル数
 	heapNums.resize(static_cast<int>(this->scale.x / treeScale.x) * static_cast<int>(this->scale.z / treeScale.z));
@@ -115,10 +115,10 @@ void Block::MovePosition(const Vector3& vector)
 
 void Block::SetModel()
 {
-	//クランプして、元々のサイズより小さくなったから、隙間できてる
+	//クランプして、元々のサイズより小さくなったら、隙間できる
 
 	//木の配置
-	Vector3 leftUpPos = position + Vector3(-scale.x / 2, 0, scale.z / 2);
+	Vector3 leftUpPos = position + Vector3(-scale.x / 2, 0, scale.z / 2) + Vector3(treeScale.x / 2 , 0, -treeScale.z / 2);
 	for (int z = 0 ,loopNumZ = static_cast<int>(scale.z / treeScale.z); z < loopNumZ; z++)
 	{
 		for (int x = 0, loopNumX = static_cast<int>(scale.x / treeScale.x); x < loopNumX; x++)
@@ -139,7 +139,7 @@ void Block::SetModel()
 
 			treeModelData.SetPosition
 			(
-				leftUpPos + Vector3(x * treeScale.x + 2.5f, 0 , -z * treeScale.z -3.5f) + randNum,
+				leftUpPos + Vector3(x * treeScale.x/* + 2.5f*/, 0 , -z * treeScale.z /*-3.5f*/) + randNum,
 				heapNums[z * loopNumX + x]
 			);
 		}

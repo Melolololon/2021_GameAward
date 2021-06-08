@@ -19,14 +19,28 @@ private:
 
 public:
 
+
+	enum MultipleClampType
+	{
+		CLAMP_TYPE_BIG,//大きい値を返す
+		CLAMP_TYPE_SMALL,//小さい値を返す
+		CLAMP_TYPE_NEAR_BIG,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、大きいほうを返します
+		CLAMP_TYPE_NEAR_SMALL,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、小さいほうを返します
+	};
+
 	/// <summary>
-	/// numに一番近い指定した倍率の倍数を返します。一番近い値が2つあった場合、セットしたフラグを基準に返す値を決めます。指定がない場合、小さいほうを返します。
+	/// multipleの倍数でnumをクランプします。返す値はMultipleClampTypeでセットします。
 	/// </summary>
 	/// <param name="num">数値</param>
 	/// <param name="multiple">倍率</param>
-	/// <param name="returnBigNum">一番近い値が2つあった場合、大きいほうを返すかどうか</param>
+	/// <param name="type">返す値の種類</param>
 	/// <returns></returns>
-	static float MultipleClamp(const float num, const float multiple, const bool returnBigNum = false);
+	static float MultipleClamp
+	(
+		const float num,
+		const float multiple,
+		const MultipleClampType type
+	);
 
 	/// <summary>
 	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
