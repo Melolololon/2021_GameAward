@@ -100,6 +100,13 @@ private:
 	int tienTime;
 	//‰ñ“]‚·‚éŠp“x(‰ñ“]‚µ‚½Šp“x‚ª‚±‚ê‚É’B‚µ‚½‚ç‰ñ“]I—¹)
 	float pushRotateAngle;
+	//‚Ğ‚Ë‚èó‘Ôenum
+	enum TwistMode {
+		Rot0,
+		Rot180
+	};
+
+	TwistMode twistMode = Rot0;
 
 	FreamTimer inverseTimer;
 
