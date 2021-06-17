@@ -98,7 +98,7 @@ public:
 	/// <returns></returns>
 	int GetSetByNumberFlag(const int num) { return time % (num * 2) >= num; }
 #pragma endregion
-
+	 
 #pragma region ƒZƒbƒg
 
 	/// <summary>
