@@ -12,6 +12,8 @@ class TimerManager;
 class FreamTimer
 {
 private:
+	static bool setAllTimerStopFlag;
+
 	//タイマーのポインタの配列(Update用)
 	std::vector<FreamTimer*>pTimers;
 
@@ -131,6 +133,6 @@ public:
 	/// <param name="num"></param>
 	void SetNowTime(const int num) { time = num; }
 #pragma endregion
-
+	static void SetAllTimerStopFlag(const bool flag) { setAllTimerStopFlag = flag; }
 };
 
