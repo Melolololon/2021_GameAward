@@ -53,7 +53,7 @@ void DecrementTimeNumber::Update()
 void DecrementTimeNumber::Draw()
 {
 
-	std::string drawStr = std::to_string(-decTime);
+	std::string drawStr = std::to_string(decTime);
 	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
 	{
@@ -68,6 +68,12 @@ void DecrementTimeNumber::Draw()
 		{
 			int n = atoi(str.c_str());
 			decSpr[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &numTex);
+
+			if (i == keta - 1)
+			{
+				decSpr[i + 1].SetSubColor(Color(0, 0, 0, Color::ToPar(subAlpha)));
+				decSpr[i + 1].SelectDrawAreaDraw(Vector2(11 * 80, 0), Vector2(11 * 80 + 80, 80), &numTex);
+			}
 		}
 
 	}

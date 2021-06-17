@@ -139,6 +139,12 @@ private:
 	static const int SCENE_END_TIME = 60 * 3;
 
 	FreamTimer slowTimer;
+
+	static Sprite2D maskTimeSpr;
+	static Texture maskTimeTex;
+
+	FreamTimer maskAppearTimer;
+
 #pragma endregion
 
 	static bool isPause;
