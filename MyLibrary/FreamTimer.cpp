@@ -1,12 +1,7 @@
 #include "FreamTimer.h"
 
-bool FreamTimer::setAllTimerStopFlag = false;
-
 FreamTimer::FreamTimer()
 {
-	time = 0;
-	maxTime = 0;
-	
 	TimerManager::GetInstance()->AddFreamTimer(this);
 }
 
@@ -26,24 +21,19 @@ FreamTimer::~FreamTimer()
 void FreamTimer::Update()
 {
 	timeResetFream = false;
-	if (isStop
-		|| setAllTimerStopFlag)return;
+	if (isStop)return;
 
-	time++;
+
+	if (isDecrement)
+		time--;
+	else
+		time++;
+
 	if (time == maxTime)
 	{
-		time = 0;
+		time = resetTime;
 		timeResetFream = true;
 	}
 }
 
 
-bool FreamTimer::GetSameAsMaximumFlag()
-{
-	return timeResetFream;
-}
-
-bool FreamTimer::GetMultipleTimeFlag(const  int num)
-{
-	return time % num == 0;
-}
