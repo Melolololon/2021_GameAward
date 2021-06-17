@@ -165,6 +165,8 @@ void Player::Initialize()
 	rotateSpeed = 5.0f;
 	//pushRotateAngle = fMap["pushRotateAngle"];
 	pushRotateAngle = 180.0f;
+	//‰Šúó‘Ô‚Í0‹
+	twistMode = Rot0;
 
 	inverseTimer.SetMaxTime(60 * 1);
 #pragma endregion
@@ -575,22 +577,22 @@ void Player::Update()
 			else
 			{
 				twistAngles[i] = pushRotateAngle;
-
-				if (inverseTimer.GetSameAsMaximumFlag())
-				{
-					pushRotateAngle = 360.0f;
-					inverseTimer.ResetTime();
-					inverseTimer.SetStopFlag(true);
-					tienTimer = 0;
-				}
-
 			}
 		}
 
 		if (twistAngles[boneNum - 1] == pushRotateAngle
 			&& pushRotateAngle == 180.0f)
 		{
-			inverseTimer.SetStopFlag(false);
+			//180‹‚Ìó‘Ô‚Ì‚Æ‚«‚Í0‹‚ÉB
+			if (twistFlag == Rot180)
+			{
+				pushRotateAngle = 360.0f;
+				inverseTimer.ResetTime();
+				inverseTimer.SetStopFlag(true);
+				tienTimer = 0;
+				twistFlag = false;
+				twistFlag == Rot0;
+			}
 		}
 		
 		//‘S•”‰ñ“]‚µI‚í‚Á‚½‚ç“ü‚é
@@ -605,7 +607,8 @@ void Player::Update()
 				a = 0;
 			}
 			pushRotateAngle = 180.0f;
-
+			//0‹‚©‚ç180‹‚Éó‘Ô•Ï‰»
+			twistMode = Rot180;
 
 		}
 
