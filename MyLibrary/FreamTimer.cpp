@@ -6,7 +6,7 @@ FreamTimer::FreamTimer()
 {
 	time = 0;
 	maxTime = 0;
-
+	
 	TimerManager::GetInstance()->AddFreamTimer(this);
 }
 
