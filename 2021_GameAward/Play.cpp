@@ -67,6 +67,8 @@ Texture Play::targetAnimationTexture;
 Sprite2D Play::pauseSpr;
 Texture Play::pauseTex;
 
+Sprite2D Play::maskTimeSpr;
+Texture Play::maskTimeTex;
 
 #pragma endregion
 bool Play::isPause = false;
@@ -138,6 +140,10 @@ void Play::LoadResources()
 
 	pauseTex.LoadSpriteTexture("Resources/Texture/pause.png");
 
+	maskTimeSpr.CreateSprite();
+	maskTimeSpr.SetPosition(Vector2(1280 / 2 - 256 / 2, 0 - 128));
+	maskTimeTex.LoadSpriteTexture("Resources/Texture/maskTime.png");
+
 	Library::LoadSound("Resources/Sound/BGM/Map1BGM.wav", "Play", true);
 }
 
@@ -176,8 +182,12 @@ void Play::Initialize()
 
 
 	gameTime.SetMaxTime(INT_MAX);
-	gameTime.SetNowTime(-60 * 3);
+	gameTime.SetNowTime(60 * (100 + 3));
+	gameTime.SetDecrementFlag(true);
 
+	maskAppearTimer.SetMaxTime(128);
+	maskAppearTimer.SetNowTime(0);
+	maskAppearTimer.SetResetTime(128);
 
 	sceneEndTimer.SetMaxTime(SCENE_END_TIME);
 
@@ -504,7 +514,7 @@ void Play::Update()
 	}
 	else if (playSceneState == PlaySceneState::PLAY_SCENE_START_PREVIOUS)
 	{
-		if (gameTime.GetTime() >= 0)
+		if (gameTime.GetTime() < 60 * 100)
 		{
 			playSceneState = PlaySceneState::PLAY_SCENE_PLAY;
 		}
@@ -560,7 +570,8 @@ void Play::Update()
 	}
 
 	//ゲームオーバー
-	if (player->GetIsDead()
+	if ((player->GetIsDead() || 
+		(tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL && gameTime.GetTime() <= 0))
 		&& playSceneState != PlaySceneState::PLAY_SCENE_GAMECLEAR)
 	{
 		sceneEndTimer.SetStopFlag(false);
@@ -584,7 +595,7 @@ void Play::Tutorial()
 	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY
 		|| tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)return;
 
-	bool skipTimeOver = gameTime.GetTime() >= 60 * 1;
+	bool skipTimeOver = gameTime.GetTime() < 60 * (100 - 1);
 	//スキップ処理
 	if(XInputManager::GetPadConnectedFlag(1)
 		&& skipTimeOver)
@@ -681,9 +692,11 @@ void Play::Draw()
 
 #pragma region ゲームタイマー
 	int drawNum = gameTime.GetTime() / 60;
-	bool isMinus = gameTime.GetTime() < 0;
-	if (isMinus) drawNum--;
 
+	if (gameTime.GetTime() > 60 * 100)
+	{
+		drawNum = 100;
+	}
 	if (drawNum < 0)drawNum = 0;
 
 	std::string drawStr = std::to_string(drawNum);
@@ -706,19 +719,31 @@ void Play::Draw()
 
 		drawNum /= 10;
 	}
+
+	maskTimeSpr.SetPosition(Vector2(1280 / 2 - 256 / 2, maskAppearTimer.GetTime() - 128));
+	if (targetObjects.size() <= 1 && tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL) {
+		maskAppearTimer.SetStopFlag(false);
+		if (maskAppearTimer.GetTime() >= 128) {
+			maskAppearTimer.SetNowTime(128);
+			maskAppearTimer.SetStopFlag(true);
+		}
+
+		maskTimeSpr.Draw(&maskTimeTex);
+	}
+	
 #pragma endregion
 
 	//321スタート
 
-	if(gameTime.GetTime() < 60 * -2)
+	if(gameTime.GetTime() > 60 * (100 + 2))
 	{
 		DrawNumber(startTimeSpr, 3);
 	}
-	else if(gameTime.GetTime() < 60 * -1)
+	else if(gameTime.GetTime() > 60 * (100 + 1))
 	{
 		DrawNumber(startTimeSpr, 2);
 	}
-	else if (gameTime.GetTime() < 60 * 0)
+	else if (gameTime.GetTime() > 60 * (100 + 0))
 	{
 		DrawNumber(startTimeSpr, 1);
 	}

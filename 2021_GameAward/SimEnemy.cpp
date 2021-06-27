@@ -53,7 +53,7 @@ void SimEnemy::Initialize()
 
 	modelData.SetAngle(0, heapNum);
 
-	decreaseTime = 6;
+	increaseTime = 6;
 
 }
 
@@ -139,7 +139,7 @@ void SimEnemy::Update()
 		if (id == 0) 
 		{
 			Vector3 numPos = position + Vector3(0, 3, 0);
-			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+			ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, increaseTime));
 
 			Vector3 parPos = position + Vector3(0, 0, -1);
 			ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));

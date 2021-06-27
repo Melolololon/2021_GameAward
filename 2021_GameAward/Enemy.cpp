@@ -88,15 +88,15 @@ void Enemy::UpdateDeadAnimationData()
 	}
 	else
 	{
-		pGameTime->SetNowTime(pGameTime->GetTime() - decreaseTime * 60);
-		if (pGameTime->GetTime() < 0) pGameTime->SetNowTime(0);
+		pGameTime->SetNowTime(pGameTime->GetTime() + increaseTime * 60);
+		if (pGameTime->GetTime() > 60 * 101) pGameTime->SetNowTime(60 * 101);
 		eraseManager = true;
 
 		Vector3 parPos = position + Vector3(0, 0, -1);
 		ObjectManager::GetInstance()->AddObject(std::make_shared<EnemyParticle>(parPos));
 
 		Vector3 numPos = position + Vector3(0, 3, 0);
-		ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, decreaseTime));
+		ObjectManager::GetInstance()->AddObject(std::make_shared<DecrementTimeNumber>(numPos, increaseTime));
 	}
 
 }
