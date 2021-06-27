@@ -23,7 +23,7 @@ void FreamTimer::Update()
 	timeResetFream = false;
 	if (isStop
 		|| setAllTimerStopFlag)return;
-setAllTimerStopFlag
+
 
 	if (isDecrement)
 		time--;
