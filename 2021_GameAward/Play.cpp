@@ -233,12 +233,14 @@ void Play::Initialize()
 
 #pragma region 経路関係
 	//ノードセット
+	Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
+	Vector2 rightDownPositionV2 = Vector2(rightDownPosition.x, rightDownPosition.z);;
 	LibMath::SetAStarNodePosition
 	(
-		leftUpPosition,
-		rightDownPosition,
-		100,
-		100,
+		leftUpPositionV2,
+		rightDownPositionV2,
+		10,
+		10,
 		aStarNodes,
 		true
 	);
@@ -248,8 +250,11 @@ void Play::Initialize()
 	std::vector<Vector2>blockSlaceVec2(blockNum);
 	for(int i = 0; i < blockNum;i++)
 	{
-		blockPositionVec2[i] = blockPositions[i];
-		blockSlaceVec2[i] = blockScales[i];
+		blockPositionVec2[i].x = blockPositions[i].x;
+		blockPositionVec2[i].y = blockPositions[i].z;
+	
+		blockSlaceVec2[i].x = blockScales[i].x;
+		blockSlaceVec2[i].y = blockScales[i].z;
 	}
 
 	LibMath::SetAStarNodeHitObjectNodeFlag
