@@ -20,22 +20,27 @@ struct AStarNode
 	//座標
 	Vector2 position = 0;
 
-	//自分を隣接してるノードと指定したノードのポインタの配列
-	std::vector<AStarNode*> pAStarNodes;
-
 	//コスト
 	UINT cost = 1;
 
 	//計算結果(ステップ + 距離 + コスト)
 	UINT calcNum = UINT_MAX;
 
+
+	//以下探索用変数
+
 	//配列のインデックス
 	int indexX = INT_MAX;
 	int indexY = INT_MAX;
 
+	//close配列のインデックス
+	int closeIndex = INT_MAX;
+
 	AStarNode* previousNode = nullptr;
+
 	bool openFlag = false;
 	bool closeFlag = false;
+
 	//進行不能オブジェクトと重なっているノード
 	bool hitObjectNode = false;
 };

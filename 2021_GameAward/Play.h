@@ -1,14 +1,17 @@
 #pragma once
 #include <Scene.h>
+#include<vector>
+
+#include"LibMath.h"
+#include "FreamTimer.h"
+
 
 #include"Player.h"
 #include"Enemy.h"
 #include"Block.h"
 #include"TargetObject.h"
-#include<vector>
-#include "FreamTimer.h"
-
 #include"MoveEnemy.h"
+
 class Play :
 	public Scene
 {
@@ -143,6 +146,12 @@ private:
 
 	static bool isPause;
 	bool backStageSelect = false;
+	
+
+#pragma region åoòHíTçıóp
+	//std::vector<std::vector<>>
+#pragma endregion
+
 
 public:
 	Play();

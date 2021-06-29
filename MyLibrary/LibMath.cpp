@@ -100,11 +100,24 @@ bool LibMath::GetAStarCalcResult
 	std::vector<Vector2>& routeVector
 )
 {
+
 	//やること
 	//openに再追加、closeからの移動(wikiの7.のところ)実装する
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
 
 
+	//リセット
+	for (auto& n1 : nodes)
+	{
+		for (auto& n2 : n1)
+		{
+			n2.closeFlag = false;
+			n2.openFlag = false;
+			n2.previousNode = nullptr;
+			n2.calcNum = UINT_MAX;
+			n2.closeIndex = INT_MAX;
+		}
+	}
 
 	//スタート地点に一番近いノードの距離を格納する変数
 	float startMinDistance = FLT_MAX;
@@ -176,12 +189,9 @@ bool LibMath::GetAStarCalcResult
 	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, endNodeIndexX, endNodeIndexY);
 
 	nodes[startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexY][startNodeIndexX].cost;
-	std::vector<AStarNode*>openNode(1, &nodes[startNodeIndexY][startNodeIndexX]);
 
-	//メモリ確保時の並び変え防止
-	openNode.reserve(nodes.size() * nodes[0].size());
-
-	std::vector<AStarNode*>closeNode;
+	std::vector<AStarNode*>openNodes(1, &nodes[startNodeIndexY][startNodeIndexX]);
+	std::vector<AStarNode*>closeNodes;
 
 
 	AStarNode* endNode;
@@ -192,13 +202,13 @@ bool LibMath::GetAStarCalcResult
 	while (1)
 	{
 		//ゴールにたどり着けない場合
-		if (openNode.size() == 0) return false;
+		if (openNodes.size() == 0) return false;
 
 		//並び替え
 		std::sort
 		(
-			openNode.begin(),
-			openNode.end(),
+			openNodes.begin(),
+			openNodes.end(),
 			[]
 		(
 			const AStarNode* node1,
@@ -212,7 +222,7 @@ bool LibMath::GetAStarCalcResult
 		});
 
 		//calcNumが一番少ないやつを取得
-		AStarNode* mainNode = openNode[openNode.size() - 1];
+		AStarNode* mainNode = openNodes[openNodes.size() - 1];
 
 		bool checkEnd = false;
 
@@ -238,8 +248,7 @@ bool LibMath::GetAStarCalcResult
 
 				AStarNode* checkNode = &nodes[indexY][indexX];
 
-				//リスト追加済かどうかの確認
-				if (checkNode->closeFlag || checkNode->openFlag)continue;
+
 
 				//オブジェクトに重なってるかどうか
 				if (checkNode->hitObjectNode)
@@ -250,10 +259,44 @@ bool LibMath::GetAStarCalcResult
 
 
 				//calcNum = スタートからの距離 + ゴールまでの距離 + コスト
-				checkNode->calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
+				int calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
 					+ CalcNodeDistance(indexX, indexY, endNodeIndexX, endNodeIndexY)
 					+ checkNode->cost;
 
+				//条件を満たしたら代入
+				if (checkNode->openFlag)
+				{
+					if (calcNum < checkNode->calcNum)
+					{
+						checkNode->calcNum = calcNum;
+						checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
+					}
+
+					continue;
+				}
+
+				//条件を満たしたら、closeからopenに移動&代入
+				if (checkNode->closeFlag)
+				{
+					if (calcNum < checkNode->calcNum)
+					{
+						//closeから削除
+						closeNodes.erase(closeNodes.begin() + checkNode->closeIndex);
+						checkNode->closeFlag = false;
+						checkNode->closeIndex = INT_MAX;
+
+						//openに追加
+						openNodes.push_back(checkNode);
+						checkNode->openFlag = true;
+
+						checkNode->calcNum = calcNum;
+						checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
+					}
+					continue;
+				}
+
+
+				checkNode->calcNum = calcNum;
 				checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
 
 				if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
@@ -270,34 +313,36 @@ bool LibMath::GetAStarCalcResult
 
 		if (checkEnd)break;
 
-		closeNode.push_back(mainNode);
+		closeNodes.push_back(mainNode);
 		mainNode->closeFlag = true;
+		mainNode->closeIndex = closeNodes.size() - 1;
 
 		//検索したやつを取り出す(ソートで最小が最後に来るようになっている)
-		openNode[openNode.size() - 1]->openFlag = false;
-		openNode.erase(openNode.begin() + openNode.size() - 1);
+		openNodes[openNodes.size() - 1]->openFlag = false;
+		openNodes.erase(openNodes.begin() + openNodes.size() - 1);
 
 
 		for (auto& n : openPushBackNode)
 		{
-			openNode.push_back(n);
+			openNodes.push_back(n);
 		}
 		openPushBackNode.clear();
 	}
 
-	std::vector<Vector3>nodePositions;
+	routeVector.clear();
 	AStarNode* currentNode = endNode;
 	while (1)
 	{
 		if (!currentNode)break;
-		nodePositions.push_back(currentNode->position);
+		routeVector.push_back(currentNode->position);
 		currentNode = currentNode->previousNode;
 	}
-
+	std::reverse(routeVector.begin(), routeVector.end());
 
 
 	return true;
 }
+
 
 #pragma endregion
 
