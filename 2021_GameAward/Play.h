@@ -149,7 +149,7 @@ private:
 	
 
 #pragma region Œo˜H’Tõ—p
-	//std::vector<std::vector<>>
+	static std::vector<std::vector<AStarNode>>aStarNodes;
 #pragma endregion
 
 
@@ -190,5 +190,11 @@ public:
 	static void SetTutorialState(const TutorialState state) { tutorialState = state; }
 
 	bool isCollision(const Vector3& blockLeftUp, const Vector3& blockRightDown, const Vector3& enemyLeftUp, const Vector3& enemyRightDown);
+
+
+#pragma region Œo˜H’Tõ—p
+	static std::vector<std::vector<AStarNode>>& GetAStarNodes() { return aStarNodes; }
+#pragma endregion
+
 };
 

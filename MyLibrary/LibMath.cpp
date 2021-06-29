@@ -14,6 +14,8 @@ void LibMath::SetAStarNodePosition
 	const bool upPlus
 )
 {
+	nodes.clear();
+
 	//マスのサイズを求める
 	Vector2 size = rightDownPos - leftUpPos;
 	size.x = abs(size.x);

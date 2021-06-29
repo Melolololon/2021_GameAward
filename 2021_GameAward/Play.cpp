@@ -73,6 +73,9 @@ bool Play::isPause = false;
 Play::TutorialState Play::tutorialState = TutorialState::TUTORIAL_STATE_MOVE;
 
 Play::PlaySceneState Play::playSceneState;
+
+std::vector<std::vector<AStarNode>>Play::aStarNodes;
+
 Play::Play()
 {
 }
@@ -226,6 +229,39 @@ void Play::Initialize()
 
 
 	SetEnemy();
+
+
+#pragma region 経路関係
+	//ノードセット
+	LibMath::SetAStarNodePosition
+	(
+		leftUpPosition,
+		rightDownPosition,
+		100,
+		100,
+		aStarNodes,
+		true
+	);
+
+	//当たり判定
+	std::vector<Vector2>blockPositionVec2(blockNum);
+	std::vector<Vector2>blockSlaceVec2(blockNum);
+	for(int i = 0; i < blockNum;i++)
+	{
+		blockPositionVec2[i] = blockPositions[i];
+		blockSlaceVec2[i] = blockScales[i];
+	}
+
+	LibMath::SetAStarNodeHitObjectNodeFlag
+	(
+		blockPositionVec2,
+		blockSlaceVec2,
+		aStarNodes
+	);
+
+	int xx = 0;
+#pragma endregion
+
 }
 
 void Play::Update()
