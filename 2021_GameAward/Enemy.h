@@ -52,7 +52,7 @@ protected:
 
 	FreamTimer* pGameTime;
 
-	int increaseTime = 4;
+	int decreaseTime = 4;
 
 	
 	//“_–Å

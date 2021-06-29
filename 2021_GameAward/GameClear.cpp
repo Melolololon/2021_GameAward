@@ -7,28 +7,28 @@
 
 const int GameClear::S_RUNK_TIME[5] =
 {
-	100 - 12,
-	100 - 12,
-	100 - 30,
-	100 - 20,
-	100 - 15
+	12,
+	12,
+	30,
+	20,
+	15
 };
 
 const int GameClear::A_RUNK_TIME[5] =
 {
-	100 - 15,
-	100 - 15,
-	100 - 35,
-	100 - 25,
-	100 - 20
+	15,
+	15,
+	35,
+	25,
+	20
 };
 const int GameClear::B_RUNK_TIME[5] =
 {
-	100 - 20,
-	100 - 20,
-	100 - 40,
-	100 - 30,
-	100 - 25
+	20,
+	20,
+	40,
+	30,
+	25
 };
 
 
@@ -72,15 +72,15 @@ void GameClear::Initialize()
 {
 
 	//ƒ‰ƒ“ƒNŒˆ’è
-	if (time > S_RUNK_TIME[stageNum])
+	if (time < S_RUNK_TIME[stageNum])
 	{
 		rank = StageRank::RANK_S;
 	}
-	else if (time > A_RUNK_TIME[stageNum])
+	else if (time < A_RUNK_TIME[stageNum])
 	{
 		rank = StageRank::RANK_A;
 	}
-	else if (time > B_RUNK_TIME[stageNum])
+	else if (time < B_RUNK_TIME[stageNum])
 	{
 		rank = StageRank::RANK_B;
 	}

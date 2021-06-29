@@ -13,11 +13,93 @@
 //lib(スタティックライブラリのプロジェクト)に作らなければエラー出ない?
 
 
+
+//Aスターのノード
+struct AStarNode
+{
+	//座標
+	Vector2 position = 0;
+
+	//自分を隣接してるノードと指定したノードのポインタの配列
+	std::vector<AStarNode*> pAStarNodes;
+
+	//コスト
+	UINT cost = 1;
+
+	//計算結果(ステップ + 距離 + コスト)
+	UINT calcNum = UINT_MAX;
+
+	//配列のインデックス
+	int indexX = INT_MAX;
+	int indexY = INT_MAX;
+
+	AStarNode* previousNode = nullptr;
+	bool openFlag = false;
+	bool closeFlag = false;
+	//進行不能オブジェクトと重なっているノード
+	bool hitObjectNode = false;
+};
+
+
+
 class LibMath
 {
 private:
 
 public:
+
+#pragma region 最短経路
+
+	/// <summary>
+	/// 引数を基準にノードの座標をセットします。
+	/// </summary>
+	/// <param name="leftUpPos">左上座標</param>
+	/// <param name="rightDownPos">右下座標</param>
+	/// <param name="nodeNumX">横分割数</param>
+	/// <param name="nodeNumY">縦分割数</param>
+	/// <param name="nodes">ノードのvector(sizeは0でよい)</param>
+	/// <param name="upPlus">上方向がプラスかどうか</param>
+	static void SetAStarNodePosition
+	(
+		const Vector2& leftUpPos,
+		const Vector2& rightDownPos,
+		const UINT& nodeNumX,
+		const UINT& nodeNumY,
+		std::vector< std::vector<AStarNode>>& nodes,
+		const bool upPlus
+	);
+
+	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする?
+	/// <summary>
+	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
+	/// </summary>
+	/// <param name="hitObjectsPos">障害物の座標のvector</param>
+	/// <param name="hitObjectsSize">障害物のサイズのvector</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodePositionに渡した後の配列)</param>
+	static void SetAStarNodeHitObjectNodeFlag
+	(
+		const std::vector<Vector2>& hitObjectsPos,
+		const std::vector<Vector2>& hitObjectsSize,
+		std::vector< std::vector<AStarNode>>& nodes
+	);
+
+	/// <summary>
+	/// 渡されたデータをもとに最短経路を求めます。
+	/// </summary>
+	/// <param name="startPos">スタート地点の座標</param>
+	/// <param name="endPos">ゴール地点の座標</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
+	/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
+	/// <returns>探索が成功したかどうか</returns>
+	static bool GetAStarCalcResult
+	(
+		const Vector2& startPos,
+		const Vector2& endPos,
+		std::vector< std::vector<AStarNode>>& nodes,
+		std::vector<Vector2>& routeVector
+	);
+
+#pragma endregion
 
 
 
@@ -63,6 +145,15 @@ public:
 
 
 #pragma region vector2
+
+	/// <summary>
+/// 2つの座標の距離を取得します
+/// </summary>
+/// <param name="pos1">座標1</param>
+/// <param name="pos2">座標2</param>
+/// <returns></returns>
+	static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
+
 
 	/// <summary>
 	/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
@@ -158,7 +249,7 @@ public:
 	/// <param name="start2">1つ目の左上座標</param>
 	/// <param name="end2">1つ目の右下座標</param>
 	/// <returns>当たったかどうか</returns>
-	static bool RectCollision
+	static bool RectAndRectCollision
 	(
 		const Vector2& pos1,
 		const Vector2& size1,
