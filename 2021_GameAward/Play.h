@@ -45,6 +45,13 @@ public:
 	};
 
 private:
+#ifdef _DEBUG
+	static PrimitiveModel nodeModel;
+
+#endif // _DEBUG
+
+
+
 	static int stageNum;
 
 	std::shared_ptr<Player> player;

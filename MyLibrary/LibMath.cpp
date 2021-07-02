@@ -48,8 +48,8 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 )
 {
 	//サイズを求める
-	Vector2 size = 0;
-	size.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
+	Vector2 nodeSize = 0;
+	nodeSize.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
 
 	float smallPos = 0.0f;
 	float bigPos = 0.0f;
@@ -63,7 +63,7 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 		bigPos = nodes[1][0].position.y;
 		smallPos = nodes[0][0].position.y;
 	}
-	size.y = abs(smallPos - bigPos);
+	nodeSize.y = abs(smallPos - bigPos);
 
 	//判定
 	auto nodesXNum = nodes[0].size();
@@ -71,7 +71,6 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 	auto hitObjectNum = hitObjectsPos.size();
 
 	//当たってるか確認
-	Vector2 addPos = 0;
 	for (int y = 0; y < nodesYNum; y++)
 	{
 		for (int x = 0; x < nodesXNum; x++)
@@ -79,21 +78,21 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 		
 			for (int i = 0; i < hitObjectNum; i++)
 			{
-
 				nodes[y][x].hitObjectNode =
 					LibMath::RectAndRectCollision
 					(
-						nodes[y][x].position,
-						size,
-						hitObjectsPos[i],
+						nodes[y][x].position - nodeSize / 2,
+						nodeSize,
+						hitObjectsPos[i] - hitObjectsSize[i] / 2,
 						hitObjectsSize[i]
 					);
 
-				//1つでもぶつかってたらリターン
+				//ぶつかってたらbreak
 				if (nodes[y][x].hitObjectNode)
 				{
 					break;
 				}
+
 			}
 		}
 	}
@@ -144,10 +143,20 @@ bool LibMath::GetAStarCalcResult
 	//スタートの添え字
 	int startNodeIndexX = 0;
 	int startNodeIndexY = 0;
+	bool trueStartNodeHitFlag = false;
 
 	//ノードの配列のゴール地点の場所を示す添え字
 	int endNodeIndexX = 0;
 	int endNodeIndexY = 0;
+	bool trueEndNodeHitFlag = false;
+
+	//一時的にfalseにしたときに戻す処理
+	auto ReturnHitObjectNode = [&]()
+	{
+		if (trueStartNodeHitFlag)nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = true;
+		if (trueEndNodeHitFlag)nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = true;
+
+	};
 
 	for (int y = 0; y < nodeYArrayNum; y++)
 	{
@@ -161,6 +170,7 @@ bool LibMath::GetAStarCalcResult
 				startMinDistance = distance;
 				startNodeIndexX = x;
 				startNodeIndexY = y;
+
 			}
 
 			distance = CalcDistance2D(nodes[y][x].position, endPos);
@@ -169,15 +179,29 @@ bool LibMath::GetAStarCalcResult
 				endMinDistance = distance;
 				endNodeIndexX = x;
 				endNodeIndexY = y;
+
+				
 			}
 
 			//インデックス代入
 			nodes[y][x].indexX = x;
 			nodes[y][x].indexY = y;
-
 		}
 	}
 
+	if (nodes[startNodeIndexY][startNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = false;
+		trueStartNodeHitFlag = true;
+	}
+
+	if (nodes[endNodeIndexY][endNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = false;
+		trueEndNodeHitFlag = true;
+	}
 
 	//ゴールのノードまでの距離を求めるラムダ式
 	auto CalcNodeDistance = []
@@ -218,7 +242,11 @@ bool LibMath::GetAStarCalcResult
 		bool checkEnd = false;
 
 		//ゴールにたどり着けない場合
-		if (openNodes.size() == 0) return false;
+		if (openNodes.size() == 0)
+		{
+			ReturnHitObjectNode();
+			return false;
+		}
 
 		//並び替え
 		std::sort
@@ -379,8 +407,10 @@ bool LibMath::GetAStarCalcResult
 		routeVector[i] = Vector3::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
 	}
 
+	ReturnHitObjectNode();
 	return true;
 }
+
 
 
 #pragma endregion

@@ -76,6 +76,12 @@ Play::PlaySceneState Play::playSceneState;
 
 std::vector<std::vector<AStarNode>>Play::aStarNodes;
 
+
+#ifdef _DEBUG
+PrimitiveModel Play::nodeModel;
+
+#endif // _DEBUG
+
 Play::Play()
 {
 }
@@ -85,6 +91,11 @@ Play::~Play() {}
 
 void Play::LoadResources()
 {
+#ifdef _DEBUG
+	nodeModel.CreateBox(Vector3(1,1,1), Color(0, 0, 0, 255), 4000);
+
+#endif // _DEBUG
+
 	tutorialMessageSpr.CreateSprite();
 	tutorialMessageSpr.SetPosition(Vector2(40, 480));
 	for(int i = 0; i < 4;i++)
@@ -232,21 +243,32 @@ void Play::Initialize()
 
 
 #pragma region 経路関係
+
 	//ノードセット
 	Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
 	Vector2 rightDownPositionV2 = Vector2(rightDownPosition.x, rightDownPosition.z);;
+	Vector2 nodeNum = Vector2(20, 20);
 	LibMath::SetAStarNodePosition
 	(
 		leftUpPositionV2,
 		rightDownPositionV2,
-		40,
-		40,
+		nodeNum.x,
+		nodeNum.y,
 		aStarNodes,
 		true
-	);
+	);	
+
+	//マスのサイズを求める
+	Vector2 size = rightDownPositionV2 - leftUpPositionV2;
+	size.x = abs(size.x);
+	size.y = abs(size.y);
+	if (nodeNum.x >= 1) size.x /= nodeNum.x - 1;
+	if (nodeNum.y >= 1) size.y /= nodeNum.y - 1;
+
+
+
 
 	//当たり判定
-	blockNum = 0;
 	std::vector<Vector2>blockPositionVec2(blockNum);
 	std::vector<Vector2>blockSlaceVec2(blockNum);
 	for(int i = 0; i < blockNum;i++)
@@ -264,6 +286,26 @@ void Play::Initialize()
 		blockSlaceVec2,
 		aStarNodes
 	);
+
+
+
+
+#ifdef _DEBUG
+	for(int y = 0; y < aStarNodes.size();y++)
+	{
+		for (int x = 0; x < aStarNodes[0].size(); x++)
+		{
+			Vector3 pos = Vector3(aStarNodes[y][x].position.x, 0, aStarNodes[y][x].position.y);
+			nodeModel.SetPosition(pos, x + y * aStarNodes[0].size());
+			nodeModel.SetScale(Vector3(size.x - 0.2, 1, size.y - 0.2), x + y * aStarNodes[0].size());
+			if (aStarNodes[y][x].hitObjectNode) 
+			{
+				nodeModel.AddColor(Color(255, 0, 0, 0), x + y * aStarNodes[0].size());
+			}
+		}
+	}
+
+#endif // _DEBUG
 
 #pragma endregion
 
@@ -694,6 +736,18 @@ void Play::Tutorial()
 
 void Play::Draw()
 {
+
+#ifdef _DEBUG
+	if (tutorialState == Play::TutorialState::TUTORIAL_STATE_NOT_TUTORIAL) {
+		for (int i = 0; i < aStarNodes.size() * aStarNodes[0].size(); i++)
+		{
+
+			nodeModel.Draw(i);
+		}
+	}
+
+#endif // _DEBUG
+
 
 	const float numTextureSizeY = timerTexture.GetTextureSize().y;
 	auto DrawNumber = [&numTextureSizeY](Sprite2D& numSprite, const int number)
