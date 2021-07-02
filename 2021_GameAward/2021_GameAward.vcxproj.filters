@@ -84,9 +84,6 @@
     <ClCompile Include="HealEnemy.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="SimEnemy.cpp">
-      <Filter>ソース ファイル\Object\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Title.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -107,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="DecrementTimeNumber.cpp">
       <Filter>ソース ファイル\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SimEnemy.cpp">
+      <Filter>ソース ファイル\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

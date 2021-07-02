@@ -239,13 +239,14 @@ void Play::Initialize()
 	(
 		leftUpPositionV2,
 		rightDownPositionV2,
-		10,
-		10,
+		40,
+		40,
 		aStarNodes,
 		true
 	);
 
 	//“–‚½‚è”»’è
+	blockNum = 0;
 	std::vector<Vector2>blockPositionVec2(blockNum);
 	std::vector<Vector2>blockSlaceVec2(blockNum);
 	for(int i = 0; i < blockNum;i++)
@@ -264,7 +265,6 @@ void Play::Initialize()
 		aStarNodes
 	);
 
-	int xx = 0;
 #pragma endregion
 
 }

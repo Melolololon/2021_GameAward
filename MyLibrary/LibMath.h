@@ -36,6 +36,8 @@ struct AStarNode
 	//close配列のインデックス
 	int closeIndex = INT_MAX;
 
+	int stepNum = 0;
+
 	AStarNode* previousNode = nullptr;
 
 	bool openFlag = false;

@@ -47,6 +47,8 @@ void ShotEnemy::Initialize()
 
 void ShotEnemy::Update()
 {
+	CalcToPlayerRouteVectors();
+
 	if (heapNum == -1)
 	{
 		eraseManager = true;

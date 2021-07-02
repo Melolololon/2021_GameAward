@@ -16,6 +16,21 @@ const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
 const float Enemy::MAX_ANGLE = FREAM_MOVE_ANGLE / 2 * (MOVE_ANIMATION_MAX / 2);
 const float Enemy::MIN_ANGLE = -FREAM_MOVE_ANGLE / 2 * (MOVE_ANIMATION_MAX / 2);
 
+void Enemy::CalcToPlayerRouteVectors()
+{
+	std::vector<std::vector<AStarNode>>& nodes = Play::GetAStarNodes();
+
+	Vector2 myPos = Vector2(position.x, position.z);
+	Vector2 playerPos = Vector2(pPlayer->GetHeadPosition().x, pPlayer->GetHeadPosition().z);
+	LibMath::GetAStarCalcResult
+	(
+		myPos,
+		playerPos,
+		nodes,
+		toPlayerRouteVectors
+	);
+}
+
 Enemy::Enemy()
 {
 	leftFootAngle.z = MAX_ANGLE;
@@ -113,6 +128,7 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
+
 }
 
 void Enemy::Draw()
@@ -123,86 +139,86 @@ void Enemy::Hit(const Object* const object, const CollisionType& collisionType, 
 {
 
 	//ÉuÉçÉbÉNÇ∆ÇÃè’ìÀîªíË
-	if (typeid(*object) == typeid(Block)
-		|| typeid(*object) == typeid(TargetObject))
-	{
-		switch (sphereData[arrayNum].boxHitDistance)
-		{
-		case BOX_HIT_DIRECTION_RIGHT:
-			//ì‡ë§Ç…ì¸ÇËçûÇﬁÇÃñhé~Ç∑ÇÈif
-			//velocityÇå≈íËÇÃfloatÇ…Ç∑ÇÍÇŒÇﬂÇËçûÇ‹Ç»Ç¢Ç™ÅAÉJÉÅÉâÇ™ìÆÇ´Ç‹Ç≠ÇÈÇÃÇ≈Ç±Ç§ÇµÇƒÇÈ
-			if (velocity.x >= 0)
-				position.x += 1.0f * moveSpeed;
-			else
-				position.x += -velocity.x * moveSpeed;
+	//if (typeid(*object) == typeid(Block)
+	//	|| typeid(*object) == typeid(TargetObject))
+	//{
+	//	switch (sphereData[arrayNum].boxHitDistance)
+	//	{
+	//	case BOX_HIT_DIRECTION_RIGHT:
+	//		//ì‡ë§Ç…ì¸ÇËçûÇﬁÇÃñhé~Ç∑ÇÈif
+	//		//velocityÇå≈íËÇÃfloatÇ…Ç∑ÇÍÇŒÇﬂÇËçûÇ‹Ç»Ç¢Ç™ÅAÉJÉÅÉâÇ™ìÆÇ´Ç‹Ç≠ÇÈÇÃÇ≈Ç±Ç§ÇµÇƒÇÈ
+	//		if (velocity.x >= 0)
+	//			position.x += 1.0f * moveSpeed;
+	//		else
+	//			position.x += -velocity.x * moveSpeed;
 
 
-			break;
-		case BOX_HIT_DIRECTION_LEFT:
-			if (velocity.x <= 0)
-				position.x += -1.0f * moveSpeed;
-			else
-				position.x += -velocity.x * moveSpeed;
+	//		break;
+	//	case BOX_HIT_DIRECTION_LEFT:
+	//		if (velocity.x <= 0)
+	//			position.x += -1.0f * moveSpeed;
+	//		else
+	//			position.x += -velocity.x * moveSpeed;
 
 
-			break;
-		case BOX_HIT_DIRECTION_FRONT:
-			if (velocity.z <= 0)
-				position.z += -1.0f * moveSpeed;
-			else
-				position.z += -velocity.z * moveSpeed;
+	//		break;
+	//	case BOX_HIT_DIRECTION_FRONT:
+	//		if (velocity.z <= 0)
+	//			position.z += -1.0f * moveSpeed;
+	//		else
+	//			position.z += -velocity.z * moveSpeed;
 
-			break;
-		case BOX_HIT_DIRECTION_BACK:
-			if (velocity.z >= 0)
-				position.z += 1.0f * moveSpeed;
-			else
-				position.z += -velocity.z * moveSpeed;
+	//		break;
+	//	case BOX_HIT_DIRECTION_BACK:
+	//		if (velocity.z >= 0)
+	//			position.z += 1.0f * moveSpeed;
+	//		else
+	//			position.z += -velocity.z * moveSpeed;
 
-			break;
-		}
-
-
-		switch (sphereData[arrayNum].boxHitDistance)
-		{
-		case BOX_HIT_DIRECTION_RIGHT:
-			//ì‡ë§Ç…ì¸ÇËçûÇﬁÇÃñhé~Ç∑ÇÈif
-			//velocityÇå≈íËÇÃfloatÇ…Ç∑ÇÍÇŒÇﬂÇËçûÇ‹Ç»Ç¢Ç™ÅAÉJÉÅÉâÇ™ìÆÇ´Ç‹Ç≠ÇÈÇÃÇ≈Ç±Ç§ÇµÇƒÇÈ
-			if (velocity.x >= 0)
-				position.x += velocity.x * moveSpeed;
-			else
-				position.x += -velocity.x * moveSpeed;
+	//		break;
+	//	}
 
 
-			break;
-		case BOX_HIT_DIRECTION_LEFT:
-			if (velocity.x <= 0)
-				position.x += velocity.x * moveSpeed;
-			else
-				position.x += -velocity.x * moveSpeed;
+	//	switch (sphereData[arrayNum].boxHitDistance)
+	//	{
+	//	case BOX_HIT_DIRECTION_RIGHT:
+	//		//ì‡ë§Ç…ì¸ÇËçûÇﬁÇÃñhé~Ç∑ÇÈif
+	//		//velocityÇå≈íËÇÃfloatÇ…Ç∑ÇÍÇŒÇﬂÇËçûÇ‹Ç»Ç¢Ç™ÅAÉJÉÅÉâÇ™ìÆÇ´Ç‹Ç≠ÇÈÇÃÇ≈Ç±Ç§ÇµÇƒÇÈ
+	//		if (velocity.x >= 0)
+	//			position.x += velocity.x * moveSpeed;
+	//		else
+	//			position.x += -velocity.x * moveSpeed;
 
 
-			break;
-		case BOX_HIT_DIRECTION_FRONT:
-			if (velocity.z <= 0)
-				position.z += velocity.z * moveSpeed;
-			else
-				position.z += -velocity.z * moveSpeed;
+	//		break;
+	//	case BOX_HIT_DIRECTION_LEFT:
+	//		if (velocity.x <= 0)
+	//			position.x += velocity.x * moveSpeed;
+	//		else
+	//			position.x += -velocity.x * moveSpeed;
 
-			break;
-		case BOX_HIT_DIRECTION_BACK:
-			if (velocity.z >= 0)
-				position.z += velocity.z * moveSpeed;
-			else
-				position.z += -velocity.z * moveSpeed;
 
-			break;
-		}
-		//position -= velocity * moveSpeed;
+	//		break;
+	//	case BOX_HIT_DIRECTION_FRONT:
+	//		if (velocity.z <= 0)
+	//			position.z += velocity.z * moveSpeed;
+	//		else
+	//			position.z += -velocity.z * moveSpeed;
 
-		setPosition(position);
+	//		break;
+	//	case BOX_HIT_DIRECTION_BACK:
+	//		if (velocity.z >= 0)
+	//			position.z += velocity.z * moveSpeed;
+	//		else
+	//			position.z += -velocity.z * moveSpeed;
 
-	}
+	//		break;
+	//	}
+	//	//position -= velocity * moveSpeed;
+
+	//	setPosition(position);
+
+	//}
 
 	//ÉvÉåÉCÉÑÅ[Ç∆ÇÃè’ìÀîªíË
 	if (typeid(*object) == typeid(Player))

@@ -44,6 +44,9 @@ void MoveEnemy::Initialize()
 
 void MoveEnemy::Update()
 {
+
+	CalcToPlayerRouteVectors();
+
 	if (heapNum == -1)
 	{
 		eraseManager = true;
@@ -75,6 +78,9 @@ void MoveEnemy::Update()
 	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
 	//³‹K‰»
 	velocity = Vector3Normalize(velocity);
+
+	
+	velocity = Vector3(toPlayerRouteVectors[0].x, 0, toPlayerRouteVectors[0].y);
 
 
 	//ƒvƒŒƒCƒ„[‚Ì•û‚ğŒü‚©‚¹‚éˆ—

@@ -66,6 +66,13 @@ protected:
 	void FlashingTimerMaxCheck();
 
 	//初期化と更新は各クラスでオーバーライド
+
+
+	//経路関係
+	//A*で求めたプレイヤーへのベクトル
+	std::vector<Vector2>toPlayerRouteVectors;
+	void CalcToPlayerRouteVectors();
+
 public:
 	
 	Enemy();

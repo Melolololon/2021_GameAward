@@ -50,6 +50,8 @@ void FleeEnemy::Initialize()
 
 void FleeEnemy::Update()
 {
+	CalcToPlayerRouteVectors();
+
 	if (heapNum == -1)
 	{
 		eraseManager = true;

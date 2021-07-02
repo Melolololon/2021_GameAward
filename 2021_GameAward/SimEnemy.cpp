@@ -59,6 +59,8 @@ void SimEnemy::Initialize()
 
 void SimEnemy::Update()
 {
+	CalcToPlayerRouteVectors();
+
 	if (heapNum == -1)
 	{
 		eraseManager = true;
