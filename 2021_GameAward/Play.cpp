@@ -155,8 +155,6 @@ void Play::LoadResources()
 	Library::LoadSound("Resources/Sound/BGM/Map1BGM.wav", "Play", true);
 }
 
-
-
 void Play::Initialize()
 {
 	player = std::make_shared<Player>();
@@ -240,72 +238,6 @@ void Play::Initialize()
 
 
 	SetEnemy();
-
-
-#pragma region 経路関係
-
-	//ノードセット
-	Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
-	Vector2 rightDownPositionV2 = Vector2(rightDownPosition.x, rightDownPosition.z);;
-	Vector2 nodeNum = Vector2(40, 40);
-	LibMath::SetAStarNodePosition
-	(
-		leftUpPositionV2,
-		rightDownPositionV2,
-		nodeNum.x,
-		nodeNum.y,
-		aStarNodes,
-		true
-	);	
-
-	//当たり判定
-	std::vector<Vector2>blockPositionVec2(blockNum);
-	std::vector<Vector2>blockSlaceVec2(blockNum);
-	for(int i = 0; i < blockNum;i++)
-	{
-		blockPositionVec2[i].x = blockPositions[i].x;
-		blockPositionVec2[i].y = blockPositions[i].z;
-	
-		blockSlaceVec2[i].x = blockScales[i].x;
-		blockSlaceVec2[i].y = blockScales[i].z;
-	}
-
-	LibMath::SetAStarNodeHitObjectNodeFlag
-	(
-		blockPositionVec2,
-		blockSlaceVec2,
-		aStarNodes
-	);
-
-
-
-	
-#ifdef _DEBUG
-	//マスのサイズを求める
-	Vector2 size = rightDownPositionV2 - leftUpPositionV2;
-	size.x = abs(size.x);
-	size.y = abs(size.y);
-	if (nodeNum.x >= 1) size.x /= nodeNum.x - 1;
-	if (nodeNum.y >= 1) size.y /= nodeNum.y - 1;
-
-
-	for(int y = 0; y < aStarNodes.size();y++)
-	{
-		for (int x = 0; x < aStarNodes[0].size(); x++)
-		{
-			Vector3 pos = Vector3(aStarNodes[y][x].position.x, 0, aStarNodes[y][x].position.y);
-			nodeModel.SetPosition(pos, x + y * aStarNodes[0].size());
-			nodeModel.SetScale(Vector3(size.x - 0.2, 1, size.y - 0.2), x + y * aStarNodes[0].size());
-			if (aStarNodes[y][x].hitObjectNode) 
-			{
-				nodeModel.AddColor(Color(255, 0, 0, 0), x + y * aStarNodes[0].size());
-			}
-		}
-	}
-
-#endif // _DEBUG
-
-#pragma endregion
 
 }
 
@@ -581,6 +513,86 @@ void Play::Update()
 			playSceneState = PlaySceneState::PLAY_SCENE_START_PREVIOUS;
 			Fade::GetInstance()->SetIsStopFlag(false);
 			gameTime.SetStopFlag(false);
+
+
+
+
+#pragma region 経路関係
+
+			//ノードセット
+			Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
+			Vector2 rightDownPositionV2 = Vector2(rightDownPosition.x, rightDownPosition.z);;
+			Vector2 nodeNum = Vector2(40, 40);
+			LibMath::SetAStarNodePosition
+			(
+				leftUpPositionV2,
+				rightDownPositionV2,
+				nodeNum.x,
+				nodeNum.y,
+				aStarNodes,
+				true
+			);
+
+			//当たり判定
+			int blockNum = static_cast<int>(blockPositions.size());
+			std::vector<Vector2>objectPositionVec2(blockNum + targetNumber);
+			std::vector<Vector2>objectSlaceVec2(blockNum + targetNumber);
+			for (int i = 0; i < blockNum; i++)
+			{
+				objectPositionVec2[i].x = blockPositions[i].x;
+				objectPositionVec2[i].y = blockPositions[i].z;
+
+				objectSlaceVec2[i].x = blockScales[i].x;
+				objectSlaceVec2[i].y = blockScales[i].z;
+			}
+
+			for (int i = blockNum; i < blockNum + targetNumber; i++)
+			{
+				objectPositionVec2[i].x = targetObjects[i - blockNum]->GetPosition().x;
+				objectPositionVec2[i].y = targetObjects[i - blockNum]->GetPosition().z;
+
+				objectSlaceVec2[i].x = targetObjects[i - blockNum]->GetBoxData()[0].size.x;
+				objectSlaceVec2[i].y = targetObjects[i - blockNum]->GetBoxData()[0].size.z;
+			}
+
+			LibMath::SetAStarNodeHitObjectNodeFlag
+			(
+				objectPositionVec2,
+				objectSlaceVec2,
+				aStarNodes
+			);
+
+
+
+
+#ifdef _DEBUG
+
+			//マスのサイズを求める
+			Vector2 size = rightDownPositionV2 - leftUpPositionV2;
+			size.x = abs(size.x);
+			size.y = abs(size.y);
+			if (nodeNum.x >= 1) size.x /= nodeNum.x - 1;
+			if (nodeNum.y >= 1) size.y /= nodeNum.y - 1;
+
+
+			for (int y = 0; y < aStarNodes.size(); y++)
+			{
+				for (int x = 0; x < aStarNodes[0].size(); x++)
+				{
+					Vector3 pos = Vector3(aStarNodes[y][x].position.x, 0, aStarNodes[y][x].position.y);
+					nodeModel.SetPosition(pos, x + y * aStarNodes[0].size());
+					nodeModel.SetScale(Vector3(size.x - 0.2, 1, size.y - 0.2), x + y * aStarNodes[0].size());
+					if (aStarNodes[y][x].hitObjectNode)
+					{
+						nodeModel.AddColor(Color(255, 0, 0, 0), x + y * aStarNodes[0].size());
+					}
+				}
+			}
+
+#endif // _DEBUG
+
+#pragma endregion
+
 		}
 	}
 	else if (playSceneState == PlaySceneState::PLAY_SCENE_START_PREVIOUS)
@@ -736,7 +748,10 @@ void Play::Draw()
 {
 
 #ifdef _DEBUG
-	if (tutorialState == Play::TutorialState::TUTORIAL_STATE_NOT_TUTORIAL) {
+	
+	if (tutorialState == Play::TutorialState::TUTORIAL_STATE_NOT_TUTORIAL
+		&& aStarNodes.size() != 0)
+	{
 		for (int i = 0; i < aStarNodes.size() * aStarNodes[0].size(); i++)
 		{
 

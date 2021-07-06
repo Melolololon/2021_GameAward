@@ -111,9 +111,9 @@ private:
 	//ç¿ïW
 	Vector2 arrowPosition;
 	//âÒì]äpìx
-	float arrowAngle;
+	float arrowAngle = 0;
 	//ï`âÊÇ∑ÇÈÇ©Ç«Ç§Ç©
-	bool drawArrow;
+	bool drawArrow = false;
 #pragma endregion
 
 	static Sprite3D targetLockSprite;

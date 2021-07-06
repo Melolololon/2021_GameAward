@@ -30,6 +30,7 @@ private:
 
 	static bool hitSegment;
 
+
 public:
 	TargetObject(const Vector3& pos);
 	~TargetObject();

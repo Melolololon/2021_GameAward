@@ -20,6 +20,8 @@ void Enemy::CalcToPlayerRouteVectors()
 {
 	std::vector<std::vector<AStarNode>>& nodes = Play::GetAStarNodes();
 
+	if (nodes.size() == 0)return;
+
 	Vector2 myPos = Vector2(position.x, position.z);
 	Vector2 playerPos = Vector2(pPlayer->GetHeadPosition().x, pPlayer->GetHeadPosition().z);
 	LibMath::GetAStarCalcResult

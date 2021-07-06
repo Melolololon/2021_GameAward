@@ -49,8 +49,10 @@ void ObjectManager::Update()
 		farPos = cursor->GetFarPos();
 	}
 	
-	for (auto& obj : objects)
+	for (auto& obj : objects) 
+	{
 		obj->Update();
+	}
 	
 
 	if(addObjects.size() != 0)
