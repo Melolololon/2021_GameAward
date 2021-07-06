@@ -106,7 +106,7 @@
       <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="SimEnemy.cpp">
-      <Filter>ソース ファイル\Object\Player</Filter>
+      <Filter>ソース ファイル\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

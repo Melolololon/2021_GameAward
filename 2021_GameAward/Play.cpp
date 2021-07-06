@@ -247,7 +247,7 @@ void Play::Initialize()
 	//ノードセット
 	Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
 	Vector2 rightDownPositionV2 = Vector2(rightDownPosition.x, rightDownPosition.z);;
-	Vector2 nodeNum = Vector2(20, 20);
+	Vector2 nodeNum = Vector2(40, 40);
 	LibMath::SetAStarNodePosition
 	(
 		leftUpPositionV2,
@@ -257,16 +257,6 @@ void Play::Initialize()
 		aStarNodes,
 		true
 	);	
-
-	//マスのサイズを求める
-	Vector2 size = rightDownPositionV2 - leftUpPositionV2;
-	size.x = abs(size.x);
-	size.y = abs(size.y);
-	if (nodeNum.x >= 1) size.x /= nodeNum.x - 1;
-	if (nodeNum.y >= 1) size.y /= nodeNum.y - 1;
-
-
-
 
 	//当たり判定
 	std::vector<Vector2>blockPositionVec2(blockNum);
@@ -289,8 +279,16 @@ void Play::Initialize()
 
 
 
-
+	
 #ifdef _DEBUG
+	//マスのサイズを求める
+	Vector2 size = rightDownPositionV2 - leftUpPositionV2;
+	size.x = abs(size.x);
+	size.y = abs(size.y);
+	if (nodeNum.x >= 1) size.x /= nodeNum.x - 1;
+	if (nodeNum.y >= 1) size.y /= nodeNum.y - 1;
+
+
 	for(int y = 0; y < aStarNodes.size();y++)
 	{
 		for (int x = 0; x < aStarNodes[0].size(); x++)

@@ -74,10 +74,10 @@ void MoveEnemy::Update()
 	}
 
 
-	//プレイヤーへの方向ベクトルを求める
-	velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
-	//正規化
-	velocity = Vector3Normalize(velocity);
+	////プレイヤーへの方向ベクトルを求める
+	//velocity = { pPlayer->GetHeadPosition().x - position.x, 0, pPlayer->GetHeadPosition().z - position.z };
+	////正規化
+	//velocity = Vector3Normalize(velocity);
 
 	
 	velocity = Vector3(toPlayerRouteVectors[0].x, 0, toPlayerRouteVectors[0].y);
