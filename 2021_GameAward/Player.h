@@ -62,7 +62,7 @@ private:
 
 	//ボーン座標(objに記述されてる位置。あたり判定用。これ+bonePosが判定に使用する位置)
 	static std::vector<Vector3> initialBonePos;
-	static std::vector<Vector3> initialBonePosMulScale;//スケール乗算版
+	std::vector<Vector3> initialBonePosMulScale;//スケール乗算版
 
 	//initial&movePos
 	std::vector<Vector3> bonePos;

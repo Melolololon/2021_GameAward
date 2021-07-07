@@ -24,7 +24,7 @@
 ObjModel Player::modelData;
 const int Player::CREATE_NUMBER = 2;
 std::vector<Vector3> Player::initialBonePos;
-std::vector<Vector3> Player::initialBonePosMulScale;
+
 int Player::boneNum;
 HeapIndexManager Player::playerModelHeapIndexManager(CREATE_NUMBER);
 
@@ -134,6 +134,12 @@ void Player::Initialize()
 		speedMag = 25.0f;
 		speed = initSpeed * speedMag;
 		scale = 20.0f;
+	}
+
+	//ƒ|[ƒY‚ÌŽÖ‚Í1‚È‚Ì‚Å‚±‚±‚É“ü‚é
+	if(heapNum == 1)
+	{
+		scale = 0.3f;
 	}
 
 	modelData.SetScale(scale, heapNum);
@@ -382,7 +388,7 @@ void Player::PauseMove()
 	speed = initSpeed * speedMag;
 	scale = 0.3f;
 
-	float velRotAngle = initSpeed * 10.0f;
+	float velRotAngle = initSpeed * 30.0f;
 	
 	velRot -= velRotAngle;
 	if (velRot >= 360)
@@ -391,6 +397,9 @@ void Player::PauseMove()
 		velRot += 360; 
 	
 	modelData.SetScale(scale, heapNum);
+
+
+	
 }
 
 void Player::Update()

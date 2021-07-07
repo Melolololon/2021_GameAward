@@ -477,9 +477,9 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 			//äÑÇ¡Çƒëùå∏Çó}Ç¶ÇƒÇ¢ÇÈ
 			boneMat *= DirectX::XMMatrixTranslation
 			(
-				boneMoveVector.x / modelConstDatas[0][i].scale.x,
-				boneMoveVector.y / modelConstDatas[0][i].scale.y,
-				boneMoveVector.z / modelConstDatas[0][i].scale.z
+				boneMoveVector.x / modelConstDatas[modelNum][i].scale.x,
+				boneMoveVector.y / modelConstDatas[modelNum][i].scale.y,
+				boneMoveVector.z / modelConstDatas[modelNum][i].scale.z
 			);
 
 			//âÒì]Ç≥ÇπÇΩÇÁñﬂÇ∑
@@ -595,9 +595,9 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				//modelConstDatas[i][0].scale Ç… boneScaleä|ÇØÇÈïKóvÇ†ÇÈÇ©óvämîF
 				mulMat *= DirectX::XMMatrixTranslation
 				(
-					pMoveVector.x / (modelConstDatas[0][i].scale.x * boneScale.x),
-					pMoveVector.y / (modelConstDatas[0][i].scale.y * boneScale.y),
-					pMoveVector.z / (modelConstDatas[0][i].scale.z * boneScale.z)
+					pMoveVector.x / (modelConstDatas[modelNum][i].scale.x * boneScale.x),
+					pMoveVector.y / (modelConstDatas[modelNum][i].scale.y * boneScale.y),
+					pMoveVector.z / (modelConstDatas[modelNum][i].scale.z * boneScale.z)
 				);
 
 				//âÒì]Ç≥ÇπÇΩÇÁñﬂÇ∑
