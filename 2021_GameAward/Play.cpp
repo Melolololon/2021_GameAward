@@ -518,6 +518,7 @@ void Play::Update()
 
 
 #pragma region 経路関係
+			aStarNodes.clear();
 
 			//ノードセット
 			Vector2 leftUpPositionV2 = Vector2(leftUpPosition.x, leftUpPosition.z);
