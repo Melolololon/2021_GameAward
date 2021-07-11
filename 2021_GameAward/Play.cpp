@@ -587,6 +587,10 @@ void Play::Update()
 					{
 						nodeModel.AddColor(Color(255, 0, 0, 0), x + y * aStarNodes[0].size());
 					}
+					else
+					{
+						nodeModel.AddColor(Color(0, 0, 0, 0), x + y * aStarNodes[0].size());
+					}
 				}
 			}
 

@@ -48,7 +48,7 @@ private:
 	float mapRotateAngleCount = 0.0f;
 	//åªç›ÇÃâÒì]äpìx
 	//float mapAngle = 0.0f;
-	const float MAP_ROTATE_SPEED = 1.5f;
+	const float MAP_ROTATE_SPEED = 3.5f;
 
 	//std::shared_ptr<Player>player;
 	Vector3 playerMoveVector = 0;

@@ -193,17 +193,23 @@ void StageSelect::Update()
 {
 	//ステージセレクト
 	if (XInputManager::GetPadConnectedFlag(1)
-		&& stageRotateState == StageRotateState::STAGE_ROTATE_NOT_ROTATE)
+		&& stageRotateState == StageRotateState::STAGE_ROTATE_NOT_ROTATE
+		&& stageSelectState == StageSelectState::STAGE_SELECT_STATE_SELECT)
 	{
 		if (XInputManager::LeftStickLeft(30, 1))
 		{
 			stageRotateState = StageRotateState::STAGE_ROTATE_LEFT;
+			
+			selectStageNum--;
+			if (selectStageNum < 0)selectStageNum = maxStageNum - 1;
 			
 		}
 		else if (XInputManager::LeftStickRight(30, 1))
 		{
 			stageRotateState = StageRotateState::STAGE_ROTATE_RIGHT;
 			
+			selectStageNum++;
+			if (selectStageNum == maxStageNum)selectStageNum = 0;
 		}
 
 	}
@@ -221,38 +227,6 @@ void StageSelect::Update()
 			mapRotateAngleCount += MAP_ROTATE_SPEED;
 
 			
-
-			//ちょっとずつズラすと、どんどん中心から離れてく。
-			//やっぱ回転前座標固定にしないといけない?
-			//for (int i = 0; i < maxStageNum; i++)
-			//{
-			//	//auto blockNum = blocks[i].size();
-			//	//
-			//	//Vector3 rotatePos = LibMath::RotateVector3(mapMovePositions[i], { 0,1,0 }, MAP_ROTATE_SPEED);
-			//	//Vector3 movePos = mapMovePositions[i] - rotatePos;
-			//	//for (int j = 0; j < blockNum; j++)
-			//	//{
-
-			//	//	blocks[i][j]->MovePosition(movePos);
-			//	//}
-			//	////mapMovePositions[i] = rotatePos;
-
-
-			//}
-		/*	for(auto& b1: blocks)
-			{
-				for(auto& b2:b1)
-				{
-					float rotSpeed = MAP_ROTATE_SPEED;
-					if (stageRotateState == StageRotateState::STAGE_ROTATE_RIGHT)rotSpeed *= -1;
-
-					Vector3 blockPos = b2->GetPosition();
-					Vector3 rotatePos = LibMath::RotateVector3(blockPos, { 0,1,0 }, rotSpeed);
-					b2->SetPosition(rotatePos);
-				}
-			}*/
-
-			//マップの中心を回転させ、ブロックを一旦中心に持っていき、movePosで移動させればいける
 			for (int i = 0; i < maxStageNum; i++)
 			{
 				auto blockNum = blocks[i].size();
@@ -277,12 +251,14 @@ void StageSelect::Update()
 	bool padStageSelect = (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1))
 		&& XInputManager::GetPadConnectedFlag(1)
-		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
+		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
+		&& stageRotateState == StageRotateState::STAGE_ROTATE_NOT_ROTATE;
 
 
 	bool padReturnTitle = XInputManager::ButtonTrigger(XInputManager::XINPUT_B_BUTTON, 1)
 		&& XInputManager::GetPadConnectedFlag(1)
-		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT;
+		&& stageSelectState == StageSelect::STAGE_SELECT_STATE_SELECT
+		&& stageRotateState == StageRotateState::STAGE_ROTATE_NOT_ROTATE;
 
 	//ステージ決定処理
 	if (padStageSelect) 
