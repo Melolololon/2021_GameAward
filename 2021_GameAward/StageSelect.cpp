@@ -29,6 +29,7 @@ std::vector<Vector3>StageSelect::rightDownPositions;
 std::vector<Vector3>StageSelect::mapMovePositions;
 std::vector<float>StageSelect::worldCenterToStageVectorAngle;
 StageSelect::StageSelectState StageSelect::stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
+float StageSelect::mapRotateAngleMax = 0.0f;
 
 Sprite2D StageSelect::returnTitleSpr;
 Texture StageSelect::returnTitleTex;
@@ -129,28 +130,23 @@ void StageSelect::LoadResources()
 
 	
 	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
-	const Vector3 mapMovePos = { 0,0,550 };
-	const float mapRotateAngle = 360.0f / maxStageNum;
+	const Vector3 mapMovePos = { 0,0,-550 };
+	mapRotateAngleMax = 360.0f / maxStageNum;
 	mapMovePositions.resize(maxStageNum);
 	worldCenterToStageVectorAngle.resize(maxStageNum);
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		auto blockNum = blocks[i].size();
 		Vector3 movePos = mapMovePos;
-		float rotateAngle = mapRotateAngle * i * -1;
+		float rotateAngle = mapRotateAngleMax * i;
 
 		movePos = LibMath::RotateVector3(movePos, { 0,1,0 }, rotateAngle);
-		for(int j = 0; j < blockNum;j++)
+		for (int j = 0; j < blockNum; j++) 
+		{
 			blocks[i][j]->MovePosition(movePos);
-
+		}
 		mapMovePositions[i] = movePos;
-		
-		Vector3 worldCenterToStageVector = LibMath::OtherVector({ 0,0,0 }, mapMovePositions[i]);
-		worldCenterToStageVectorAngle[i] = LibMath::Vecto2ToAngle
-		(
-			Vector2(worldCenterToStageVector.x, worldCenterToStageVector.z),
-			true
-		);
+	
 
 	}
 
@@ -185,10 +181,7 @@ void StageSelect::Initialize()
 
 	playerMoveVector = Vector3(-250,0, 270);
 	Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[selectStageNum];
-	player = std::make_shared<Player>(playerModelMoveVector);
-	ObjectManager::GetInstance()->AddObject(player);
-	player->SetTargetPosition(mapMovePositions);
-	//playerRotateTimer = 0;
+
 
 	stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 	nextSceneTimer.SetMaxTime(60 * 0.5);
@@ -199,26 +192,87 @@ void StageSelect::Initialize()
 void StageSelect::Update()
 {
 	//ステージセレクト
-	float inputAngle = -1.0f;
-	if (XInputManager::GetPadConnectedFlag(1)) 
+	if (XInputManager::GetPadConnectedFlag(1)
+		&& stageRotateState == StageRotateState::STAGE_ROTATE_NOT_ROTATE)
 	{
-		inputAngle = XInputManager::LeftStickAngle(1);
-	}
+		if (XInputManager::LeftStickLeft(30, 1))
+		{
+			stageRotateState = StageRotateState::STAGE_ROTATE_LEFT;
+			
+		}
+		else if (XInputManager::LeftStickRight(30, 1))
+		{
+			stageRotateState = StageRotateState::STAGE_ROTATE_RIGHT;
+			
+		}
 
-	auto worldCenterToStageVectorAngleSize = worldCenterToStageVectorAngle.size();
-	for (int i = 0; i < worldCenterToStageVectorAngleSize;i++)
+	}
+	else if(stageRotateState != StageRotateState::STAGE_ROTATE_NOT_ROTATE)
 	{
-		if(LibMath::AngleDifference(inputAngle, worldCenterToStageVectorAngle[i],20.0f)
-			&& stageSelectState != StageSelect::STAGE_SELECT_STATE_SELECT_END
-			&& inputAngle >= 0.0f)
+		//回転終了
+		if (mapRotateAngleCount >= mapRotateAngleMax )
+		{
+			stageRotateState = StageRotateState::STAGE_ROTATE_NOT_ROTATE;
+			mapRotateAngleCount = 0.0f;
+		}
+		else//回転
 		{
 
-			selectStageNum = i;
-			Vector3 playerModelMoveVector = playerMoveVector + mapMovePositions[i];
-			player->SetModelMoveVector(playerModelMoveVector);
-			break;
+			mapRotateAngleCount += MAP_ROTATE_SPEED;
+
+			
+
+			//ちょっとずつズラすと、どんどん中心から離れてく。
+			//やっぱ回転前座標固定にしないといけない?
+			//for (int i = 0; i < maxStageNum; i++)
+			//{
+			//	//auto blockNum = blocks[i].size();
+			//	//
+			//	//Vector3 rotatePos = LibMath::RotateVector3(mapMovePositions[i], { 0,1,0 }, MAP_ROTATE_SPEED);
+			//	//Vector3 movePos = mapMovePositions[i] - rotatePos;
+			//	//for (int j = 0; j < blockNum; j++)
+			//	//{
+
+			//	//	blocks[i][j]->MovePosition(movePos);
+			//	//}
+			//	////mapMovePositions[i] = rotatePos;
+
+
+			//}
+		/*	for(auto& b1: blocks)
+			{
+				for(auto& b2:b1)
+				{
+					float rotSpeed = MAP_ROTATE_SPEED;
+					if (stageRotateState == StageRotateState::STAGE_ROTATE_RIGHT)rotSpeed *= -1;
+
+					Vector3 blockPos = b2->GetPosition();
+					Vector3 rotatePos = LibMath::RotateVector3(blockPos, { 0,1,0 }, rotSpeed);
+					b2->SetPosition(rotatePos);
+				}
+			}*/
+
+			//マップの中心を回転させ、ブロックを一旦中心に持っていき、movePosで移動させればいける
+			for (int i = 0; i < maxStageNum; i++)
+			{
+				auto blockNum = blocks[i].size();
+				float rotSpeed = MAP_ROTATE_SPEED;
+				if (stageRotateState == StageRotateState::STAGE_ROTATE_RIGHT)rotSpeed *= -1;
+
+				Vector3 rotatePos = LibMath::RotateVector3(mapMovePositions[i], { 0,1,0 }, rotSpeed);
+				Vector3 movePos = mapMovePositions[i] - rotatePos;
+				movePos *= -1;
+				for (auto& block:blocks[i])
+				{
+					block->MovePosition(movePos);
+				}
+				mapMovePositions[i] = rotatePos;
+			}
+
 		}
 	}
+
+
 
 	bool padStageSelect = (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1))

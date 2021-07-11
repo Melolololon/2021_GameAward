@@ -93,8 +93,16 @@ const void* Block::GetPtr()const
 	return this;
 }
 
+
+
 void Block::MovePosition(const Vector3& vector)
 {
 	position += vector;
+	modelData.SetPosition(position, heapNum);
+}
+
+void Block::SetPosition(const Vector3& vector)
+{
+	position = vector;
 	modelData.SetPosition(position, heapNum);
 }

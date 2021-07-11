@@ -46,9 +46,10 @@ public:
 	/// </summary>
 	static void LoadResource();
 
-
 	void MovePosition(const Vector3& vector);
 
+
+	void SetPosition(const Vector3& vector);
 
 };
 

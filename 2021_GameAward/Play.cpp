@@ -755,7 +755,6 @@ void Play::Draw()
 	{
 		for (int i = 0; i < aStarNodes.size() * aStarNodes[0].size(); i++)
 		{
-
 			nodeModel.Draw(i);
 		}
 	}

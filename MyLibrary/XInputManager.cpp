@@ -106,6 +106,7 @@ float XInputManager::DirectionalButtonAngle(const UCHAR& padNum)
 #pragma endregion
 
 
+
 #pragma region スティック
 
 bool XInputManager::LeftStickLeft(const float& lXPar, const UCHAR& padNum)
@@ -113,91 +114,92 @@ bool XInputManager::LeftStickLeft(const float& lXPar, const UCHAR& padNum)
 	if (!padCheck(padNum))return false;
 	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickRight(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::LeftStickRight(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickUp(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickLeft(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::RightStickLeft(const float& lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
 
-	if (-lXPar / 100.0f * MAX_AXIS_VALUE >=padState[padNum - 1].Gamepad.sThumbRX)
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickRight(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::RightStickRight(const float& lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
 	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickUp(const float& lYPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
 
-	if (lYPar / 100.0f * MAX_AXIS_VALUE <=padState[padNum - 1].Gamepad.sThumbRY)
+	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRY)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRY)
 		return true;
-	
+
 	return false;
 }
 
 
-float XInputManager::LeftStickAngle( const UCHAR& padNum)
+
+float XInputManager::LeftStickAngle(const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLY);
-	
-	//未入力はリターン
+
+	//未入力は-1をリターン
 	if (x == 0 && y == 0)
 		return -1.0f;
 
@@ -205,19 +207,19 @@ float XInputManager::LeftStickAngle( const UCHAR& padNum)
 	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
-float XInputManager::RightStickAngle( const UCHAR& padNum)
+float XInputManager::RightStickAngle(const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRY);
-	
 
-	if (x == 0 && y == 0 )
+
+	if (x == 0 && y == 0)
 		return -1.0f;
 
 
-	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }),true);
+	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
 #pragma endregion
@@ -227,18 +229,31 @@ float XInputManager::RightStickAngle( const UCHAR& padNum)
 
 void XInputManager::PadVibration(const float& leftPar, const float& rightPar, const UCHAR& padNum)
 {
-	if (leftPar > 100 || rightPar > 100)
+	float leftParsent = leftPar;
+	float rightParsent = rightPar;
+	if (leftPar > 100.0f)
 	{
-		OutputDebugString(L"leftParまたはrightParが0%～100%の範囲を超えています\n");
-		return;
+		leftParsent = 100.0f;
 	}
+	if (leftPar < 0.0f)
+	{
+		leftParsent = 0.0f;
+	}
+	if (rightPar > 100.0f)
+	{
+		rightParsent = 100.0f;
+	}
+	if (rightPar < 0.0f)
+	{
+		rightParsent = 0.0f;
+	}
+
 	if (!padCheck(padNum))return;
 
 	XINPUT_VIBRATION v;
-	v.wLeftMotorSpeed = static_cast<WORD>(leftPar / 100.0f) * MAX_VIBRATION_VALUE;
-	v.wRightMotorSpeed = static_cast<WORD>(rightPar / 100.0f) * MAX_VIBRATION_VALUE;
+	v.wLeftMotorSpeed = static_cast<WORD>(leftParsent / 100.0f) * MAX_VIBRATION_VALUE;
+	v.wRightMotorSpeed = static_cast<WORD>(rightParsent / 100.0f) * MAX_VIBRATION_VALUE;
 	XInputSetState(padNum - 1, &v);
 }
-
 #pragma endregion
 

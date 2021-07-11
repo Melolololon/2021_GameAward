@@ -33,8 +33,24 @@ private:
 	static std::vector<Vector3>rightDownPositions;
 	static std::vector<Vector3>mapMovePositions;
 	static std::vector<float>worldCenterToStageVectorAngle;
+	
+	//ステージが回転してるかどうか
+	enum class StageRotateState
+	{
+		STAGE_ROTATE_LEFT,
+		STAGE_ROTATE_RIGHT,
+		STAGE_ROTATE_NOT_ROTATE,
+	};
+	StageRotateState stageRotateState = StageRotateState::STAGE_ROTATE_NOT_ROTATE;
 
-	std::shared_ptr<Player>player;
+	static float mapRotateAngleMax;
+	//回転量カウント
+	float mapRotateAngleCount = 0.0f;
+	//現在の回転角度
+	//float mapAngle = 0.0f;
+	const float MAP_ROTATE_SPEED = 1.5f;
+
+	//std::shared_ptr<Player>player;
 	Vector3 playerMoveVector = 0;
 	//UINT playerRotateTimer;
 	//static const UINT playerRotateTime;
