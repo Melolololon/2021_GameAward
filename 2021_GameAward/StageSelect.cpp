@@ -65,8 +65,9 @@ void StageSelect::LoadResources()
 	
 	mapBackTex.LoadSpriteTexture("Resources/Texture/StageSelect/Syage1Frame.png");
 	
-	arrowSpr[0].CreateSprite(Vector2(40, 400));
-	arrowSpr[1].CreateSprite(Vector2(40, 400));
+	arrowSpr[0].CreateSprite(Vector2(200, 200));
+	arrowSpr[1].CreateSprite(Vector2(200, 200));
+	arrowSpr[1].SetScale(Vector2(-1, 1));//”½“]
 	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow.png");
 	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow_shine.png");
 
@@ -170,6 +171,10 @@ void StageSelect::LoadResources()
 		spr.CreateSprite(Vector2(800, 400));
 		spr.SetBillboardFlag(true,true,true);
 	}
+	arrowSpr[0].SetPosition(MAP_MOVE_POSITION + Vector3(-450, 0, 0));
+	arrowSpr[0].SetBillboardFlag(true, true, true);
+	arrowSpr[1].SetPosition(MAP_MOVE_POSITION + Vector3(450, 0, 0));
+	arrowSpr[1].SetBillboardFlag(true, true, true);
 }
 
 void StageSelect::Initialize()
@@ -341,6 +346,8 @@ void StageSelect::Draw()
 	{
 		spr.Draw(&mapBackTex);
 	}
+	arrowSpr[0].Draw(&arrowTex[0]);
+	arrowSpr[1].Draw(&arrowTex[0]);
 
 	Fade::GetInstance()->Draw();
 }
