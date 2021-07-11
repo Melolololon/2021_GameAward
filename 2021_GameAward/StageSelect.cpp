@@ -36,6 +36,10 @@ Sprite2D StageSelect::returnTitleSpr;
 Texture StageSelect::returnTitleTex;
 Sprite2D StageSelect::selectSpr;
 Texture StageSelect::selectTex;
+std::vector<Sprite3D> StageSelect::mapBackSpr;
+Texture StageSelect::mapBackTex;
+Sprite3D StageSelect::arrowSpr[2];
+Texture StageSelect::arrowTex[2];
 //const UINT StageSelect::playerRotateTime = 60 * 2;
 //const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
@@ -58,6 +62,13 @@ void StageSelect::LoadResources()
 	selectSpr.SetPosition(Vector2(860, 520));
 	selectSpr.SetScale(Vector2(0.8f, 0.8f));
 	selectTex.LoadSpriteTexture("Resources/Texture/select.png");
+	
+	mapBackTex.LoadSpriteTexture("Resources/Texture/StageSelect/Syage1Frame.png");
+	
+	arrowSpr[0].CreateSprite(Vector2(40, 400));
+	arrowSpr[1].CreateSprite(Vector2(40, 400));
+	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow.png");
+	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow_shine.png");
 
 	//マップ読み込み
 	for (int i = 0; ; i++)
@@ -153,7 +164,12 @@ void StageSelect::LoadResources()
 
 	Library::LoadSound("Resources/Sound/BGM/StageSelect.wav", "StageSelect", true);
 
-
+	mapBackSpr.resize(maxStageNum);
+	for(auto& spr: mapBackSpr)
+	{
+		spr.CreateSprite(Vector2(800, 400));
+		spr.SetBillboardFlag(true,true,true);
+	}
 }
 
 void StageSelect::Initialize()
@@ -292,6 +308,15 @@ void StageSelect::Update()
 	}
 
 
+#pragma region スプライト処理
+	for(int i = 0; i < maxStageNum;i++)
+	{
+		mapBackSpr[i].SetPosition(mapMovePositions[i] + Vector3(0, -50, 0));
+	}
+#pragma endregion
+
+
+
 	if (nextSceneTimer.GetSameAsMaximumFlag()) 
 	{
 		Fade::GetInstance()->FadeStart();
@@ -311,6 +336,11 @@ void StageSelect::Draw()
 
 	returnTitleSpr.Draw(&returnTitleTex);
 	selectSpr.Draw(&selectTex);
+
+	for(auto& spr : mapBackSpr)
+	{
+		spr.Draw(&mapBackTex);
+	}
 
 	Fade::GetInstance()->Draw();
 }

@@ -61,10 +61,23 @@ private:
 	//UINT nextFromSelectionTimer;//選択から次のシーンまでの時間
 	//static const UINT nextFromSelectionTime;
 
+
+#pragma region スプライト
+
+
 	static Sprite2D returnTitleSpr;
 	static Texture returnTitleTex;
 	static Sprite2D selectSpr;
 	static Texture selectTex;
+
+
+	static std::vector<Sprite3D> mapBackSpr;
+	static Texture mapBackTex;
+	static Sprite3D arrowSpr[2];
+	static Texture arrowTex[2];
+
+#pragma endregion
+
 
 	//状態
 	static StageSelectState stageSelectState;
