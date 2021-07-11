@@ -118,6 +118,7 @@ void Title::Update()
 	}
 
 	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
+		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_A_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_START_BUTTON, 1))
 		&& XInputManager::GetPadConnectedFlag(1);
 	if (padStart)
