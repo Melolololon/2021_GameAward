@@ -30,6 +30,7 @@ std::vector<Vector3>StageSelect::mapMovePositions;
 std::vector<float>StageSelect::worldCenterToStageVectorAngle;
 StageSelect::StageSelectState StageSelect::stageSelectState = StageSelect::STAGE_SELECT_STATE_SELECT;
 float StageSelect::mapRotateAngleMax = 0.0f;
+const Vector3 StageSelect::MAP_ROTATE_VECTOR = Vector3(0,0.5,0.5);
 
 Sprite2D StageSelect::returnTitleSpr;
 Texture StageSelect::returnTitleTex;
@@ -130,17 +131,17 @@ void StageSelect::LoadResources()
 
 	
 	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
-	const Vector3 mapMovePos = { 0,0,-550 };
+	const Vector3 MAP_MOVE_POSITION = { 0,0,-800 };
 	mapRotateAngleMax = 360.0f / maxStageNum;
 	mapMovePositions.resize(maxStageNum);
 	worldCenterToStageVectorAngle.resize(maxStageNum);
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		auto blockNum = blocks[i].size();
-		Vector3 movePos = mapMovePos;
+		Vector3 movePos = MAP_MOVE_POSITION;
 		float rotateAngle = mapRotateAngleMax * i;
 
-		movePos = LibMath::RotateVector3(movePos, { 0,1,0 }, rotateAngle);
+		movePos = LibMath::RotateVector3(movePos, MAP_ROTATE_VECTOR, rotateAngle);
 		for (int j = 0; j < blockNum; j++) 
 		{
 			blocks[i][j]->MovePosition(movePos);
@@ -172,8 +173,8 @@ void StageSelect::Initialize()
 		count++;
 	}
 
-	Vector3 cameraPosition = { 0,1400,-400 };
-	Vector3 cameraTarget = { 0 ,0, 0 };
+	Vector3 cameraPosition = MAP_MOVE_POSITION + Vector3(0, 1000, -200);
+	Vector3 cameraTarget = MAP_MOVE_POSITION + Vector3(0, 0, -100);
 
 	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
 	upVector = LibMath::RotateVector3(upVector, { 1,0,0 }, 90);
@@ -226,14 +227,20 @@ void StageSelect::Update()
 
 			mapRotateAngleCount += MAP_ROTATE_SPEED;
 
+			float overAngle = 0.0f;
+			if(mapRotateAngleCount >= mapRotateAngleMax)
+			{
+				overAngle = mapRotateAngleCount - mapRotateAngleMax;
+			}
 			
 			for (int i = 0; i < maxStageNum; i++)
 			{
 				auto blockNum = blocks[i].size();
 				float rotSpeed = MAP_ROTATE_SPEED;
+				rotSpeed -= overAngle;
 				if (stageRotateState == StageRotateState::STAGE_ROTATE_RIGHT)rotSpeed *= -1;
 
-				Vector3 rotatePos = LibMath::RotateVector3(mapMovePositions[i], { 0,1,0 }, rotSpeed);
+				Vector3 rotatePos = LibMath::RotateVector3(mapMovePositions[i], MAP_ROTATE_VECTOR, rotSpeed);
 				Vector3 movePos = mapMovePositions[i] - rotatePos;
 				movePos *= -1;
 				for (auto& block:blocks[i])

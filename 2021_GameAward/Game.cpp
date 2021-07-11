@@ -60,7 +60,7 @@ void Game::Initialize()
 {
 #pragma region ライブラリ初期化_設定
 	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 230,160,200,255 }, L"メビウスネーク");
-	Library::SetCameraNearAndFar(0.1f, 2500.0f);
+	Library::SetCameraNearAndFar(0.1f, 5000.0f);
 	Library::SetLightVector({0.1f,-0.75f,0.15f});
 
 	Library::SetFramesPerSecond60(true);

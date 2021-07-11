@@ -43,12 +43,16 @@ private:
 	};
 	StageRotateState stageRotateState = StageRotateState::STAGE_ROTATE_NOT_ROTATE;
 
+	const Vector3 MAP_MOVE_POSITION = { 0,0,-800 };
+
 	static float mapRotateAngleMax;
 	//回転量カウント
 	float mapRotateAngleCount = 0.0f;
 	//現在の回転角度
 	//float mapAngle = 0.0f;
 	const float MAP_ROTATE_SPEED = 3.5f;
+	//回転軸となるベクトル
+	static const Vector3 MAP_ROTATE_VECTOR;
 
 	//std::shared_ptr<Player>player;
 	Vector3 playerMoveVector = 0;
