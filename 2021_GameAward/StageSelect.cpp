@@ -40,6 +40,9 @@ std::vector<Sprite3D> StageSelect::mapBackSpr;
 Texture StageSelect::mapBackTex;
 Sprite3D StageSelect::arrowSpr[2];
 Texture StageSelect::arrowTex[2];
+std::vector<Sprite3D> StageSelect::stageStringSpr;
+std::vector<std::unique_ptr<Texture>> StageSelect::stageStringTex;
+
 //const UINT StageSelect::playerRotateTime = 60 * 2;
 //const UINT StageSelect::nextFromSelectionTime = 60 * 2;
 
@@ -62,14 +65,14 @@ void StageSelect::LoadResources()
 	selectSpr.SetPosition(Vector2(860, 520));
 	selectSpr.SetScale(Vector2(0.8f, 0.8f));
 	selectTex.LoadSpriteTexture("Resources/Texture/select.png");
-	
+
 	mapBackTex.LoadSpriteTexture("Resources/Texture/StageSelect/Syage1Frame.png");
-	
+
 	arrowSpr[0].CreateSprite(Vector2(200, 200));
 	arrowSpr[1].CreateSprite(Vector2(200, 200));
 	arrowSpr[1].SetScale(Vector2(-1, 1));//反転
 	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow.png");
-	arrowTex[0].LoadSpriteTexture("Resources/Texture/StageSelect/arrow_shine.png");
+	arrowTex[1].LoadSpriteTexture("Resources/Texture/StageSelect/arrow_shine.png");
 
 	//マップ読み込み
 	for (int i = 0; ; i++)
@@ -84,7 +87,7 @@ void StageSelect::LoadResources()
 			openFile.open(L"Resources/Map/ms_mapT.msmap", std::ios_base::binary);
 			loadTutorialMap = true;
 		}
-		else 
+		else
 		{
 			maxStageNum++;
 		}
@@ -133,7 +136,7 @@ void StageSelect::LoadResources()
 			blockScales[i][j] = blockScale;
 
 			blocks[i][j] = std::make_shared<Block>(blockPos, blockScale);
-			
+
 		}
 
 		openFile.close();
@@ -141,40 +144,53 @@ void StageSelect::LoadResources()
 		if (loadTutorialMap)break;
 	}
 
-	
+
 	//マップを中心からどのくらい動かすか(1マップ分だけ座標用意してクォータニオンで回す)
 	const Vector3 MAP_MOVE_POSITION = { 0,0,-800 };
 	mapRotateAngleMax = 360.0f / maxStageNum;
 	mapMovePositions.resize(maxStageNum);
 	worldCenterToStageVectorAngle.resize(maxStageNum);
-	for(int i = 0; i < maxStageNum;i++)
+	for (int i = 0; i < maxStageNum; i++)
 	{
 		auto blockNum = blocks[i].size();
 		Vector3 movePos = MAP_MOVE_POSITION;
 		float rotateAngle = mapRotateAngleMax * i;
 
 		movePos = LibMath::RotateVector3(movePos, MAP_ROTATE_VECTOR, rotateAngle);
-		for (int j = 0; j < blockNum; j++) 
+		for (int j = 0; j < blockNum; j++)
 		{
 			blocks[i][j]->MovePosition(movePos);
 		}
 		mapMovePositions[i] = movePos;
-	
+
 
 	}
 
 	Library::LoadSound("Resources/Sound/BGM/StageSelect.wav", "StageSelect", true);
 
 	mapBackSpr.resize(maxStageNum);
-	for(auto& spr: mapBackSpr)
+	for (auto& spr : mapBackSpr)
 	{
 		spr.CreateSprite(Vector2(800, 400));
-		spr.SetBillboardFlag(true,true,true);
+		spr.SetBillboardFlag(true, true, true);
 	}
 	arrowSpr[0].SetPosition(MAP_MOVE_POSITION + Vector3(-450, 0, 0));
 	arrowSpr[0].SetBillboardFlag(true, true, true);
 	arrowSpr[1].SetPosition(MAP_MOVE_POSITION + Vector3(450, 0, 0));
 	arrowSpr[1].SetBillboardFlag(true, true, true);
+
+
+	stageStringSpr.resize(maxStageNum);
+	stageStringTex.resize(maxStageNum);
+	for (int i = 0; i < maxStageNum; i++)
+	{
+		const float stageStringSprScaleMul = 1.2f;
+		stageStringSpr[i].CreateSprite(Vector2(500 * stageStringSprScaleMul, 150 * stageStringSprScaleMul));
+		stageStringSpr[i].SetBillboardFlag(true, true, true);
+		stageStringTex[i] = std::make_unique<Texture>();
+		stageStringTex[i]->LoadSpriteTexture("Resources/Texture/StageSelect/Stage" + std::to_string(1) + "Tex.png");
+	
+	}
 }
 
 void StageSelect::Initialize()
@@ -317,6 +333,7 @@ void StageSelect::Update()
 	for(int i = 0; i < maxStageNum;i++)
 	{
 		mapBackSpr[i].SetPosition(mapMovePositions[i] + Vector3(0, -50, 0));
+		stageStringSpr[i].SetPosition(mapMovePositions[i] + Vector3(0, 0, -320));
 	}
 #pragma endregion
 
@@ -346,9 +363,16 @@ void StageSelect::Draw()
 	{
 		spr.Draw(&mapBackTex);
 	}
+
+	for (int i = 0; i < maxStageNum; i++)
+	{
+		stageStringSpr[i].Draw(stageStringTex[i].get());
+	};
+
 	arrowSpr[0].Draw(&arrowTex[0]);
 	arrowSpr[1].Draw(&arrowTex[0]);
 
+	
 	Fade::GetInstance()->Draw();
 }
 

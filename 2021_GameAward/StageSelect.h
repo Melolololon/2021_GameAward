@@ -75,7 +75,8 @@ private:
 	static Texture mapBackTex;
 	static Sprite3D arrowSpr[2];
 	static Texture arrowTex[2];
-
+	static std::vector<Sprite3D> stageStringSpr;
+	static std::vector<std::unique_ptr<Texture>> stageStringTex;
 #pragma endregion
 
 
