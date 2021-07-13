@@ -44,7 +44,6 @@ Texture GameClear::rankTexture;
 Sprite2D GameClear::rankFreamSprite;
 Texture GameClear::rankFreamTexture[5];
 
-Vector2 GameClear::timeScale = Vector2(2, 2);
 
 ObjModel GameClear::enemyModel;
 
@@ -62,7 +61,6 @@ void GameClear::LoadResources()
 	for (int i = 0; i < _countof(timeSprite); i++)
 	{
 		timeSprite[i].CreateSprite();
-		timeSprite[i].SetScale(Vector2(2, 2));
 	}
 	timeTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 
@@ -85,10 +83,23 @@ void GameClear::Initialize()
 
 	enemyPosition = ENEMY_STOP_POSITION + Vector3(0, 3.0f, 0);
 	enemyModel.SetPosition(enemyPosition, 0);
+
+
+	timeScale = TIME_MAX_SCALE;
+	timeSprite[0].SetScale(timeScale);
+	for (int i = 1; i < _countof(timeSprite); i++)
+	{
+		timeSprite[i].SetScale(TIME_MIN_SCALE);
+	}
+	timeSubAlpha = 100.0f;
+	timeSprite[0].SetSubColor(Color(0, 0, 0, Color::ToPar(timeSubAlpha)));
+
+	timeAddStartTimer.SetStopFlag(true);
 }
 
 void GameClear::Update()
 {
+	//シーン切り替え処理
 	auto NextState = [&](const int changeTime, const ResultState& nextState)
 	{
 		nextStateTimer.SetStopFlag(false);
@@ -131,8 +142,33 @@ void GameClear::Update()
 	case GameClear::ResultState::ADD_ENEMY_VALUE:
 		break;
 	case GameClear::ResultState::ADD_TIME:
-		//タイムの増加
-		if (drawTime != clearTime)drawTime++;
+		//縮小
+
+		if (timeScale.x >= TIME_MIN_SCALE.x)
+		{
+			timeScale -= TIME_SCALLING_SPEED;
+			timeSprite[0].SetScale(timeScale);
+
+			float alphaDecNum = 100 / ((TIME_MAX_SCALE.x - TIME_MIN_SCALE.x) / TIME_SCALLING_SPEED);
+			timeSubAlpha -= alphaDecNum;
+			timeSprite[0].SetSubColor(Color(0, 0, 0, Color::ToPar(timeSubAlpha)));
+		}
+		else
+		{
+			timeSprite[0].SetScale(TIME_MIN_SCALE);
+			timeSprite[0].SetSubColor(Color(0, 0, 0, 0));
+			
+			timeAddStartTimer.SetStopFlag(false);
+			if(timeAddStartTimer.GetTime() >= TIME_ADD_START_TIME)
+			{
+				timeAddStartTimer.SetStopFlag(true);
+				//タイムの増加
+				if (drawTime != clearTime)drawTime++;
+				else NextState(40, ResultState::PROCESS_END);
+			}
+
+			
+		}
 
 		//ランク決定
 		if (drawTime < S_RUNK_TIME[stageNum])
@@ -151,8 +187,23 @@ void GameClear::Update()
 		{
 			rank = StageRank::RANK_C;
 		}
+
 		break;
-	default:
+
+	case GameClear::ResultState::PROCESS_END:
+		if (XInputManager::GetPadConnectedFlag(1)
+			&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+				|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
+		{
+			if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT)
+			{
+				Fade::GetInstance()->FadeStart();
+			}
+		}
+		if (Fade::GetInstance()->GetSceneChangeTimingFlag())
+		{
+			isEnd = true;
+		}
 		break;
 	}
 
@@ -162,19 +213,7 @@ void GameClear::Update()
 	enemyModel.SetAngle(Vector3(0, enemyAngle, 0),0);
 
 
-	if (XInputManager::GetPadConnectedFlag(1)
-		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
-			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
-	{
-		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT)
-		{
-			Fade::GetInstance()->FadeStart();
-		}
-	}
-	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
-	{
-		isEnd = true;
-	}
+	
 }
 
 void GameClear::Draw()
@@ -188,12 +227,14 @@ void GameClear::Draw()
 	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
 	{
+
 		std::string str = drawStr.substr(keta - 1 - i, 1);
 		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (timeScale.x * 1.2f) * (i + 1) - 120, 340);
 
 		int n = atoi(str.c_str());
 		timeSprite[i].SetPosition(pos);
 		timeSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &timeTexture);
+	
 	}
 
 	//ランク

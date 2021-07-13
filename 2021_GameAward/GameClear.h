@@ -27,6 +27,7 @@ private:
 		SET_ENEMY,//敵の処理(上から落とすか倍率を0から増やすか)
 		ADD_ENEMY_VALUE,//敵の値を加算
 		ADD_TIME,//タイムの加算、ランクアップ処理
+		PROCESS_END,//処理終了
 	};
 	ResultState resultState = ResultState::MOVE_RESULT;
 	FreamTimer nextStateTimer;
@@ -38,7 +39,14 @@ private:
 	int drawTime = 0;
 	static Sprite2D timeSprite[6];
 	static Texture timeTexture;
-	static Vector2 timeScale;
+
+	float timeSubAlpha = 100.0f;
+	Vector2 TIME_MIN_SCALE = 2.0f;
+	Vector2 TIME_MAX_SCALE = TIME_MIN_SCALE + 3.0f;
+	Vector2 timeScale = 0;
+	const float TIME_SCALLING_SPEED = 0.3f;
+	const float TIME_ADD_START_TIME = 60 * 0.5f;
+	FreamTimer timeAddStartTimer;
 
 	static Sprite2D rankSprite;
 	static Texture rankTexture;
@@ -55,6 +63,7 @@ private:
 	const Vector3 ENEMY_STOP_POSITION = Vector3(-2.6f, 0.4f, 0);
 	Vector3 enemyPosition = 0;
 	const float ENEMY_MOVE_SPEED = 0.025f;
+
 public:
 	GameClear() {}
 	~GameClear() {}
