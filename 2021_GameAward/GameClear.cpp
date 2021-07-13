@@ -46,8 +46,19 @@ Texture GameClear::rankFreamTexture[5];
 
 Vector2 GameClear::timeScale = Vector2(2, 2);
 
+ObjModel GameClear::enemyModel;
+
 void GameClear::LoadResources()
 {
+	enemyModel.LoadModel
+	(
+		"Resources/Model/MoveEnemy/MoveEnemy_Bone.obj",
+		true,
+		1,
+		0
+	);
+	enemyModel.SetScale(0.1f,0);
+
 	for (int i = 0; i < _countof(timeSprite); i++)
 	{
 		timeSprite[i].CreateSprite();
@@ -69,6 +80,11 @@ void GameClear::LoadResources()
 
 void GameClear::Initialize()
 {
+	rankFreamPosition = RANK_FREAM_STOP_POSITION + Vector2(0, -400);
+
+
+	enemyPosition = ENEMY_STOP_POSITION + Vector3(0, 3.0f, 0);
+	enemyModel.SetPosition(enemyPosition, 0);
 }
 
 void GameClear::Update()
@@ -96,11 +112,21 @@ void GameClear::Update()
 		else
 		{
 			rankFreamSprite.SetPosition(RANK_FREAM_STOP_POSITION);
-			NextState(60, ResultState::ADD_TIME);
+			NextState(40, ResultState::SET_ENEMY);
 		}
 
 		break;
 	case GameClear::ResultState::SET_ENEMY:
+		if (enemyPosition.y >= ENEMY_STOP_POSITION.y)
+		{
+			enemyPosition.y -= ENEMY_MOVE_SPEED;
+			enemyModel.SetPosition(enemyPosition,0);
+		}
+		else
+		{
+			enemyModel.SetPosition(ENEMY_STOP_POSITION, 0);
+			NextState(40, ResultState::ADD_TIME);
+		}
 		break;
 	case GameClear::ResultState::ADD_ENEMY_VALUE:
 		break;
@@ -131,7 +157,9 @@ void GameClear::Update()
 	}
 
 	
-
+	//“G‰ñ“]
+	enemyAngle += ENEMY_ROT_SPEED;
+	enemyModel.SetAngle(Vector3(0, enemyAngle, 0),0);
 
 
 	if (XInputManager::GetPadConnectedFlag(1)
@@ -170,6 +198,9 @@ void GameClear::Draw()
 
 	//ƒ‰ƒ“ƒN
 	rankSprite.SelectDrawAreaDraw(Vector2(200 * (int)rank, 0), Vector2(200 * ((int)rank + 1), 200), &rankTexture);
+
+	//“G
+	enemyModel.Draw(0);
 
 	Fade::GetInstance()->Draw();
 }
