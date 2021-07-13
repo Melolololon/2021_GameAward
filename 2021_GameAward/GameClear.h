@@ -29,24 +29,50 @@ private:
 		ADD_TIME,//タイムの加算、ランクアップ処理
 		PROCESS_END,//処理終了
 	};
+
+
+	class NumberData	
+	{
+	public:
+		static const int NUMBER_DIGIT = 6;
+		static const Vector2 NUMBER_MIN_SCALE;
+		static const Vector2 NUMBER_MAX_SCALE;
+		static const float NUMBER_SCALLING_SPEED;
+		static const float NUMBER_ADD_START_TIME;
+
+		NumberData(const Vector2& pos);
+
+		static void LoadTexture();
+		void Update();
+		bool AddEnd() { return drawTime >= maxNum; }
+		int GetDrawTime() { return drawTime; }
+		void Draw();
+		void SetMaxNum(const int num) { maxNum = num; }
+	private:
+
+		Sprite2D numberSprite[NUMBER_DIGIT];
+		static Texture numberTexture;
+
+		Vector2 scale = 0;
+		FreamTimer addStartTimer;
+		float subAlpha = 100.0f;
+		int drawTime = 0;
+		Vector2 position = 0;
+		int maxNum = 0;
+	};
+
 	ResultState resultState = ResultState::MOVE_RESULT;
 	FreamTimer nextStateTimer;
 
 	static int stageNum;
 	StageRank rank = StageRank::RANK_C;
 	static int clearTime;
-	//現在描画されているタイム
-	int drawTime = 0;
-	static Sprite2D timeSprite[6];
-	static Texture timeTexture;
 
-	float timeSubAlpha = 100.0f;
-	Vector2 TIME_MIN_SCALE = 2.0f;
-	Vector2 TIME_MAX_SCALE = TIME_MIN_SCALE + 3.0f;
-	Vector2 timeScale = 0;
-	const float TIME_SCALLING_SPEED = 0.3f;
-	const float TIME_ADD_START_TIME = 60 * 0.5f;
-	FreamTimer timeAddStartTimer;
+	//現在描画されているタイム
+	NumberData timeNumberData;
+
+
+
 
 	static Sprite2D rankSprite;
 	static Texture rankTexture;
@@ -60,12 +86,14 @@ private:
 	static ObjModel enemyModel;
 	float enemyAngle = 0.0f;
 	const float ENEMY_ROT_SPEED = 1.0f;
-	const Vector3 ENEMY_STOP_POSITION = Vector3(-2.6f, 0.4f, 0);
+	const Vector3 ENEMY_STOP_POSITION = Vector3(-2.8f, 0.4f, 0);
 	Vector3 enemyPosition = 0;
 	const float ENEMY_MOVE_SPEED = 0.025f;
 
+
+
 public:
-	GameClear() {}
+	GameClear():timeNumberData(Vector2(120, 430)){}
 	~GameClear() {}
 
 	void Initialize();

@@ -158,9 +158,6 @@ void Play::LoadResources()
 void Play::Initialize()
 {
 
-
-
-
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	pauseSnake = std::make_shared<Player>(0); 
@@ -242,7 +239,7 @@ void Play::Initialize()
 
 
 	SetEnemy();
-
+	Enemy::ResetDeadCount();
 }
 
 void Play::Update()

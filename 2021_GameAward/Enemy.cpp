@@ -15,6 +15,7 @@ const float Enemy::OBJSIZE = 1.0f;
 const float Enemy::FREAM_MOVE_ANGLE = 6.0f;
 const float Enemy::MAX_ANGLE = FREAM_MOVE_ANGLE / 2 * (MOVE_ANIMATION_MAX / 2);
 const float Enemy::MIN_ANGLE = -FREAM_MOVE_ANGLE / 2 * (MOVE_ANIMATION_MAX / 2);
+int Enemy::deadCount = 0;
 
 void Enemy::CalcToPlayerRouteVectors()
 {
@@ -41,6 +42,11 @@ Enemy::Enemy()
 	moveAnimationTime.SetStopFlag(false);
 
 	flashingTimer.SetMaxTime(FLASHING_TIME);
+}
+
+Enemy::~Enemy()
+{
+	deadCount++;
 }
 
 void Enemy::setHeapNum()

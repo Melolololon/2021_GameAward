@@ -7,6 +7,9 @@
 
 class Enemy : public Object
 {
+private:
+	//“|‚µ‚½”
+	static int deadCount;
 
 protected:
 #pragma region ƒ‚ƒfƒ‹ŠÖŒW
@@ -76,6 +79,7 @@ protected:
 public:
 	
 	Enemy();
+	virtual ~Enemy();
 
 	void Initialize()override;
 	void Update()override;
@@ -98,5 +102,7 @@ public:
 
 	static bool isGameStart();
 
+	static void ResetDeadCount() { deadCount = 0; }
+	static int GetDeadCount() { return deadCount; }
 };
 
