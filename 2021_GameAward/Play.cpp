@@ -157,6 +157,10 @@ void Play::LoadResources()
 
 void Play::Initialize()
 {
+
+
+
+
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	pauseSnake = std::make_shared<Player>(0); 
@@ -243,6 +247,16 @@ void Play::Initialize()
 
 void Play::Update()
 {
+
+#ifdef _DEBUG
+
+	stageNum = 1;
+	isEnd = true;
+	playSceneState = PLAY_SCENE_GAMECLEAR;
+	return;
+#endif // _DEBUG
+
+
 	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
 	{
 		isEnd = true;
