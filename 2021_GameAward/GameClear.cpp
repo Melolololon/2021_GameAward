@@ -33,7 +33,7 @@ const int GameClear::B_RUNK_TIME[5] =
 
 
 int GameClear::stageNum = 0;
-int GameClear::time = 0;
+int GameClear::clearTime = 0;
 
 Sprite2D GameClear::timeSprite[6];
 Texture GameClear::timeTexture;
@@ -60,7 +60,6 @@ void GameClear::LoadResources()
 	rankTexture.LoadSpriteTexture("Resources/Texture/rank.png");
 
 	rankFreamSprite.CreateSprite();
-	rankFreamSprite.SetPosition(Vector2(220, 80));
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -70,25 +69,71 @@ void GameClear::LoadResources()
 
 void GameClear::Initialize()
 {
-
-	//ランク決定
-	if (time < S_RUNK_TIME[stageNum])
-	{
-		rank = StageRank::RANK_S;
-	}
-	else if (time < A_RUNK_TIME[stageNum])
-	{
-		rank = StageRank::RANK_A;
-	}
-	else if (time < B_RUNK_TIME[stageNum])
-	{
-		rank = StageRank::RANK_B;
-	}
-
 }
 
 void GameClear::Update()
 {
+	auto NextState = [&](const int changeTime, const ResultState& nextState)
+	{
+		nextStateTimer.SetStopFlag(false);
+		nextStateTimer.SetMaxTime(changeTime);
+		if (nextStateTimer.GetSameAsMaximumFlag())
+		{
+			nextStateTimer.SetStopFlag(true);
+			resultState = nextState;
+		}
+	};
+
+	switch (resultState)
+	{
+	case GameClear::ResultState::MOVE_RESULT:
+
+		if (rankFreamPosition.y <= RANK_FREAM_STOP_POSITION.y) 
+		{
+			rankFreamPosition.y += RANK_FREAM_SPEED;
+			rankFreamSprite.SetPosition(rankFreamPosition);
+		}
+		else
+		{
+			rankFreamSprite.SetPosition(RANK_FREAM_STOP_POSITION);
+			NextState(60, ResultState::ADD_TIME);
+		}
+
+		break;
+	case GameClear::ResultState::SET_ENEMY:
+		break;
+	case GameClear::ResultState::ADD_ENEMY_VALUE:
+		break;
+	case GameClear::ResultState::ADD_TIME:
+		//タイムの増加
+		if (drawTime != clearTime)drawTime++;
+
+		//ランク決定
+		if (drawTime < S_RUNK_TIME[stageNum])
+		{
+			rank = StageRank::RANK_S;
+		}
+		else if (drawTime < A_RUNK_TIME[stageNum])
+		{
+			rank = StageRank::RANK_A;
+		}
+		else if (drawTime < B_RUNK_TIME[stageNum])
+		{
+			rank = StageRank::RANK_B;
+		}
+		else
+		{
+			rank = StageRank::RANK_C;
+		}
+		break;
+	default:
+		break;
+	}
+
+	
+
+
+
 	if (XInputManager::GetPadConnectedFlag(1)
 		&& (XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
 			|| XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)))
@@ -111,7 +156,7 @@ void GameClear::Draw()
 
 
 	//数字
-	std::string drawStr = std::to_string(time);
+	std::string drawStr = std::to_string(drawTime);
 	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
 	{
@@ -124,7 +169,7 @@ void GameClear::Draw()
 	}
 
 	//ランク
-	rankSprite.SelectDrawAreaDraw(Vector2(200 * rank, 0), Vector2(200 * (rank + 1), 200), &rankTexture);
+	rankSprite.SelectDrawAreaDraw(Vector2(200 * (int)rank, 0), Vector2(200 * ((int)rank + 1), 200), &rankTexture);
 
 	Fade::GetInstance()->Draw();
 }
