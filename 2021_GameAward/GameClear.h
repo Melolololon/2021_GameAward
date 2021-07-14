@@ -38,7 +38,7 @@ private:
 		float subAlpha = 100.0f;
 		Vector2 minScale;
 		Vector2 maxScale;
-		float scalingSpeed = 0.0f;
+		const float scalingSpeed = 0.0f;
 		bool processEnd = false;
 	public:
 		ResultData(const Vector2& pos, const Vector2 minScale, const Vector2 maxScale,const float scalingSpeed): 
@@ -93,6 +93,7 @@ private:
 	StageRank rank = StageRank::RANK_C;
 	static int clearTime;
 
+
 	//現在描画されているタイム
 	NumberData timeNumberData;
 
@@ -100,14 +101,16 @@ private:
 	NumberData enemyDeadCountData;
 
 
+	static Sprite2D resultFreamSprite;
+	static Texture resultFreamTexture[5];
+	const Vector2 RESULT_FREAM_STOP_POSITION = Vector2(220, 80);
+	Vector2 resultFreamPosition = 0;
+	const float RESULT_FREAM_SPEED = 3.0f;
+
+	//ランク
 	static Sprite2D rankSprite;
 	static Texture rankTexture;
-
-	static Sprite2D rankFreamSprite;
-	static Texture rankFreamTexture[5];
-	const Vector2 RANK_FREAM_STOP_POSITION = Vector2(220, 80);
-	Vector2 rankFreamPosition = 0;
-	const float RANK_FREAM_SPEED = 3.0f;
+	ResultData rankResultData;
 
 	static ObjModel enemyModel;
 	float enemyAngle = 0.0f;
@@ -119,11 +122,12 @@ private:
 
 
 public:
-	//timeNumberDataの座標は、実際の座標じゃなくて補正値なので注意
+	//timeNumberDataなどの数値の座標は、実際の座標じゃなくて補正値なので注意
 
-	GameClear():
+	GameClear() :
 		timeNumberData(Vector2(-30, 430))
-		, enemyDeadCountData(Vector2(-30, 260)){}
+		, enemyDeadCountData(Vector2(-30, 260))
+		, rankResultData(Vector2(730, 290), 1.0f, 3.0f, 0.3f) {}
 	~GameClear() {}
 
 	void Initialize();

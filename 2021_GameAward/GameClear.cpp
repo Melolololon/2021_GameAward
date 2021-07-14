@@ -48,8 +48,8 @@ int GameClear::clearTime = 0;
 Sprite2D GameClear::rankSprite;
 Texture GameClear::rankTexture;
 
-Sprite2D GameClear::rankFreamSprite;
-Texture GameClear::rankFreamTexture[5];
+Sprite2D GameClear::resultFreamSprite;
+Texture GameClear::resultFreamTexture[5];
 
 ObjModel GameClear::enemyModel;
 
@@ -67,14 +67,13 @@ void GameClear::LoadResources()
 	NumberData::LoadTexture();
 
 	rankSprite.CreateSprite();
-	rankSprite.SetPosition(Vector2(730, 290));
 	rankTexture.LoadSpriteTexture("Resources/Texture/rank.png");
 
-	rankFreamSprite.CreateSprite();
+	resultFreamSprite.CreateSprite();
 
 	for (int i = 0; i < 5; i++)
 	{
-		rankFreamTexture[i].LoadSpriteTexture("Resources/Texture/rankFream_" + std::to_string(i + 1) + ".png");
+		resultFreamTexture[i].LoadSpriteTexture("Resources/Texture/rankFream_" + std::to_string(i + 1) + ".png");
 	}
 }
 
@@ -84,12 +83,14 @@ void GameClear::Initialize()
 	enemyModel.SetPosition(enemyPosition, 0);
 
 
-	rankFreamPosition = RANK_FREAM_STOP_POSITION + Vector2(0, -400);
+	resultFreamPosition = RESULT_FREAM_STOP_POSITION + Vector2(0, -400);
 
 	timeNumberData.SetMaxNum(clearTime);
 	enemyDeadCountData.SetMaxNum(Enemy::GetDeadCount());
 
 
+	rankSprite.SetPosition(rankResultData.GetPosition());
+	rankSprite.SetScale(0);
 }
 
 void GameClear::Update()
@@ -110,14 +111,14 @@ void GameClear::Update()
 	{
 	case GameClear::ResultState::MOVE_RESULT:
 
-		if (rankFreamPosition.y <= RANK_FREAM_STOP_POSITION.y) 
+		if (resultFreamPosition.y <= RESULT_FREAM_STOP_POSITION.y) 
 		{
-			rankFreamPosition.y += RANK_FREAM_SPEED;
-			rankFreamSprite.SetPosition(rankFreamPosition);
+			resultFreamPosition.y += RESULT_FREAM_SPEED;
+			resultFreamSprite.SetPosition(resultFreamPosition);
 		}
 		else
 		{
-			rankFreamSprite.SetPosition(RANK_FREAM_STOP_POSITION);
+			resultFreamSprite.SetPosition(RESULT_FREAM_STOP_POSITION);
 			NextState(40, ResultState::SET_ENEMY);
 		}
 
@@ -143,6 +144,11 @@ void GameClear::Update()
 		
 		if(timeNumberData.ProcessEnd()) NextState(40, ResultState::PROCESS_END);
 		timeNumberData.Update();
+
+		rankResultData.Update();
+		rankSprite.SetScale(rankResultData.GetScale());
+		rankSprite.SetSubColor(Color(0,0,0,rankResultData.GetSubAlpha()));
+
 
 		//ƒ‰ƒ“ƒNŒˆ’è
 		if (timeNumberData.GetDrawTime() < S_RUNK_TIME[stageNum])
@@ -193,7 +199,7 @@ void GameClear::Update()
 void GameClear::Draw()
 {
 	//ƒtƒŒ[ƒ€
-	rankFreamSprite.Draw(&rankFreamTexture[stageNum]);
+	resultFreamSprite.Draw(&resultFreamTexture[stageNum]);
 
 
 
