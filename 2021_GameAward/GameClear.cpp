@@ -275,7 +275,7 @@ void GameClear::NumberData::Draw()
 	for (int i = 0; i < keta; i++)
 	{
 		std::string str = drawStr.substr(keta - 1 - i, 1);
-		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (resultData.GetScale().x * 1.2f) * (i + 1) - resultData.GetPosition().x, resultData.GetPosition().y);
+		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (resultData.GetScale().x * 1.2f) * (i + 1) + resultData.GetPosition().x - 20 * keta, resultData.GetPosition().y);
 
 		int n = atoi(str.c_str());
 		numberSprite[i].SetPosition(pos);

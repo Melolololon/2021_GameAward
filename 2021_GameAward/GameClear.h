@@ -119,9 +119,11 @@ private:
 
 
 public:
+	//timeNumberDataの座標は、実際の座標じゃなくて補正値なので注意
+
 	GameClear():
-		timeNumberData(Vector2(120, 430))
-		, enemyDeadCountData(Vector2(120, 330)){}
+		timeNumberData(Vector2(-30, 430))
+		, enemyDeadCountData(Vector2(-30, 260)){}
 	~GameClear() {}
 
 	void Initialize();
