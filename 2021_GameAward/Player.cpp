@@ -35,6 +35,12 @@ Sprite2D Player::hpCrossSpr;
 Texture Player::hpCrossTex;
 Sprite2D Player::hpNumSpr;
 Texture Player::hpNumTex;
+Sprite2D Player::sprLife_BG;
+Texture Player::texLife_BG;
+
+Sprite2D Player::sprLife;
+Texture Player::texLife;
+
 
 Player::Player()
 {
@@ -86,6 +92,14 @@ void Player::LoadResource()
 	hpNumSpr.CreateSprite();
 	hpNumTex.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
 	hpNumSpr.SetPosition(Vector2(140, 10));
+
+	sprLife_BG.CreateSprite();
+	sprLife_BG.SetPosition(Vector2(0, 0));
+	texLife_BG.LoadSpriteTexture("Resources/Texture/Life/lifeBG.png");
+
+	sprLife.CreateSprite();
+	sprLife.SetPosition(Vector2(0, 0));
+	texLife.LoadSpriteTexture("Resources/Texture/Life/lifeColor.png");
 
 	////スプライト
 	//targetLockSprite.CreateSprite({10,10});
@@ -849,8 +863,9 @@ void Player::UpdateHpAnimation()
 }
 
 void Player::DrawHp()
-{	
-	
+{
+	//旧コード
+	/*
 	//蛇のアニメーション
 	const Vector2 hpAnimationTextureSize = hpAnimationTexture.GetTextureSize();
 	hpAnimationSprite.SelectDrawAreaDraw
@@ -866,6 +881,15 @@ void Player::DrawHp()
 	//数字
 	const float numSize = hpNumTex.GetTextureSize().y;
 	hpNumSpr.SelectDrawAreaDraw(Vector2(numSize * hp, 0), Vector2(numSize * (hp + 1), numSize), &hpNumTex);
+	*/
+
+	//新コード
+	float texWidth = 384, texHeight = 61;
+	
+	//下地
+	sprLife_BG.Draw(&texLife_BG);
+	//緑
+	sprLife.SelectDrawAreaDraw(Vector2(0,0), Vector2(texWidth * hp / 5, texHeight), &texLife);
 }
 
 

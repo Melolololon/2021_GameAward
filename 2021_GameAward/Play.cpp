@@ -67,7 +67,6 @@ Texture Play::targetAnimationTexture;
 Sprite2D Play::pauseSpr;
 Texture Play::pauseTex;
 
-
 #pragma endregion
 bool Play::isPause = false;
 Play::TutorialState Play::tutorialState = TutorialState::TUTORIAL_STATE_MOVE;
