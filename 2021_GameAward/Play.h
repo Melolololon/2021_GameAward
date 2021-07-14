@@ -97,6 +97,8 @@ private:
 	//ƒ{ƒ^ƒ“
 	static Sprite2D buttonSpr[3];
 	static Texture buttonTex;
+	int currentButtonNumX = 0;
+	int currentButtonNumY = 5;
 
 	//ŽÖ
 	static Sprite2D tutorialSnakeSpr;

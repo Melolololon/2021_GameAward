@@ -118,21 +118,29 @@ void Play::LoadResources()
 	}
 	tutorialSnakeTex.LoadSpriteTexture("Resources/Texture/Tutorial/tuto_frame.png");
 
+
+	Vector2 NEXT_SKIP_BUTTON_SCALE = 0.37f;
 	tutorialSkipSpr.CreateSprite();
-	tutorialSkipSpr.SetPosition(Vector2(878, 610));
-	tutorialSkipSpr.SetScale(Vector2(0.8f,0.8f ));
-	tutorialSkipTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialSkip.png");
+	tutorialSkipSpr.SetPosition(Vector2(914, 570));
+	tutorialSkipSpr.SetScale(NEXT_SKIP_BUTTON_SCALE);
+	tutorialSkipTex.LoadSpriteTexture("Resources/Texture/Tutorial/SkipTuto.png");
 
 	tutorialNextSpr.CreateSprite();	
-	tutorialNextSpr.SetPosition(Vector2(860, 520));
-	tutorialNextSpr.SetScale(Vector2(0.8f, 0.8f));
-	tutorialNextTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialNext.png");
+	tutorialNextSpr.SetPosition(Vector2(850, 420));
+	tutorialNextSpr.SetScale(NEXT_SKIP_BUTTON_SCALE);
+	tutorialNextTex.LoadSpriteTexture("Resources/Texture/Tutorial/NextTuto.png");
 
-	for(int i = 0; i < _countof(buttonSpr);i++)
+
+	const float BUTTON_SPR_SCALE = 0.5f;
+	for (int i = 0; i < _countof(buttonSpr); i++)
 	{
 		buttonSpr[i].CreateSprite();
+		buttonSpr[i].SetScale(BUTTON_SPR_SCALE);
 	}
+	buttonSpr[1].SetPosition(Vector2(750, 350));
+	buttonSpr[2].SetPosition(Vector2(750, 500));
 	buttonTex.LoadSpriteTexture("Resources/Texture/Tutorial/ButtonAnim.png");
+
 
 
 	/*Library::createSprite(&arrowSprite);
@@ -755,6 +763,7 @@ void Play::Tutorial()
 		break;
 
 	case Play::TUTORIAL_STATE_SHOT:
+
 		if (GetNextTutorialSceneFlag())
 		{
 			tutorialState = TUTORIAL_STATE_LOCK;
@@ -787,26 +796,76 @@ void Play::Tutorial()
 	//動かす
 	tutorialSnakePosition.x += TUTORIAL_SNAKE_SPEED;
 	
-	
 	//右行ったら戻す
-	float snakeResetPos = 1600.0f;
+	float snakeResetPos = 1400.0f;
 	if (tutorialSnakePosition.x >= snakeResetPos)
 	{
 		tutorialSnakePosition.x = START_TUTORIAL_SNAKE_POSITION.x;
 		tutorialSnakeLeft = true;
 		currentMessageNum++;
+
+
+		//蛇に表示するボタンの番号Yをセット
+		switch (tutorialState)
+		{
+		case Play::TUTORIAL_STATE_MOVE:
+			currentButtonNumY = 5;
+			break;
+
+		case Play::TUTORIAL_STATE_SHOT:
+			currentButtonNumY = 0;
+			break;
+
+		case Play::TUTORIAL_STATE_LOCK:
+			currentButtonNumY = 2;
+
+			break;
+
+		case Play::TUTORIAL_STATE_TWIST:
+			currentButtonNumY = 1;
+			break;
+
+		}
 	}
+
+	//Xセット
+	currentButtonNumX = 0;
+	switch (tutorialState)
+	{
+	case Play::TUTORIAL_STATE_MOVE:
+		currentButtonNumX = 0;
+		break;
+
+	case Play::TUTORIAL_STATE_SHOT:
+		if (XInputManager::ButtonState(XInputManager::XINPUT_X_BUTTON, 1))currentButtonNumX = 1;
+		break;
+
+	case Play::TUTORIAL_STATE_LOCK:
+		//蛇移動中も押せるようにするためのif
+		if (XInputManager::ButtonState(XInputManager::XINPUT_X_BUTTON, 1) && !tutorialSnakeLeft)currentButtonNumX = 1;
+		if (XInputManager::ButtonState(XInputManager::XINPUT_LB_BUTTON, 1))currentButtonNumX = 1;
+
+		break;
+
+	case Play::TUTORIAL_STATE_TWIST:
+		if (XInputManager::ButtonState(XInputManager::XINPUT_LB_BUTTON, 1) && !tutorialSnakeLeft)currentButtonNumX = 1;
+		if (XInputManager::ButtonState(XInputManager::XINPUT_RB_BUTTON, 1))currentButtonNumX = 1;
+		break;
+
+	}
+
 
 	//停止&固定
 	if(tutorialSnakeLeft
 		&& tutorialSnakePosition.x >= STOP_TUTORIAL_SNAKE_POSITION.x)
 	{
 		tutorialSnakePosition.x = STOP_TUTORIAL_SNAKE_POSITION.x;
+
 	}
 	
 	tutorialMessageSpr.SetPosition(tutorialSnakePosition + Vector2(530, 110));
 	tutorialSnakeSpr.SetPosition(tutorialSnakePosition);
-
+	buttonSpr[0].SetPosition(tutorialSnakePosition + Vector2(380, 35));
 	
 }
 
@@ -946,8 +1005,48 @@ void Play::Draw()
 		tutorialSnakeSpr.Draw(&tutorialSnakeTex);
 		tutorialMessageSpr.Draw(&tutorialMessageTex[currentMessageNum]);
 		
-		tutorialSkipSpr.Draw(&tutorialSkipTex);
+		/*tutorialSkipSpr.Draw(&tutorialSkipTex);
+		tutorialNextSpr.Draw(&tutorialNextTex);*/
+
+
+		//ボタンのサイズ
+		Vector2 oneArea = Vector2(400, 305);
+
+		
+		buttonSpr[0].SelectDrawAreaDraw
+		(
+			oneArea * Vector2(currentButtonNumX, currentButtonNumY),
+			oneArea * Vector2(currentButtonNumX + 1, currentButtonNumY + 1),
+			&buttonTex
+		);
+
+		//次へ
+		//ボタン
+		int aButtonAreaX = 0;
+		if (XInputManager::ButtonState(XInputManager::XINPUT_A_BUTTON,1)) aButtonAreaX = 1;
+		const int A_BUTTON_AREA_Y = 3;
+		buttonSpr[1].SelectDrawAreaDraw
+		(
+			oneArea * Vector2(aButtonAreaX, A_BUTTON_AREA_Y),
+			oneArea * Vector2(aButtonAreaX + 1, A_BUTTON_AREA_Y + 1),
+			&buttonTex
+		);
+		//メッセージ
 		tutorialNextSpr.Draw(&tutorialNextTex);
+
+		//スキップ
+		//ボタン
+		int bButtonAreaX = 0;
+		if (XInputManager::ButtonState(XInputManager::XINPUT_B_BUTTON, 1)) bButtonAreaX = 1;
+		const int B_BUTTON_AREA_Y = 4;
+		buttonSpr[2].SelectDrawAreaDraw
+		(
+			oneArea * Vector2(bButtonAreaX, B_BUTTON_AREA_Y),
+			oneArea * Vector2(bButtonAreaX + 1, B_BUTTON_AREA_Y + 1),
+			&buttonTex
+		);
+		//メッセージ
+		tutorialSkipSpr.Draw(&tutorialSkipTex);
 	}
 
 	Fade::GetInstance()->Draw();
