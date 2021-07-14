@@ -125,8 +125,12 @@ private:
 	Vector3 enemyPosition = 0;
 	const float ENEMY_MOVE_SPEED = 0.025f;
 
-
-
+	//木
+	static const int TREE_NUM_X = 8;
+	static const int TREE_NUM_Y = 6;
+	static Sprite2D treeSprite[TREE_NUM_Y][TREE_NUM_X];
+	static Texture treeTexture[4];
+	int treeTextureNumber[TREE_NUM_Y][TREE_NUM_X];
 public:
 	//timeNumberDataなどの数値の座標は、実際の座標じゃなくて補正値なので注意
 

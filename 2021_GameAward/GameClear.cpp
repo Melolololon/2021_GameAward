@@ -5,6 +5,7 @@
 #include"Enemy.h"
 
 #include"Game.h"
+#include"Random.h"
 
 
 const int GameClear::S_RUNK_TIME[5] =
@@ -56,6 +57,9 @@ Texture GameClear::crossTexture;
 
 ObjModel GameClear::enemyModel;
 
+Sprite2D GameClear::treeSprite[TREE_NUM_Y][TREE_NUM_X];
+Texture GameClear::treeTexture[4];
+
 void GameClear::LoadResources()
 {
 	enemyModel.LoadModel
@@ -81,6 +85,19 @@ void GameClear::LoadResources()
 	{
 		resultFreamTexture[i].LoadSpriteTexture("Resources/Texture/rankFream_" + std::to_string(i + 1) + ".png");
 	}
+
+	for(int y = 0; y < _countof(treeSprite);y++)
+	{
+		for (int x = 0; x < _countof(treeSprite[0]); x++) 
+		{
+			treeSprite[y][x].CreateSprite();
+			treeSprite[y][x].SetPosition(Vector2(180 * x - 150, 180 * y - 150));
+		}
+	}
+	for(int i = 0; i < _countof(treeTexture);i++)
+	{
+		treeTexture[i].LoadSpriteTexture("Resources/Texture/Tree" + std::to_string(i) + ".png");
+	}
 }
 
 void GameClear::Initialize()
@@ -101,6 +118,13 @@ void GameClear::Initialize()
 	crossSprite.SetPosition(crossResultData.GetPosition());
 	crossSprite.SetScale(0);
 
+	for (int y = 0; y < _countof(treeSprite); y++)
+	{
+		for (int x = 0; x < _countof(treeSprite[0]); x++)
+		{
+			treeTextureNumber[y][x] = Random::GetRandomNumber(4);
+		}
+	}
 }
 
 void GameClear::Update()
@@ -211,6 +235,16 @@ void GameClear::Update()
 
 void GameClear::Draw()
 {
+	//–Ø
+	for (int y = 0; y < _countof(treeSprite); y++)
+	{
+		for (int x = 0; x < _countof(treeSprite[0]); x++)
+		{
+			treeSprite[y][x].Draw(&treeTexture[treeTextureNumber[y][x]]);
+		}
+	}
+
+
 	//ƒtƒŒ[ƒ€
 	resultFreamSprite.Draw(&resultFreamTexture[stageNum]);
 
@@ -240,7 +274,7 @@ void GameClear::Finitialize()
 
 Scene* GameClear::GetNextScene()
 {
-	return new GameClear();
+	return new StageSelect();
 }
 
 
@@ -253,8 +287,6 @@ GameClear::NumberData::NumberData(const Vector2& pos) :
 		numberSprite[i].CreateSprite();
 		numberSprite[i].SetScale(0);
 	}
-	
-
 }
 
 void GameClear::NumberData::Update()
@@ -309,9 +341,7 @@ void GameClear::NumberData::Draw()
 
 void GameClear::NumberData::LoadTexture()
 {
-
 	numberTexture.LoadSpriteTexture("Resources/Texture/TimeNumber.png");
-
 
 }
 
