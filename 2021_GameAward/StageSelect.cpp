@@ -188,7 +188,7 @@ void StageSelect::LoadResources()
 		stageStringSpr[i].CreateSprite(Vector2(500 * stageStringSprScaleMul, 150 * stageStringSprScaleMul));
 		stageStringSpr[i].SetBillboardFlag(true, true, true);
 		stageStringTex[i] = std::make_unique<Texture>();
-		stageStringTex[i]->LoadSpriteTexture("Resources/Texture/StageSelect/Stage" + std::to_string(1) + "Tex.png");
+		stageStringTex[i]->LoadSpriteTexture("Resources/Texture/StageSelect/Stage" + std::to_string(i + 1) + "Tex.png");
 	
 	}
 }
@@ -369,8 +369,22 @@ void StageSelect::Draw()
 		stageStringSpr[i].Draw(stageStringTex[i].get());
 	};
 
-	arrowSpr[0].Draw(&arrowTex[0]);
-	arrowSpr[1].Draw(&arrowTex[0]);
+	if (XInputManager::LeftStickLeft(30, 1)) 
+	{
+		arrowSpr[0].Draw(&arrowTex[1]);
+	}
+	else
+	{
+		arrowSpr[0].Draw(&arrowTex[0]);
+	}
+	if (XInputManager::LeftStickRight(30, 1)) 
+	{
+		arrowSpr[1].Draw(&arrowTex[1]);
+	}
+	else
+	{
+		arrowSpr[1].Draw(&arrowTex[0]);
+	}
 
 	
 	Fade::GetInstance()->Draw();

@@ -245,13 +245,13 @@ void Play::Initialize()
 void Play::Update()
 {
 
-#ifdef _DEBUG
-
-	stageNum = 1;
-	isEnd = true;
-	playSceneState = PLAY_SCENE_GAMECLEAR;
-	return;
-#endif // _DEBUG
+//#ifdef _DEBUG
+//
+//	stageNum = 1;
+//	isEnd = true;
+//	playSceneState = PLAY_SCENE_GAMECLEAR;
+//	return;
+//#endif // _DEBUG
 
 
 	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
