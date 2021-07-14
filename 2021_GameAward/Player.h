@@ -39,6 +39,13 @@ private:
 
 	static Sprite2D hpNumSpr;
 	static Texture hpNumTex;
+
+	static Sprite2D sprLife_BG;
+	static Texture texLife_BG;
+
+	static Sprite2D sprLife;
+	static Texture texLife;
+
 #pragma endregion
 
 
