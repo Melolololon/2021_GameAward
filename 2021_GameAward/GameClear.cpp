@@ -51,6 +51,9 @@ Texture GameClear::rankTexture;
 Sprite2D GameClear::resultFreamSprite;
 Texture GameClear::resultFreamTexture[5];
 
+Sprite2D GameClear::crossSprite;
+Texture GameClear::crossTexture;
+
 ObjModel GameClear::enemyModel;
 
 void GameClear::LoadResources()
@@ -63,6 +66,9 @@ void GameClear::LoadResources()
 		0
 	);
 	enemyModel.SetScale(0.1f,0);
+
+	crossSprite.CreateSprite();
+	crossTexture.LoadSpriteTexture("Resources/Texture/rank_X.png");
 
 	NumberData::LoadTexture();
 
@@ -83,7 +89,7 @@ void GameClear::Initialize()
 	enemyModel.SetPosition(enemyPosition, 0);
 
 
-	resultFreamPosition = RESULT_FREAM_STOP_POSITION + Vector2(0, -400);
+	resultFreamPosition = RESULT_FREAM_STOP_POSITION + Vector2(0, -650);
 
 	timeNumberData.SetMaxNum(clearTime);
 	enemyDeadCountData.SetMaxNum(Enemy::GetDeadCount());
@@ -91,6 +97,10 @@ void GameClear::Initialize()
 
 	rankSprite.SetPosition(rankResultData.GetPosition());
 	rankSprite.SetScale(0);
+
+	crossSprite.SetPosition(crossResultData.GetPosition());
+	crossSprite.SetScale(0);
+
 }
 
 void GameClear::Update()
@@ -139,6 +149,9 @@ void GameClear::Update()
 		if (enemyDeadCountData.ProcessEnd()) NextState(40, ResultState::ADD_TIME);
 		enemyDeadCountData.Update();
 
+		crossResultData.Update();
+		crossSprite.SetScale(crossResultData.GetScale());
+		crossSprite.SetSubColor(Color(0, 0, 0, crossResultData.GetSubAlpha()));
 		break;
 	case GameClear::ResultState::ADD_TIME:
 		
@@ -207,7 +220,8 @@ void GameClear::Draw()
 	timeNumberData.Draw();
 	//ì|ÇµÇΩêî
 	enemyDeadCountData.Draw();
-
+	//ä|ÇØÇÈ
+	crossSprite.Draw(&crossTexture);
 
 	//ÉâÉìÉN
 	rankSprite.SelectDrawAreaDraw(Vector2(200 * (int)rank, 0), Vector2(200 * ((int)rank + 1), 200), &rankTexture);
@@ -226,7 +240,7 @@ void GameClear::Finitialize()
 
 Scene* GameClear::GetNextScene()
 {
-	return new StageSelect();
+	return new GameClear();
 }
 
 

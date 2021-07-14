@@ -99,8 +99,12 @@ private:
 
 	//ì|ÇµÇΩêî
 	NumberData enemyDeadCountData;
+	//ì|ÇµÇΩêîÇÃä|ÇØÇÈ
+	static Sprite2D crossSprite;
+	static Texture crossTexture;
+	ResultData crossResultData;
 
-
+	//åãâ ÇÃòg
 	static Sprite2D resultFreamSprite;
 	static Texture resultFreamTexture[5];
 	const Vector2 RESULT_FREAM_STOP_POSITION = Vector2(220, 80);
@@ -111,6 +115,8 @@ private:
 	static Sprite2D rankSprite;
 	static Texture rankTexture;
 	ResultData rankResultData;
+
+	
 
 	static ObjModel enemyModel;
 	float enemyAngle = 0.0f;
@@ -127,7 +133,8 @@ public:
 	GameClear() :
 		timeNumberData(Vector2(-30, 430))
 		, enemyDeadCountData(Vector2(-30, 260))
-		, rankResultData(Vector2(730, 290), 1.0f, 3.0f, 0.3f) {}
+		, rankResultData(Vector2(730, 290), 1.0f, 3.0f, 0.3f)
+		, crossResultData(Vector2(395, 290), 1.0f, 3.0f, 0.3f) {}
 	~GameClear() {}
 
 	void Initialize();
