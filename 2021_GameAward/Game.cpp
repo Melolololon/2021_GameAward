@@ -61,7 +61,7 @@ void Game::Initialize()
 #pragma region ライブラリ初期化_設定
 	//緑色 { 100, 220, 100, 255 }
 	//ピンク { 230,220,200,255 }
-	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 100, 220, 100, 255 }, L"メビウスネーク");
+	Library::Initialize(WIN_WIDTH, WIN_HEIGHT, { 70, 200, 70, 255 }, L"メビウスネーク");
 	Library::SetCameraNearAndFar(0.1f, 5000.0f);
 	Library::SetLightVector({0.1f,-0.75f,0.15f});
 

@@ -369,7 +369,7 @@ void StageSelect::Draw()
 		stageStringSpr[i].Draw(stageStringTex[i].get());
 	};
 
-	if (XInputManager::LeftStickLeft(30, 1)) 
+	if (stageRotateState == StageRotateState::STAGE_ROTATE_LEFT)
 	{
 		arrowSpr[0].Draw(&arrowTex[1]);
 	}
@@ -377,7 +377,7 @@ void StageSelect::Draw()
 	{
 		arrowSpr[0].Draw(&arrowTex[0]);
 	}
-	if (XInputManager::LeftStickRight(30, 1)) 
+	if (stageRotateState == StageRotateState::STAGE_ROTATE_RIGHT)
 	{
 		arrowSpr[1].Draw(&arrowTex[1]);
 	}
