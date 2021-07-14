@@ -30,22 +30,47 @@ private:
 		PROCESS_END,//èàóùèIóπ
 	};
 
+	class ResultData
+	{
+	private:
+		Vector2 position = 0;
+		Vector2 scale = 0;
+		float subAlpha = 100.0f;
+		Vector2 minScale;
+		Vector2 maxScale;
+		float scalingSpeed = 0.0f;
+		bool processEnd = false;
+	public:
+		ResultData(const Vector2& pos, const Vector2 minScale, const Vector2 maxScale,const float scalingSpeed): 
+			position(pos)
+			, scale(maxScale)
+			, minScale(minScale)
+			, maxScale(maxScale)
+			, scalingSpeed(scalingSpeed)
+		{}
+		void Update();
 
-	class NumberData	
+		Vector2 GetPosition() { return position; }
+		Vector2 GetScale() { return scale; }
+		float GetSubAlpha() { return subAlpha; }
+		bool GetProcessEnd() { return processEnd; }
+	};
+
+	class NumberData
 	{
 	public:
 		static const int NUMBER_DIGIT = 6;
 		static const Vector2 NUMBER_MIN_SCALE;
 		static const Vector2 NUMBER_MAX_SCALE;
 		static const float NUMBER_SCALLING_SPEED;
-		static const float NUMBER_ADD_START_TIME;
+		static const int NUMBER_ADD_START_TIME;
 
 		NumberData(const Vector2& pos);
 
 		static void LoadTexture();
 		void Update();
-		bool AddEnd() { return drawTime >= maxNum; }
-		int GetDrawTime() { return drawTime; }
+		bool ProcessEnd();
+		int GetDrawTime() { return drawNum; }
 		void Draw();
 		void SetMaxNum(const int num) { maxNum = num; }
 	private:
@@ -53,12 +78,12 @@ private:
 		Sprite2D numberSprite[NUMBER_DIGIT];
 		static Texture numberTexture;
 
-		Vector2 scale = 0;
+		ResultData resultData;
+
 		FreamTimer addStartTimer;
-		float subAlpha = 100.0f;
-		int drawTime = 0;
-		Vector2 position = 0;
+		int drawNum = 0;
 		int maxNum = 0;
+		bool processEnd = false;
 	};
 
 	ResultState resultState = ResultState::MOVE_RESULT;
@@ -71,7 +96,8 @@ private:
 	//åªç›ï`âÊÇ≥ÇÍÇƒÇ¢ÇÈÉ^ÉCÉÄ
 	NumberData timeNumberData;
 
-
+	//ì|ÇµÇΩêî
+	NumberData enemyDeadCountData;
 
 
 	static Sprite2D rankSprite;
@@ -93,7 +119,9 @@ private:
 
 
 public:
-	GameClear():timeNumberData(Vector2(120, 430)){}
+	GameClear():
+		timeNumberData(Vector2(120, 430))
+		, enemyDeadCountData(Vector2(120, 330)){}
 	~GameClear() {}
 
 	void Initialize();

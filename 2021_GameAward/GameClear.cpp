@@ -36,7 +36,7 @@ const int GameClear::B_RUNK_TIME[5] =
 const Vector2 GameClear::NumberData::NUMBER_MIN_SCALE = 2.0f;
 const Vector2 GameClear::NumberData::NUMBER_MAX_SCALE = NUMBER_MIN_SCALE + 3.0f;
 const float GameClear::NumberData::NUMBER_SCALLING_SPEED = 0.3f;
-const float GameClear::NumberData::NUMBER_ADD_START_TIME = 60 * 0.5f;
+const int GameClear::NumberData::NUMBER_ADD_START_TIME = 60 * 0.5f;
 Texture GameClear::NumberData::numberTexture;
 
 int GameClear::stageNum = 0;
@@ -86,7 +86,10 @@ void GameClear::Initialize()
 
 	rankFreamPosition = RANK_FREAM_STOP_POSITION + Vector2(0, -400);
 
-	timeNumberData.SetMaxNum(40);
+	timeNumberData.SetMaxNum(clearTime);
+	enemyDeadCountData.SetMaxNum(Enemy::GetDeadCount());
+
+
 }
 
 void GameClear::Update()
@@ -128,15 +131,18 @@ void GameClear::Update()
 		else
 		{
 			enemyModel.SetPosition(ENEMY_STOP_POSITION, 0);
-			NextState(40, ResultState::ADD_TIME);
+			NextState(40, ResultState::ADD_ENEMY_VALUE);
 		}
 		break;
 	case GameClear::ResultState::ADD_ENEMY_VALUE:
+		if (enemyDeadCountData.ProcessEnd()) NextState(40, ResultState::ADD_TIME);
+		enemyDeadCountData.Update();
+
 		break;
 	case GameClear::ResultState::ADD_TIME:
 		
-		if(timeNumberData.AddEnd()) NextState(40, ResultState::PROCESS_END);
-		else timeNumberData.Update();
+		if(timeNumberData.ProcessEnd()) NextState(40, ResultState::PROCESS_END);
+		timeNumberData.Update();
 
 		//ÉâÉìÉNåàíË
 		if (timeNumberData.GetDrawTime() < S_RUNK_TIME[stageNum])
@@ -193,20 +199,8 @@ void GameClear::Draw()
 
 	//É^ÉCÉÄ
 	timeNumberData.Draw();
-
 	//ì|ÇµÇΩêî
-	/*drawStr = std::to_string(Enemy::GetDeadCount());
-	keta = drawStr.size();
-	for (int i = 0; i < keta; i++)
-	{
-		std::string str = drawStr.substr(keta - 1 - i, 1);
-		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (timeScale.x * 1.2f) * (i + 1) - 120, 320);
-
-		int n = atoi(str.c_str());
-		enemyDeadCountSprite[i].SetPosition(pos);
-		enemyDeadCountSprite[i].SelectDrawAreaDraw(Vector2(n * 80, 0), Vector2(n * 80 + 80, 80), &numberTexture);
-
-	}*/
+	enemyDeadCountData.Draw();
 
 
 	//ÉâÉìÉN
@@ -230,60 +224,58 @@ Scene* GameClear::GetNextScene()
 }
 
 GameClear::NumberData::NumberData(const Vector2& pos) :
-	scale(NUMBER_MAX_SCALE),
-	subAlpha(100.0f),
-	drawTime(0),
-	position(pos)
+	resultData(pos, NUMBER_MIN_SCALE, NUMBER_MAX_SCALE, NUMBER_SCALLING_SPEED)
+	, drawNum(0)
 {
 	for (int i = 0; i < NUMBER_DIGIT; i++)
 	{
 		numberSprite[i].CreateSprite();
+		numberSprite[i].SetScale(0);
 	}
-	numberSprite[0].SetScale(scale);
-	for (int i = 1; i < NUMBER_DIGIT; i++)
-	{
-		numberSprite[i].SetScale(NUMBER_MIN_SCALE);
-	}
-	numberSprite[0].SetSubColor(Color(0, 0, 0, Color::ToPar(subAlpha)));
+	
 
 }
 
 void GameClear::NumberData::Update()
 {
-	//èkè¨
-	if (scale.x >= NUMBER_MIN_SCALE.x)
-	{
-		scale -= NUMBER_SCALLING_SPEED;
-		numberSprite[0].SetScale(scale);
+	resultData.Update();
 
-		float alphaDecNum = 100 / ((NUMBER_MAX_SCALE.x - NUMBER_MIN_SCALE.x) / NUMBER_SCALLING_SPEED);
-		subAlpha -= alphaDecNum;
-		numberSprite[0].SetSubColor(Color(0, 0, 0, Color::ToPar(subAlpha)));
+	for (int i = 0; i < NUMBER_DIGIT; i++)
+	{
+		numberSprite[i].SetScale(resultData.GetScale());
 	}
-	else
-	{
-		numberSprite[0].SetScale(NUMBER_MIN_SCALE);
-		numberSprite[0].SetSubColor(Color(0, 0, 0, 0));
+	numberSprite[0].SetSubColor(Color(0, 0, 0, Color::ToPar(resultData.GetSubAlpha())));
 
-		addStartTimer.SetStopFlag(false);
-		if (addStartTimer.GetTime() >= NUMBER_ADD_START_TIME)
+	if (resultData.GetProcessEnd())
+	{
+		if (addStartTimer.GetTime() == NUMBER_ADD_START_TIME)
 		{
 			addStartTimer.SetStopFlag(true);
-			//ëùâ¡
-			if (drawTime != clearTime)drawTime++;
-			 
+
+			if (!ProcessEnd()) drawNum++;
+		}
+		else
+		{
+			addStartTimer.SetStopFlag(false);
 		}
 	}
 }
 
+bool GameClear::NumberData::ProcessEnd()
+{
+	if (addStartTimer.GetTime() == NUMBER_ADD_START_TIME
+		&& maxNum == drawNum) return true;
+	return false;
+}
+
 void GameClear::NumberData::Draw()
 {
-	std::string drawStr = std::to_string(drawTime);
+	std::string drawStr = std::to_string(drawNum);
 	int keta = drawStr.size();
 	for (int i = 0; i < keta; i++)
 	{
 		std::string str = drawStr.substr(keta - 1 - i, 1);
-		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (scale.x * 1.2f) * (i + 1) - position.x, position.y);
+		Vector2 pos = Vector2(Game::WIN_WIDTH / 2 + 20 * keta - 40.0f * (resultData.GetScale().x * 1.2f) * (i + 1) - resultData.GetPosition().x, resultData.GetPosition().y);
 
 		int n = atoi(str.c_str());
 		numberSprite[i].SetPosition(pos);
@@ -301,3 +293,21 @@ void GameClear::NumberData::LoadTexture()
 
 }
 
+void GameClear::ResultData::Update()
+{
+	if (scale.x > minScale.x)
+	{
+		scale -= scalingSpeed;
+		
+
+		float alphaDecNum = 100 / ((maxScale.x - minScale.x) / scalingSpeed);
+		subAlpha -= alphaDecNum;
+		
+	}
+	else
+	{
+		scale = minScale;
+		subAlpha = 0.0f;
+		processEnd = true;
+	}
+}
