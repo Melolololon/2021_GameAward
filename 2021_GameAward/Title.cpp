@@ -169,7 +169,7 @@ Scene* Title::GetNextScene()
 	if (nextSceneTutorial) 
 	{
 		//nextSceneTutorial = false;
-		Play::SetTutorialState(Play::TutorialState::TUTORIAL_STATE_SHOT);
+		Play::SetTutorialState(Play::TutorialState::TUTORIAL_STATE_MOVE);
 		return new Play();
 	}
 	return new StageSelect();

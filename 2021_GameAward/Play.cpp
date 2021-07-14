@@ -34,14 +34,23 @@ std::vector<Vector3> Play::blockPositions;
 std::vector<Vector3> Play::blockScales;
 int Play::stageNum = 0;
 
+const Vector2 Play::START_TUTORIAL_SNAKE_POSITION = Vector2(-1300, 400);
+const Vector2 Play::STOP_TUTORIAL_SNAKE_POSITION = Vector2(-400, 400);
 #pragma region スプライト
 
 Sprite2D Play::tutorialMessageSpr;
 Texture Play::tutorialMessageTex[4];
+Sprite2D Play::tutorialSnakeSpr;
+Texture Play::tutorialSnakeTex;
+
+
 Sprite2D Play::tutorialSkipSpr;
 Texture Play::tutorialSkipTex; 
 Sprite2D Play::tutorialNextSpr;
 Texture Play::tutorialNextTex;
+
+Sprite2D Play::buttonSpr[3];
+Texture Play::buttonTex;
 
 Sprite2D Play::arrowSprite;
 Texture Play::arrowTexture;
@@ -96,12 +105,18 @@ void Play::LoadResources()
 
 #endif // _DEBUG
 
+
 	tutorialMessageSpr.CreateSprite();
-	tutorialMessageSpr.SetPosition(Vector2(40, 480));
+	tutorialMessageSpr.SetScale(0.6f);
+
+	tutorialSnakeSpr.CreateSprite();
+	tutorialSnakeSpr.SetScale(Vector2(0.6f,0.5f));
+	
 	for(int i = 0; i < 4;i++)
 	{
-		tutorialMessageTex[i].LoadSpriteTexture("Resources/Texture/Tutorial/tutorial_" + std::to_string(i + 1) + ".png");
+		tutorialMessageTex[i].LoadSpriteTexture("Resources/Texture/Tutorial/message_" + std::to_string(i) + ".png");
 	}
+	tutorialSnakeTex.LoadSpriteTexture("Resources/Texture/Tutorial/tuto_frame.png");
 
 	tutorialSkipSpr.CreateSprite();
 	tutorialSkipSpr.SetPosition(Vector2(878, 610));
@@ -112,6 +127,13 @@ void Play::LoadResources()
 	tutorialNextSpr.SetPosition(Vector2(860, 520));
 	tutorialNextSpr.SetScale(Vector2(0.8f, 0.8f));
 	tutorialNextTex.LoadSpriteTexture("Resources/Texture/Tutorial/tutorialNext.png");
+
+	for(int i = 0; i < _countof(buttonSpr);i++)
+	{
+		buttonSpr[i].CreateSprite();
+	}
+	buttonTex.LoadSpriteTexture("Resources/Texture/Tutorial/ButtonAnim.png");
+
 
 	/*Library::createSprite(&arrowSprite);
 	arrowTexture = Library::loadTexture(L"Resources/Texture/arrow.png");*/
@@ -157,7 +179,6 @@ void Play::LoadResources()
 
 void Play::Initialize()
 {
-
 	player = std::make_shared<Player>();
 	ObjectManager::GetInstance()->AddObject(player);
 	pauseSnake = std::make_shared<Player>(0); 
@@ -203,6 +224,7 @@ void Play::Initialize()
 
 	Library::PlayLoadSound("Play");
 	isPause = false;
+
 
 	if (tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
@@ -693,7 +715,9 @@ void Play::Tutorial()
 	if (playSceneState != PlaySceneState::PLAY_SCENE_PLAY
 		|| tutorialState == TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)return;
 
-	bool skipTimeOver = gameTime.GetTime() >= 60 * 1;
+	bool skipTimeOver = tutorialSnakeLeft
+		&& tutorialSnakePosition.x >= STOP_TUTORIAL_SNAKE_POSITION.x;
+
 	//スキップ処理
 	if(XInputManager::GetPadConnectedFlag(1)
 		&& skipTimeOver)
@@ -704,8 +728,8 @@ void Play::Tutorial()
 		}
 	}
 
-	//次へ進める処理
-	auto GetNextTutorialScene = [&skipTimeOver]()
+	//次へ進めるかどうか判定
+	auto GetNextTutorialSceneFlag = [&skipTimeOver]()
 	{
 		if (XInputManager::GetPadConnectedFlag(1)
 			&& skipTimeOver)
@@ -715,14 +739,15 @@ void Play::Tutorial()
 		return false;
 	};
 
+
 	switch (tutorialState)
 	{
 	case Play::TUTORIAL_STATE_MOVE:
 		
-		if(GetNextTutorialScene())
+		if(GetNextTutorialSceneFlag())
 		{
 			tutorialState = TUTORIAL_STATE_SHOT;
-
+			tutorialSnakeLeft = false;
 			//敵追加
 			//ObjectManager::GetInstance()->AddObject(tutorialEnemy);
 		}
@@ -730,10 +755,10 @@ void Play::Tutorial()
 		break;
 
 	case Play::TUTORIAL_STATE_SHOT:
-		if (GetNextTutorialScene())
+		if (GetNextTutorialSceneFlag())
 		{
 			tutorialState = TUTORIAL_STATE_LOCK;
-
+			tutorialSnakeLeft = false;
 			//祠
 			targetObjects.push_back(std::make_shared<TargetObject>(Vector3(0, 0, 0)));
 			ObjectManager::GetInstance()->AddObject(targetObjects[0]);
@@ -741,14 +766,15 @@ void Play::Tutorial()
 		break;
 
 	case Play::TUTORIAL_STATE_LOCK:
-		if (GetNextTutorialScene())
+		if (GetNextTutorialSceneFlag())
 		{
 			tutorialState = TUTORIAL_STATE_TWIST;
+			tutorialSnakeLeft = false;
 		}
 		break;
 
 	case Play::TUTORIAL_STATE_TWIST:
-		if (GetNextTutorialScene())
+		if (GetNextTutorialSceneFlag())
 		{
 			Fade::GetInstance()->FadeStart();
 		}
@@ -757,6 +783,30 @@ void Play::Tutorial()
 
 	//if (DirectInput::KeyTrigger(DIK_A))
 	//	isEnd = true;
+	
+	//動かす
+	tutorialSnakePosition.x += TUTORIAL_SNAKE_SPEED;
+	
+	
+	//右行ったら戻す
+	float snakeResetPos = 1600.0f;
+	if (tutorialSnakePosition.x >= snakeResetPos)
+	{
+		tutorialSnakePosition.x = START_TUTORIAL_SNAKE_POSITION.x;
+		tutorialSnakeLeft = true;
+		currentMessageNum++;
+	}
+
+	//停止&固定
+	if(tutorialSnakeLeft
+		&& tutorialSnakePosition.x >= STOP_TUTORIAL_SNAKE_POSITION.x)
+	{
+		tutorialSnakePosition.x = STOP_TUTORIAL_SNAKE_POSITION.x;
+	}
+	
+	tutorialMessageSpr.SetPosition(tutorialSnakePosition + Vector2(530, 110));
+	tutorialSnakeSpr.SetPosition(tutorialSnakePosition);
+
 	
 }
 
@@ -893,7 +943,9 @@ void Play::Draw()
 	if(playSceneState == PlaySceneState::PLAY_SCENE_PLAY
 		&& tutorialState != TutorialState::TUTORIAL_STATE_NOT_TUTORIAL)
 	{
-		tutorialMessageSpr.Draw(&tutorialMessageTex[tutorialState - 1]);
+		tutorialSnakeSpr.Draw(&tutorialSnakeTex);
+		tutorialMessageSpr.Draw(&tutorialMessageTex[currentMessageNum]);
+		
 		tutorialSkipSpr.Draw(&tutorialSkipTex);
 		tutorialNextSpr.Draw(&tutorialNextTex);
 	}

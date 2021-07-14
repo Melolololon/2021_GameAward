@@ -93,12 +93,30 @@ private:
 #pragma region スプライト関係
 
 #pragma region チュートリアル
+	
+	//ボタン
+	static Sprite2D buttonSpr[3];
+	static Texture buttonTex;
+
+	//蛇
+	static Sprite2D tutorialSnakeSpr;
+	static Texture tutorialSnakeTex;
+	static const Vector2 START_TUTORIAL_SNAKE_POSITION;
+	static const Vector2 STOP_TUTORIAL_SNAKE_POSITION;
+	Vector2 tutorialSnakePosition = START_TUTORIAL_SNAKE_POSITION;
+	const float TUTORIAL_SNAKE_SPEED = 20.0f;
+	bool tutorialSnakeLeft = true;
+
+	//メッセージ
 	static Sprite2D tutorialMessageSpr;
 	static Texture tutorialMessageTex[4];
+	int currentMessageNum = 0;
+
 	static Sprite2D tutorialSkipSpr;
 	static Texture tutorialSkipTex;
 	static Sprite2D tutorialNextSpr;
 	static Texture tutorialNextTex;
+
 
 	std::shared_ptr<MoveEnemy>tutorialEnemy;
 #pragma endregion
