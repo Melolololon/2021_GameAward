@@ -17,7 +17,6 @@ private:
 	static FreamTimer titleFreamTimer[TITLE_CHAR_NUM];
 	static FreamTimer titleTopStopTimer;
 	static Vector2 titleSpritePosition[TITLE_CHAR_NUM];
-	static const int TITLE_SPRITE_STOP_TIME_INTERVAL = 20;
 	bool titleSlowMove[TITLE_CHAR_NUM];
 	static const float TITLE_UP_DOWN_SPEED;
 

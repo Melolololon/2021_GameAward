@@ -7,7 +7,6 @@
 
 std::unique_ptr<Sprite2D>Title::titleSprite[TITLE_CHAR_NUM];
 std::unique_ptr<Texture>Title::titleTexture;
-const Vector2 Title::TITLE_SCALE = 0.8f;
 
 std::unique_ptr<Sprite2D>Title::pushButtonSprite;
 std::unique_ptr<Texture>Title::pushButtonTexture;
@@ -31,7 +30,7 @@ void Title::LoadResources()
 	{
 		titleSprite[i] = std::make_unique<Sprite2D>();
 		titleSprite[i]->CreateSprite();
-		titleSprite[i]->SetScale(TITLE_SCALE);
+		titleSprite[i]->SetScale(1.0f);
 	}
 	titleTexture = std::make_unique<Texture>();
 	titleTexture->LoadSpriteTexture("Resources/Texture/MS_Title/title.png");
@@ -39,9 +38,10 @@ void Title::LoadResources()
 
 	pushButtonSprite = std::make_unique<Sprite2D>();
 	pushButtonSprite->CreateSprite();
-	pushButtonSprite->SetPosition({ 390,180 });
+	pushButtonSprite->SetScale(0.8f);
+	pushButtonSprite->SetPosition({ 140,380 });
 	pushButtonTexture = std::make_unique<Texture>();
-	pushButtonTexture->LoadSpriteTexture("Resources/Texture/MS_Title/press_X_button.png");
+	pushButtonTexture->LoadSpriteTexture("Resources/Texture/MS_Title/titleStart.png");
 
 	titleBackSpr.CreateSprite();
 	titleBackTex.LoadSpriteTexture("Resources/Texture/MS_Title/titleBackTex.png");
@@ -71,12 +71,12 @@ void Title::Initialize()
 void Title::Update()
 {
 
-	const float titleTextureSize = titleTexture->GetTextureSize().x / TITLE_CHAR_NUM;
-	float titleSpeed = 10.0f;
-	float stopPosX = 170;
+	const float TITLE_TEX_SIZE_X = titleTexture->GetTextureSize().x / TITLE_CHAR_NUM;
+	const float TITLE_SPEED = 10.0f;
+	const float TITLE_STOP_POS_X = 130;
 	
 	bool stopPosTopChar = false;
-	if (titleSpritePosition[0].x <= stopPosX)
+	if (titleSpritePosition[0].x <= TITLE_STOP_POS_X)
 	{
 		stopPosTopChar = true;
 		titleTopStopTimer.SetStopFlag(false);
@@ -90,7 +90,7 @@ void Title::Update()
 
 		//‰æ–Ê“à‚É‚Í‚¢‚Á‚½‚çã‰ºˆÚ“®
 		if (titleSpritePosition[i].x <= 1280 &&
-			titleSpritePosition[i].x >= stopPosX)
+			titleSpritePosition[i].x >= TITLE_STOP_POS_X)
 		{
 			sinY = sin(titleFreamTimer[i].GetTime() * TITLE_UP_DOWN_SPEED) * 130.0f;
 			titleFreamTimer[i].SetStopFlag(false);
@@ -115,7 +115,7 @@ void Title::Update()
 
 		if (!stopPosTopChar) 
 		{
-			titleSpritePosition[i].x -= titleSpeed;
+			titleSpritePosition[i].x -= TITLE_SPEED;
 		}
 
 
