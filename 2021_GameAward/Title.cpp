@@ -5,12 +5,17 @@
 #include"Play.h"
 #include"StageSelect.h"
 
-std::unique_ptr<Sprite2D>Title::titleSprite[7];
+std::unique_ptr<Sprite2D>Title::titleSprite[TITLE_CHAR_NUM];
 std::unique_ptr<Texture>Title::titleTexture;
+const Vector2 Title::TITLE_SCALE = 0.8f;
+
 std::unique_ptr<Sprite2D>Title::pushButtonSprite;
 std::unique_ptr<Texture>Title::pushButtonTexture;
-FreamTimer Title::titleFreamTimer[7];
-Vector2 Title::titleSpritePosition[7];
+FreamTimer Title::titleFreamTimer[TITLE_CHAR_NUM];
+FreamTimer Title::titleTopStopTimer;
+Vector2 Title::titleSpritePosition[TITLE_CHAR_NUM];
+
+const float Title::TITLE_UP_DOWN_SPEED = 0.05f;
 
 Sprite2D Title::titleBackSpr;
 Texture Title::titleBackTex;
@@ -26,10 +31,10 @@ void Title::LoadResources()
 	{
 		titleSprite[i] = std::make_unique<Sprite2D>();
 		titleSprite[i]->CreateSprite();
-		titleSprite[i]->SetScale({ 3,3 });
+		titleSprite[i]->SetScale(TITLE_SCALE);
 	}
 	titleTexture = std::make_unique<Texture>();
-	titleTexture->LoadSpriteTexture("Resources/Texture/MS_Title/MS_Tex.png");
+	titleTexture->LoadSpriteTexture("Resources/Texture/MS_Title/title.png");
 
 
 	pushButtonSprite = std::make_unique<Sprite2D>();
@@ -48,13 +53,16 @@ void Title::LoadResources()
 
 void Title::Initialize()
 {
-		
-	const float titleTextureSize = titleTexture->GetTextureSize().y;
+
+	const float titleTextureSize = titleTexture->GetTextureSize().x / TITLE_CHAR_NUM;
 	for (int i = 0; i < _countof(titleSpritePosition); i++)
 	{
 		titleSlowMove[i] = false;
-		titleSpritePosition[i] = { 1280 + i * titleTextureSize * 3 ,0 };
+		titleSpritePosition[i] = { 1280 + i * titleTextureSize ,0 };
+
 	}
+
+
 
 	//BGMÄ¶
 	Library::PlayLoadSound("Title");
@@ -63,59 +71,65 @@ void Title::Initialize()
 void Title::Update()
 {
 
-	const float titleTextureSize = titleTexture->GetTextureSize().y;
+	const float titleTextureSize = titleTexture->GetTextureSize().x / TITLE_CHAR_NUM;
 	float titleSpeed = 10.0f;
-	for (int i = 0; i < _countof(titleSprite); i++) 
+	float stopPosX = 170;
+	
+	bool stopPosTopChar = false;
+	if (titleSpritePosition[0].x <= stopPosX)
 	{
-
+		stopPosTopChar = true;
+		titleTopStopTimer.SetStopFlag(false);
+	}
+	
+	for (int i = 0; i < _countof(titleSprite); i++)
+	{
 		float sinY = 0.0f;
-		//sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
-
 		float titleHoseiPosY = 100;
-		float stopPosX = 230 + titleTextureSize * 3 * i;
-		if (titleSpritePosition[i].x <= 1280 && 
+		
+
+		//‰æ–Ê“à‚É‚Í‚¢‚Á‚½‚çã‰ºˆÚ“®
+		if (titleSpritePosition[i].x <= 1280 &&
 			titleSpritePosition[i].x >= stopPosX)
 		{
-			sinY = sin(titleFreamTimer[i].GetTime() * 0.1f) * 60.0f;
+			sinY = sin(titleFreamTimer[i].GetTime() * TITLE_UP_DOWN_SPEED) * 130.0f;
 			titleFreamTimer[i].SetStopFlag(false);
 		}
-		if (titleSpritePosition[i].x > stopPosX)
-			titleSpritePosition[i].x -= titleSpeed;
-		 
-
-		if (titleSpritePosition[i].y >= -titleSpeed + titleHoseiPosY
-			&& titleSpritePosition[i].y <= titleSpeed + titleHoseiPosY
-			&& !titleSlowMove[i]
-			&& titleSpritePosition[i].x <= stopPosX)
+	
+		float sinCenterLinePosY = titleHoseiPosY;
+		if (stopPosTopChar
+			&& LibMath::Difference(titleHoseiPosY, titleSpritePosition[i].y,3.0f)
+			&& !titleSlowMove[i])
 		{
-			//titleSpritePosition[i].y = titleHoseiPosY;
-			//titleFreamTimer[i].SetStopFlag(true);
 			if (i == 0) 
 			{
-				
 				titleSlowMove[i] = true;
 				titleFreamTimer[i].ResetTime();
 			}
-			else
+			else if(titleSlowMove[i - 1])
 			{
-				if (titleSlowMove[i - 1]
-					&& !titleSlowMove[i])
-				{
-					titleSlowMove[i] = true;
-					titleFreamTimer[i].ResetTime();
-				}
+				titleSlowMove[i] = true;
+				titleFreamTimer[i].ResetTime();
 			}
 		}
 
-		
+		if (!stopPosTopChar) 
+		{
+			titleSpritePosition[i].x -= titleSpeed;
+		}
 
-		if(titleSlowMove[i])
-	    	sinY = sin(titleFreamTimer[i].GetTime() * 0.05f) * 40.0f;
+
+		if (titleSlowMove[i])
+		{
+			sinY = sin(titleFreamTimer[i].GetTime() * TITLE_UP_DOWN_SPEED) * 40.0f;
+		}
+		
 
 		titleSpritePosition[i].y = titleHoseiPosY + sinY;
 		titleSprite[i]->SetPosition(titleSpritePosition[i]);
 
 	}
+
 
 	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_A_BUTTON, 1)
@@ -123,7 +137,7 @@ void Title::Update()
 		&& XInputManager::GetPadConnectedFlag(1);
 	if (padStart)
 	{
-		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT) 
+		if (Fade::GetInstance()->GetFadeState() == Fade::FADE_NOT)
 		{
 			Fade::GetInstance()->FadeStart();
 			Library::PlaySoundEveryLoad("Resources/Sound/SE/SystemSE/SneakTitleSe.wav");
@@ -134,20 +148,21 @@ void Title::Update()
 		isEnd = true;
 
 }
-
 void Title::Draw()
 {
 	titleBackSpr.Draw(&titleBackTex);
 
-	const float titleTextureSize = titleTexture->GetTextureSize().y;
-	for (int i = 0; i < _countof(titleSprite); i++)
+	const Vector2 titleTextureSize = Vector2(titleTexture->GetTextureSize().x / TITLE_CHAR_NUM, titleTexture->GetTextureSize().y);
+	
+	for (int i = 0; i < _countof(titleSprite); i++) 
+	{
 		titleSprite[i]->SelectDrawAreaDraw
 		(
-			{ titleTextureSize * i,0 }, 
-			{ titleTextureSize * (i + 1),titleTextureSize }, 
+			Vector2(titleTextureSize.x * i, 0),
+			Vector2(titleTextureSize.x * (i + 1), titleTextureSize.y),
 			titleTexture.get()
 		);
-	
+	}
 	pushButtonSprite->Draw(pushButtonTexture.get());
 
 	Fade::GetInstance()->Draw();

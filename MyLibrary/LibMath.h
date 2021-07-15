@@ -111,7 +111,7 @@ public:
 
 
 	/// <summary>
-	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
+	/// num1とnum2の値の差を求め、差が基準の値より少なかったらtrueを返します
 	/// </summary>
 	/// <param name="num1">値1</param>
 	/// <param name="num2">値2</param>
