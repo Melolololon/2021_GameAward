@@ -249,6 +249,7 @@ void Library::Finalize()
 		DestroyWindow(hwnd);
 	}
 
+
 	UnregisterClass(w.lpszClassName, w.hInstance);
 }
 

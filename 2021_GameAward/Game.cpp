@@ -106,6 +106,8 @@ void Game::Initialize()
 	SceneManager::GetInstace()->SetStartScene(new Title());
 #pragma endregion
 
+	
+
 }
 
 

@@ -48,6 +48,17 @@ Audio::Audio()
 
 Audio::~Audio()
 {
+	for (auto& p : pLoadSourceVoices)
+	{
+		p.second->Stop(0);
+	}
+	for(auto& buff : pBuffers)
+	{
+		delete[] buff.second;
+		int z = 0;
+	}
+	
+	
 }
 
 
@@ -163,6 +174,8 @@ void Audio::LoadSound(const char* path, std::string name, bool loop)
 	else
 		buf.LoopCount = 0;
 	
+
+	pBuffers.emplace(name, pBuffer);
 
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	pLoadSourceVoices.emplace(name, pSourceVoice);

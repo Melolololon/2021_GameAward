@@ -35,7 +35,7 @@ private:
 	//ƒTƒEƒ“ƒh‚Ìu_map
 	std::unordered_map<std::string, IXAudio2SourceVoice*> pLoadSourceVoices;
 
-
+	std::unordered_map<std::string, char*>pBuffers;
 public:
 	Audio();
 	~Audio();
