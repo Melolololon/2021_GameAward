@@ -14,6 +14,10 @@ private:
 
 	static std::unique_ptr<Sprite2D>pushButtonSprite;
 	static std::unique_ptr<Texture>pushButtonTexture;
+	float pushButtonSubAlpha = 0.0f;
+	FreamTimer pushButtonTimer;
+	static const int PUSH_BUTTON_SUB_ALPHA_MAX = 60 * 3;
+
 	static FreamTimer titleFreamTimer[TITLE_CHAR_NUM];
 	static FreamTimer titleTopStopTimer;
 	static Vector2 titleSpritePosition[TITLE_CHAR_NUM];
@@ -24,6 +28,7 @@ private:
 	static Texture titleBackTex;
 
 	static bool nextSceneTutorial;
+
 public:
 	Title();
 	~Title();

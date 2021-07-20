@@ -62,7 +62,8 @@ void Title::Initialize()
 
 	}
 
-
+	pushButtonTimer.SetMaxTime(PUSH_BUTTON_SUB_ALPHA_MAX);
+	pushButtonTimer.SetStopFlag(false);
 
 	//BGMçƒê∂
 	Library::PlayLoadSound("Title");
@@ -130,6 +131,17 @@ void Title::Update()
 
 	}
 
+	const float PUSH_BUTTON_ALPHA_SPEED = 100.0 / (PUSH_BUTTON_SUB_ALPHA_MAX / 2);
+	if(pushButtonTimer.GetTime() < PUSH_BUTTON_SUB_ALPHA_MAX / 2)
+	{
+		pushButtonSubAlpha += PUSH_BUTTON_ALPHA_SPEED;
+	}
+	else
+	{
+		pushButtonSubAlpha -= PUSH_BUTTON_ALPHA_SPEED;
+	}
+	pushButtonSprite->SetSubColor(Color(0, 0, 0, Color::ToPar(pushButtonSubAlpha)));
+
 
 	bool padStart = (XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_X_BUTTON, 1)
 		|| XInputManager::ButtonTrigger(XInputManager::XInputButton::XINPUT_A_BUTTON, 1)
@@ -144,8 +156,9 @@ void Title::Update()
 		}
 	}
 
-	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
-		isEnd = true;
+
+
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag()) isEnd = true;
 
 }
 void Title::Draw()
