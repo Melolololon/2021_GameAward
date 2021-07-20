@@ -4,6 +4,7 @@
 #include"Texture.h"
 #include<memory>
 #include"Player.h"
+#include"TargetObject.h"
 class GameOver :
     public Scene
 {
@@ -13,9 +14,17 @@ private:
 	static Sprite2D gameOverSpr;
 	static Texture gameOverTex;
 
+	
+	static Sprite2D yesSpr;
+	static Texture yesTex;
+	static Sprite2D noSpr;
+	static Texture noTex;
+
 	std::shared_ptr<Player>player;
-	Vector3 yesPos = Vector3(-41, 0, -6);
-	Vector3 noPos = Vector3(0, 0, -6);
+	Vector3 playerYesPos = Vector3(-39, 0, -6);
+	Vector3 playerNoPos = Vector3(4, 0, -6);
+
+	std::shared_ptr<TargetObject> targetObject[2];
 public:
 	GameOver() {}
 	~GameOver() {}

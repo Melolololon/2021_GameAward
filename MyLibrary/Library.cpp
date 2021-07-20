@@ -78,7 +78,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	(
 		windowName,
 		windowName,
-		WS_OVERLAPPEDWINDOW,
+		WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		windowWidth,

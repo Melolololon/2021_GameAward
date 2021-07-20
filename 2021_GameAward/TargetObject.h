@@ -61,5 +61,6 @@ public:
 
 	void SetPosition(const Vector3& pos);
 
+	void hpZero() { hp = 0; }
 };
 

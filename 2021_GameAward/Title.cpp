@@ -4,6 +4,7 @@
 #include"Fade.h"
 #include"Play.h"
 #include"StageSelect.h"
+#include"GameOver.h"
 
 std::unique_ptr<Sprite2D>Title::titleSprite[TITLE_CHAR_NUM];
 std::unique_ptr<Texture>Title::titleTexture;
@@ -194,6 +195,10 @@ void Title::Finitialize()
 
 Scene* Title::GetNextScene()
 {
+	//ƒeƒXƒg
+	return new GameOver();
+
+
 	if (nextSceneTutorial) 
 	{
 		//nextSceneTutorial = false;

@@ -8,20 +8,37 @@
 
 Sprite2D GameOver::gameOverSpr;
 Texture GameOver::gameOverTex;
+Sprite2D GameOver::yesSpr;
+Texture GameOver::yesTex;
+Sprite2D GameOver::noSpr;
+Texture GameOver::noTex;
+
 bool GameOver::selectEnd = false;
 void GameOver::LoadResources() 
 {
 	gameOverSpr.CreateSprite();
-	gameOverTex.LoadSpriteTexture("Resources/Texture/GameOver.png");
+	gameOverTex.LoadSpriteTexture("Resources/Texture/GameOver/GameOverBack.png");
+
+	yesSpr.CreateSprite();
+	yesSpr.SetPosition(Vector2(160,300));
+	yesSpr.SetScale(0.6f);
+	yesTex.LoadSpriteTexture("Resources/Texture/GameOver/Continue.png");
+	noSpr.CreateSprite();
+	noSpr.SetPosition(Vector2(590,300));
+	noSpr.SetScale(0.6f);
+	noTex.LoadSpriteTexture("Resources/Texture/GameOver/Cancel.png");
 }
 
 void GameOver::Initialize()
 {
 	selectEnd = false;
-	player = std::make_shared<Player>(yesPos);
+	player = std::make_shared<Player>(playerYesPos);
 	ObjectManager::GetInstance()->AddObject(player);
 
-
+	targetObject[0] = std::make_shared<TargetObject>(Vector3(-21, 0, -16));
+	targetObject[1] = std::make_shared<TargetObject>(Vector3(21, 0, -16));
+	ObjectManager::GetInstance()->AddObject(targetObject[0]);
+	ObjectManager::GetInstance()->AddObject(targetObject[1]);
 
 #pragma region ƒJƒƒ‰ˆÚ“®
 	Vector3 cameraPosition = Vector3(0, 50, -2);
@@ -38,6 +55,8 @@ void GameOver::Update()
 {
 	ObjectManager::GetInstance()->Update();
 
+
+
 	if (XInputManager::GetPadConnectedFlag(1))
 	{
 		float stickAngle = XInputManager::LeftStickAngle(1);
@@ -47,7 +66,7 @@ void GameOver::Update()
 			|| stickAngle >= 330) 
 		{
 			returnStageSelect = true;
-			player->SetModelMoveVector(noPos);
+			player->SetModelMoveVector(playerNoPos);
 		}
 	}
 
@@ -59,7 +78,7 @@ void GameOver::Update()
 			&& stickAngle <= 180)
 		{
 			returnStageSelect = false;
-			player->SetModelMoveVector(yesPos);
+			player->SetModelMoveVector(playerYesPos);
 		}
 	}
 
@@ -71,13 +90,15 @@ void GameOver::Update()
 		Fade::GetInstance()->FadeStart();
 	}
 
-	if (Fade::GetInstance()->GetSceneChangeTimingFlag())
-		isEnd = true;
+	if (Fade::GetInstance()->GetSceneChangeTimingFlag()) isEnd = true;
 }
 
 void GameOver::Draw()
 {
 	gameOverSpr.Draw(&gameOverTex);
+	yesSpr.Draw(&yesTex);
+	noSpr.Draw(&noTex);
+
 	ObjectManager::GetInstance()->Draw();
 	Fade::GetInstance()->Draw();
 }
