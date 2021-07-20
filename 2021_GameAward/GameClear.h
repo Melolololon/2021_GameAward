@@ -106,7 +106,7 @@ private:
 
 	//Œ‹‰Ê‚Ì˜g
 	static Sprite2D resultFreamSprite;
-	static Texture resultFreamTexture[5];
+	static Texture resultFreamTexture;
 	const Vector2 RESULT_FREAM_STOP_POSITION = Vector2(220, 80);
 	Vector2 resultFreamPosition = 0;
 	const float RESULT_FREAM_SPEED = 3.0f;
@@ -121,7 +121,7 @@ private:
 	static ObjModel enemyModel;
 	float enemyAngle = 0.0f;
 	const float ENEMY_ROT_SPEED = 1.0f;
-	const Vector3 ENEMY_STOP_POSITION = Vector3(-2.8f, 0.4f, 0);
+	const Vector3 ENEMY_STOP_POSITION = Vector3(-2.45f, 0.45f, 0);
 	Vector3 enemyPosition = 0;
 	const float ENEMY_MOVE_SPEED = 0.025f;
 
@@ -137,7 +137,7 @@ public:
 	GameClear() :
 		timeNumberData(Vector2(-30, 430))
 		, enemyDeadCountData(Vector2(-30, 260))
-		, rankResultData(Vector2(730, 290), 1.0f, 3.0f, 0.3f)
+		, rankResultData(Vector2(680, 290), 1.0f, 3.0f, 0.3f)
 		, crossResultData(Vector2(395, 290), 1.0f, 3.0f, 0.3f) {}
 	~GameClear() {}
 

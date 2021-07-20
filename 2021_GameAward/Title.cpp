@@ -195,8 +195,6 @@ void Title::Finitialize()
 
 Scene* Title::GetNextScene()
 {
-	//ƒeƒXƒg
-	return new GameOver();
 
 
 	if (nextSceneTutorial) 

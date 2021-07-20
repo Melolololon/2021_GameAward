@@ -275,6 +275,7 @@ void Play::Initialize()
 void Play::Update()
 {
 
+
 //#ifdef _DEBUG
 //
 //	stageNum = 1;
@@ -1074,6 +1075,8 @@ void Play::Finitialize()
 
 Scene* Play::GetNextScene()
 {
+	
+
 	if (playSceneState == PLAY_SCENE_GAMECLEAR) 
 	{
 		int drawNum = gameTime.GetTime() / 60;

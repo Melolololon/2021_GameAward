@@ -50,7 +50,7 @@ Sprite2D GameClear::rankSprite;
 Texture GameClear::rankTexture;
 
 Sprite2D GameClear::resultFreamSprite;
-Texture GameClear::resultFreamTexture[5];
+Texture GameClear::resultFreamTexture;
 
 Sprite2D GameClear::crossSprite;
 Texture GameClear::crossTexture;
@@ -81,32 +81,30 @@ void GameClear::LoadResources()
 
 	resultFreamSprite.CreateSprite();
 
-	for (int i = 0; i < 5; i++)
-	{
-		resultFreamTexture[i].LoadSpriteTexture("Resources/Texture/rankFream_" + std::to_string(i + 1) + ".png");
-	}
 
-	for(int y = 0; y < _countof(treeSprite);y++)
-	{
-		for (int x = 0; x < _countof(treeSprite[0]); x++) 
-		{
-			treeSprite[y][x].CreateSprite();
-			treeSprite[y][x].SetPosition(Vector2(180 * x - 150, 180 * y - 150));
-		}
-	}
-	for(int i = 0; i < _countof(treeTexture);i++)
-	{
-		treeTexture[i].LoadSpriteTexture("Resources/Texture/Tree" + std::to_string(i) + ".png");
-	}
+	resultFreamTexture.LoadSpriteTexture("Resources/Texture/resultFream.png");
+
+
+	//for(int y = 0; y < _countof(treeSprite);y++)
+	//{
+	//	for (int x = 0; x < _countof(treeSprite[0]); x++) 
+	//	{
+	//		treeSprite[y][x].CreateSprite();
+	//		treeSprite[y][x].SetPosition(Vector2(180 * x - 150, 180 * y - 150));
+	//	}
+	//}
+	//for(int i = 0; i < _countof(treeTexture);i++)
+	//{
+	//	treeTexture[i].LoadSpriteTexture("Resources/Texture/Tree" + std::to_string(i) + ".png");
+	//}
 }
 
 void GameClear::Initialize()
 {
-	enemyPosition = ENEMY_STOP_POSITION + Vector3(0, 3.0f, 0);
-	enemyModel.SetPosition(enemyPosition, 0);
-
+	enemyModel.SetPosition(ENEMY_STOP_POSITION, 0);
 
 	resultFreamPosition = RESULT_FREAM_STOP_POSITION + Vector2(0, -650);
+	resultFreamSprite.SetPosition(0);
 
 	timeNumberData.SetMaxNum(clearTime);
 	enemyDeadCountData.SetMaxNum(Enemy::GetDeadCount());
@@ -118,13 +116,13 @@ void GameClear::Initialize()
 	crossSprite.SetPosition(crossResultData.GetPosition());
 	crossSprite.SetScale(0);
 
-	for (int y = 0; y < _countof(treeSprite); y++)
+	/*for (int y = 0; y < _countof(treeSprite); y++)
 	{
 		for (int x = 0; x < _countof(treeSprite[0]); x++)
 		{
 			treeTextureNumber[y][x] = Random::GetRandomNumber(4);
 		}
-	}
+	}*/
 }
 
 void GameClear::Update()
@@ -145,7 +143,7 @@ void GameClear::Update()
 	{
 	case GameClear::ResultState::MOVE_RESULT:
 
-		if (resultFreamPosition.y <= RESULT_FREAM_STOP_POSITION.y) 
+	/*	if (resultFreamPosition.y <= RESULT_FREAM_STOP_POSITION.y) 
 		{
 			resultFreamPosition.y += RESULT_FREAM_SPEED;
 			resultFreamSprite.SetPosition(resultFreamPosition);
@@ -154,20 +152,21 @@ void GameClear::Update()
 		{
 			resultFreamSprite.SetPosition(RESULT_FREAM_STOP_POSITION);
 			NextState(40, ResultState::SET_ENEMY);
-		}
-
+		}*/
+		NextState(40, ResultState::SET_ENEMY);
 		break;
 	case GameClear::ResultState::SET_ENEMY:
-		if (enemyPosition.y >= ENEMY_STOP_POSITION.y)
-		{
-			enemyPosition.y -= ENEMY_MOVE_SPEED;
-			enemyModel.SetPosition(enemyPosition,0);
-		}
-		else
-		{
-			enemyModel.SetPosition(ENEMY_STOP_POSITION, 0);
-			NextState(40, ResultState::ADD_ENEMY_VALUE);
-		}
+		//if (enemyPosition.y >= ENEMY_STOP_POSITION.y)
+		//{
+		//	enemyPosition.y -= ENEMY_MOVE_SPEED;
+		//	enemyModel.SetPosition(enemyPosition,0);
+		//}
+		//else
+		//{
+		//	enemyModel.SetPosition(ENEMY_STOP_POSITION, 0);
+		//	NextState(40, ResultState::ADD_ENEMY_VALUE);
+		//}
+		NextState(10, ResultState::ADD_ENEMY_VALUE);
 		break;
 	case GameClear::ResultState::ADD_ENEMY_VALUE:
 		if (enemyDeadCountData.ProcessEnd()) NextState(40, ResultState::ADD_TIME);
@@ -236,17 +235,17 @@ void GameClear::Update()
 void GameClear::Draw()
 {
 	//–Ø
-	for (int y = 0; y < _countof(treeSprite); y++)
-	{
-		for (int x = 0; x < _countof(treeSprite[0]); x++)
-		{
-			treeSprite[y][x].Draw(&treeTexture[treeTextureNumber[y][x]]);
-		}
-	}
+	//for (int y = 0; y < _countof(treeSprite); y++)
+	//{
+	//	for (int x = 0; x < _countof(treeSprite[0]); x++)
+	//	{
+	//		treeSprite[y][x].Draw(&treeTexture[treeTextureNumber[y][x]]);
+	//	}
+	//}
 
 
 	//ƒtƒŒ[ƒ€
-	resultFreamSprite.Draw(&resultFreamTexture[stageNum]);
+	resultFreamSprite.Draw(&resultFreamTexture);
 
 
 
@@ -255,10 +254,16 @@ void GameClear::Draw()
 	//“|‚µ‚½”
 	enemyDeadCountData.Draw();
 	//Š|‚¯‚é
-	crossSprite.Draw(&crossTexture);
+	//crossSprite.Draw(&crossTexture);
 
 	//ƒ‰ƒ“ƒN
-	rankSprite.SelectDrawAreaDraw(Vector2(200 * (int)rank, 0), Vector2(200 * ((int)rank + 1), 200), &rankTexture);
+	float RANK_TEXTURE_SIZE_Y = rankTexture.GetTextureSize().y;
+	rankSprite.SelectDrawAreaDraw
+	(
+		Vector2(RANK_TEXTURE_SIZE_Y * (int)rank, 0), 
+		Vector2(RANK_TEXTURE_SIZE_Y * ((int)rank + 1), RANK_TEXTURE_SIZE_Y), 
+		&rankTexture
+	);
 
 	//“G
 	enemyModel.Draw(0);
