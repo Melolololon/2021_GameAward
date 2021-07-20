@@ -20,11 +20,11 @@ void GameOver::LoadResources()
 	gameOverTex.LoadSpriteTexture("Resources/Texture/GameOver/GameOverBack.png");
 
 	yesSpr.CreateSprite();
-	yesSpr.SetPosition(Vector2(160,300));
+	yesSpr.SetPosition(Vector2(160,350));
 	yesSpr.SetScale(0.6f);
 	yesTex.LoadSpriteTexture("Resources/Texture/GameOver/Continue.png");
 	noSpr.CreateSprite();
-	noSpr.SetPosition(Vector2(590,300));
+	noSpr.SetPosition(Vector2(590,350));
 	noSpr.SetScale(0.6f);
 	noTex.LoadSpriteTexture("Resources/Texture/GameOver/Cancel.png");
 }
@@ -35,13 +35,13 @@ void GameOver::Initialize()
 	player = std::make_shared<Player>(playerYesPos);
 	ObjectManager::GetInstance()->AddObject(player);
 
-	targetObject[0] = std::make_shared<TargetObject>(Vector3(-21, 0, -16));
-	targetObject[1] = std::make_shared<TargetObject>(Vector3(21, 0, -16));
+	targetObject[0] = std::make_shared<TargetObject>(Vector3(-27, 0, -22), 1);
+	targetObject[1] = std::make_shared<TargetObject>(Vector3(27, 0, -22), 1);
 	ObjectManager::GetInstance()->AddObject(targetObject[0]);
 	ObjectManager::GetInstance()->AddObject(targetObject[1]);
 
 #pragma region ƒJƒƒ‰ˆÚ“®
-	Vector3 cameraPosition = Vector3(0, 50, -2);
+	Vector3 cameraPosition = Vector3(0, 65, -2);
 	Vector3 cameraTarget = Vector3(0, 0, 0);
 
 	Vector3 upVector = LibMath::OtherVector(cameraPosition, cameraTarget);
@@ -54,8 +54,6 @@ void GameOver::Initialize()
 void GameOver::Update()
 {
 	ObjectManager::GetInstance()->Update();
-
-
 
 	if (XInputManager::GetPadConnectedFlag(1))
 	{
@@ -79,6 +77,7 @@ void GameOver::Update()
 		{
 			returnStageSelect = false;
 			player->SetModelMoveVector(playerYesPos);
+			
 		}
 	}
 
@@ -88,6 +87,7 @@ void GameOver::Update()
 	{
 		selectEnd = true;
 		Fade::GetInstance()->FadeStart();
+
 	}
 
 	if (Fade::GetInstance()->GetSceneChangeTimingFlag()) isEnd = true;

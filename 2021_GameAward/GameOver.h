@@ -21,8 +21,8 @@ private:
 	static Texture noTex;
 
 	std::shared_ptr<Player>player;
-	Vector3 playerYesPos = Vector3(-39, 0, -6);
-	Vector3 playerNoPos = Vector3(4, 0, -6);
+	Vector3 playerYesPos = Vector3(-45, 0, -12);
+	Vector3 playerNoPos = Vector3(11, 0, -12);
 
 	std::shared_ptr<TargetObject> targetObject[2];
 public:

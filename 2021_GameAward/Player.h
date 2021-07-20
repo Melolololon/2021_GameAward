@@ -114,9 +114,10 @@ private:
 
 #pragma region 弾
 
-	int shotTimer;
-	int shotTime;
+	int shotTimer = 0;
+	int shotTime = 0;
 
+	void ShotBullet(const UINT& arrayNum);
 #pragma endregion
 
 #pragma region パラメーター

@@ -19,8 +19,8 @@ private:
 	static HeapIndexManager heapIndexManager;
 
 	//‘Ì—Í
-	int hp;
-	static int maxHp;
+	int hp = 0;
+	static const int HP_MAX = 120;
 	static float hpGaugeOneNumSizeX;
 
 	//ƒZƒbƒgŠ®—¹‚µ‚½‚©‚Ç‚¤‚©
@@ -32,7 +32,7 @@ private:
 
 
 public:
-	TargetObject(const Vector3& pos);
+	TargetObject(const Vector3& pos,const int hp = HP_MAX);
 	~TargetObject();
 
 	/// <summary>
@@ -61,6 +61,5 @@ public:
 
 	void SetPosition(const Vector3& pos);
 
-	void hpZero() { hp = 0; }
 };
 

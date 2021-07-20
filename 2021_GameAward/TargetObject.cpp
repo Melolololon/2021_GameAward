@@ -16,14 +16,14 @@ Texture TargetObject::hpGaugeTexture;
 Texture TargetObject::hpGaugeFreamTexture;
 PipelineState TargetObject::hpPipeline;
 
-int TargetObject::maxHp;
 float TargetObject::hpGaugeOneNumSizeX;
 
 HeapIndexManager TargetObject::heapIndexManager(CREATE_NUMBER);
 
-TargetObject::TargetObject(const Vector3& pos)
+TargetObject::TargetObject(const Vector3& pos, const int hp)
 {
 	position = pos;
+	this->hp = hp;
 	Initialize();
 }
 
@@ -47,8 +47,7 @@ void TargetObject::LoadResource()
 	hpGaugeTexture.LoadSpriteTexture("Resources/Texture/lifeGauge.png");
 	hpGaugeFreamTexture.LoadSpriteTexture("Resources/Texture/lifeFream.png");
 
-	maxHp = 120;
-	hpGaugeOneNumSizeX = hpSize.x / maxHp;
+	hpGaugeOneNumSizeX = hpSize.x / HP_MAX;
 
 
 	PipelineData data;
@@ -93,7 +92,6 @@ void TargetObject::Initialize()
 	boxData[0].position = position;
 	boxData[0].size = Vector3(3, 5, 3) * mulScale;
 
-	hp = maxHp;
 	setEnd = false;
 }
 
@@ -130,9 +128,9 @@ void TargetObject::DrawHp()
 	hpGaugeFreamSprite[heapNum].SetPosition(lifePos + Vector3(0, 0.2, 0));
 	hpGaugeFreamSprite[heapNum].SetBillboardFlag(true, true, true);
 
-	float hpGaugeOneNumScaleX = 1.0f / (float)maxHp;
+	float hpGaugeOneNumScaleX = 1.0f / (float)HP_MAX;
 	hpGaugeSprite[heapNum].SetScale(Vector2(hpGaugeOneNumScaleX * hp, 1.0f));
-	lifePos.x -= hpGaugeOneNumSizeX * (maxHp - hp) / 2;
+	lifePos.x -= hpGaugeOneNumSizeX * (HP_MAX - hp) / 2;
 	hpGaugeSprite[heapNum].SetPosition(lifePos);
 	hpGaugeSprite[heapNum].SetBillboardFlag(true, true, true);
 

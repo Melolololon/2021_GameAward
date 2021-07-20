@@ -36,6 +36,21 @@ Texture Player::hpCrossTex;
 Sprite2D Player::hpNumSpr;
 Texture Player::hpNumTex;
 
+void Player::ShotBullet(const UINT& arrayNum)
+{
+	Vector3 forwordVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
+	Vector3 normalizeForwordVector = Vector3Normalize(forwordVector);
+	Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
+
+	ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
+		(
+			//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
+			bonePos[arrayNum] + Vector3(q.x * 2.5, -0.2f, q.z * 2.5),
+			Vector3(q.x, 0, q.z)
+		));
+
+}
+
 Player::Player()
 {
 	Initialize();
@@ -202,10 +217,8 @@ void Player::Initialize()
 	{
 		sphereData[i].position = bonePos[i];
 			
-			if(i >= boneNum - 3)
-				sphereData[i].r = 0.6f * scale.x;
-			else
-				sphereData[i].r = 1.5f * scale.x;
+			if(i >= boneNum - 3) sphereData[i].r = 0.6f * scale.x;
+			else sphereData[i].r = 1.5f * scale.x;
 	}
 
 #pragma endregion
@@ -214,7 +227,9 @@ void Player::Initialize()
 	modelData.SetPosition(modelMoveVector, heapNum);
 	//角度セット
 	for (int i = 0; i < boneNum; i++) 
+	{
 		modelData.SetBoneAngle({ twistAngles[i] ,-moveRotateAngle[i],0 }, i, heapNum);
+	}
 
 	//スプライト関係
 	hpAnimationTimer.SetMaxTime(HP_ANIMATION_ONE_FREAM_TIME * 8);
@@ -368,18 +383,37 @@ void Player::StageSelectMove()
 void Player::GameOverMove()
 {
 	float velRotAngle = initSpeed * 5;
-	if (GameOver::GetSelectEndFlag())
-	{
-		const float mulAngleNum = 6.0f;
-		velRotAngle *= mulAngleNum;
-		speed = initSpeed *  mulAngleNum;
-	}
+	//if (GameOver::GetSelectEndFlag())
+	//{
+	//	const float mulAngleNum = 6.0f;
+	//	velRotAngle *= mulAngleNum;
+	//	speed = initSpeed *  mulAngleNum;
+	//}
 
 	velRot -= velRotAngle;
 	if (velRot >= 360)
 		velRot -= 360;
 	if (velRot <= 0)
 		velRot += 360;
+
+	if ((XInputManager::ButtonTrigger(XInputManager::XINPUT_A_BUTTON, 1)
+		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_X_BUTTON, 1)
+		|| XInputManager::ButtonTrigger(XInputManager::XINPUT_START_BUTTON, 1))
+		&& !GameOver::GetSelectEndFlag()) {
+		Library::PlaySoundEveryLoad("Resources/Sound/SE/PlayerSE/SneakBulletSe.wav");
+		for (int i = 3; i < boneNum - 3; i++)
+		{
+			if (i % 2 == 0)continue;
+
+			if (twistAngles[i] == 0.0f
+				|| twistAngles[i] >= 360.0f
+				|| twistAngles[i] >= 180
+				&& twistAngles[i] < 180 + rotateSpeed)
+			{
+				ShotBullet(i);
+			}
+		}
+	}
 }
 
 void Player::PauseMove()
@@ -631,21 +665,8 @@ void Player::Update()
 
 #pragma region 弾を発射
 
-	auto shotBullet = [&](const UINT& arrayNum)
-	{
-		Vector3 forwordVector = bonePos[arrayNum - 1] - bonePos[arrayNum];
-		Vector3 normalizeForwordVector = Vector3Normalize(forwordVector);
-		Quaternion q = GetRotateQuaternion(normalizeForwordVector, { 0,1,0 }, -90 + twistAngles[arrayNum]);
 
-		ObjectManager::GetInstance()->AddObject(std::make_shared<PlayerBullet>
-			(
-				//Vector3(bonePos[arrayNum].x, bonePos[arrayNum].y - 0.5f, bonePos[arrayNum].z),
-				bonePos[arrayNum] + Vector3(q.x * 2.5, -0.2f, q.z * 2.5),
-				Vector3(q.x, 0, q.z)
-				));
 
-		
-	};
 
 	//旧ショット(自動)
 	/*if (shotTimer >= shotTime)
@@ -683,7 +704,7 @@ void Player::Update()
 				|| twistAngles[i] >= 180
 				&& twistAngles[i] < 180 + rotateSpeed)
 			{
-				shotBullet(i);
+				ShotBullet(i);
 			}
 		}
 
